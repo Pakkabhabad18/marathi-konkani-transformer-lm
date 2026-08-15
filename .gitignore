@@ -2,5 +2,10 @@
 __pycache__/
 *.pyc
 .DS_Store
-# Generated corpus data
+
+# Generated corpus data - large. Stored on Google Drive; links in README.md.
 konkani/data/
+marathi/data/
+
+# Health monitor snapshots (regenerable)
+.health/

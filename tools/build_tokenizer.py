@@ -118,7 +118,16 @@ def main() -> int:
         sizes = QUICK_SIZES if args.quick else DEFAULT_SIZES
 
     tok_dir = REPO_ROOT / lang / "tokenizer"
-    work_dir = tok_dir / "sweep"
+    # Sweep working files live under <lang>/data/, which is gitignored.
+    #
+    # They were previously written to <lang>/tokenizer/sweep/, which is NOT
+    # ignored - so a 435 MB concatenated training file was committed and GitHub
+    # rejected the push (100 MB per-file limit). The specification also requires
+    # large artifacts to go to Google Drive rather than git.
+    #
+    # Only the final .model and .vocab stay under tokenizer/: those are Phase 1
+    # deliverables and are ~1 MB each.
+    work_dir = REPO_ROOT / lang / "data" / "tokenizer_sweep"
     tok_dir.mkdir(parents=True, exist_ok=True)
     work_dir.mkdir(parents=True, exist_ok=True)
 
@@ -192,7 +201,7 @@ def main() -> int:
     freq = token_frequency_stats(final_model, heldout)
     examples = tokenization_examples(final_model, EXAMPLE_SENTENCES[lang])
 
-    heldout_path = tok_dir / f"{lang}_heldout.txt"
+    heldout_path = work_dir / f"{lang}_heldout.txt"
     heldout_path.write_text("\n".join(heldout), encoding="utf-8")
 
     payload = {

@@ -205,7 +205,16 @@ def main() -> int:
     if not args.dry_run:
         OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    checkpoint = Checkpoint(CHECKPOINT_PATH, JOB_NAME)
+    # A dry run must not persist checkpoint state - see the note in
+    # konkani/scripts/collect_archive_books.py. A preview that consumes the work
+    # it is previewing is worse than no preview.
+    if args.dry_run:
+        import tempfile
+        checkpoint_path = Path(tempfile.mkdtemp(prefix="dryrun_")) / f"{JOB_NAME}.json"
+    else:
+        checkpoint_path = CHECKPOINT_PATH
+
+    checkpoint = Checkpoint(checkpoint_path, JOB_NAME)
     deduper = Deduplicator(threshold=args.dedup_threshold)
     manifest = None if args.dry_run else ManifestWriter(MANIFEST_PATH)
 

@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 import sys
 from pathlib import Path
 
@@ -80,6 +81,54 @@ MIN_DEVANAGARI_RATIO = 0.80     # Devanagari-only per decision D-001
 SHARD_SIZE = 2000
 LICENSE_NOTE = "CC BY-SA 4.0; attribution required; source: gom.wikipedia.org"
 
+# ---------------------------------------------------------------------------
+# RESIDUAL WIKITEXT CLEANING
+#
+# The quality audit found markup surviving in the already-"filtered" corpus:
+#
+#   {{double image|right|flag of India.svg|195|Emblem of India.svg|84| ...}}
+#   : the invitation, Bowyer Bible.]] : the man
+#
+# The original cleaner used a single-pass `\{\{[^{}]*\}\}`. That regex cannot
+# match a NESTED template: the inner braces are consumed first, leaving the
+# outer pair stranded. Same for [[File:...[[...]]...]]. The fix is to strip
+# repeatedly until the text stops changing, rather than once.
+#
+# This matters beyond tidiness. Left in, the tokenizer spends vocabulary on
+# "svg", "|right|", "]]" and the model learns that Konkani articles begin with
+# English file names.
+# ---------------------------------------------------------------------------
+_TEMPLATE = re.compile(r"\{\{[^{}]*\}\}")
+_FILE_LINK = re.compile(r"\[\[\s*(File|Image|चित्र|संचिका)\s*:[^\[\]]*\]\]",
+                        re.IGNORECASE)
+_PIPED_LINK = re.compile(r"\[\[[^\[\]|]*\|([^\[\]]*)\]\]")
+_PLAIN_LINK = re.compile(r"\[\[([^\[\]]*)\]\]")
+_HTML_TAG = re.compile(r"<[^>]{1,200}>")
+_REF = re.compile(r"<ref[^>]*>.*?</ref>", re.DOTALL | re.IGNORECASE)
+_STRAY = re.compile(r"(\{\{|\}\}|\[\[|\]\]|\{\||\|\})")
+_TABLE_ROW = re.compile(r"^\s*[|!].*$", re.MULTILINE)
+_MAX_PASSES = 8
+
+
+def clean_residual_wikitext(text: str) -> str:
+    """Strip wikitext markup that survived the original cleaning pass."""
+    text = _REF.sub(" ", text)
+
+    for _ in range(_MAX_PASSES):
+        before = text
+        text = _TEMPLATE.sub(" ", text)
+        text = _FILE_LINK.sub(" ", text)
+        if text == before:
+            break
+
+    text = _PIPED_LINK.sub(r"\1", text)
+    text = _PLAIN_LINK.sub(r"\1", text)
+    text = _HTML_TAG.sub(" ", text)
+    text = _TABLE_ROW.sub(" ", text)
+    text = _STRAY.sub(" ", text)
+    text = text.replace("'''", "").replace("''", "")
+    return re.sub(r"\s+", " ", text).strip()
+
 
 def pick_input() -> tuple[Path, Path]:
     for text_path, meta_path in CANDIDATE_INPUTS:
@@ -103,10 +152,41 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true",
                         help="measure and report, write nothing")
     parser.add_argument("--dedup-threshold", type=float, default=0.85)
+    parser.add_argument("--fresh", action="store_true",
+                        help="delete previous output and re-ingest from scratch")
     args = parser.parse_args()
 
     text_path, meta_path = pick_input()
     rows = load_metadata(meta_path)
+
+    # RE-RUNS MUST NOT DOUBLE-COUNT.
+    #
+    # This script reads a fixed input file, and both the manifest and the shard
+    # files are opened in append mode. So running it twice writes every document
+    # twice, and the manual word total - the number the entire corpus design is
+    # built around - silently doubles. That is far more dangerous than a crash.
+    #
+    # Unlike the web collectors, there is no checkpoint seen-set to protect us
+    # here, because the input is a file rather than a stream of new URLs.
+    if not args.dry_run and (MANIFEST_PATH.exists() or OUT_DIR.exists()):
+        if not args.fresh:
+            print("\n" + "!" * 68)
+            print("REFUSING TO RUN: output from a previous run already exists.")
+            print("!" * 68)
+            print(f"  manifest: {MANIFEST_PATH.relative_to(REPO_ROOT)}")
+            print(f"  shards:   {OUT_DIR.relative_to(REPO_ROOT)}")
+            print("\n  Appending would count every document a second time and")
+            print("  double the manual word total, which decides how much")
+            print("  downloaded data the corpus may hold.")
+            print("\n  Re-run with --fresh to replace the previous output.")
+            return 1
+
+        print("  --fresh: removing previous output before re-ingesting")
+        if MANIFEST_PATH.exists():
+            MANIFEST_PATH.unlink()
+        if OUT_DIR.exists():
+            for old in OUT_DIR.glob("shard_*.txt"):
+                old.unlink()
 
     print("=" * 68)
     print(f"INGESTING: {SOURCE_NAME}")
@@ -147,7 +227,7 @@ def main() -> int:
                 if title else "https://gom.wikipedia.org/"
             )
 
-            text = normalize(raw, keep_paragraphs=False)
+            text = normalize(clean_residual_wikitext(raw), keep_paragraphs=False)
 
             if len(text.split()) < MIN_WORDS:
                 note("too_short")
@@ -183,7 +263,8 @@ def main() -> int:
                     collection_type=CollectionType.MANUAL_SCRAPE,
                     language=LANGUAGE,
                     preprocessing_applied=NORMALIZATION_STEPS + [
-                        "wikitext_clean", "length_filter", "devanagari_only_D001"],
+                        "wikitext_clean", "residual_wikitext_strip",
+                        "length_filter", "devanagari_only_D001"],
                     script=profile.script,
                     langid_score=langid.score,
                     langid_label=langid.label,

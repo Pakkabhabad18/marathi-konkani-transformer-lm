@@ -1,0 +1,138 @@
+====================================================================
+COLLECTING: marathi news (manual scrape)
+Date floor: 2025-01-01 | workers=8
+====================================================================
+Resuming: 200 collected, 203 URLs already seen
+
+--- loksatta ---
+  accepted=400 skipped=3 dup=0.0% words=81,914 rate=859/min
+  accepted=537 skipped=66 dup=0.0% words=132,752 rate=742/min
+  accepted=538 skipped=265 dup=0.0% words=132,898 rate=517/min
+  accepted=671 skipped=332 dup=0.0% words=183,172 rate=522/min
+  accepted=870 skipped=333 dup=0.0% words=256,677 rate=573/min
+  accepted=1,067 skipped=336 dup=0.2% words=325,226 rate=604/min
+  accepted=1,264 skipped=339 dup=0.3% words=404,911 rate=610/min
+  accepted=1,462 skipped=341 dup=0.3% words=477,244 rate=628/min
+  accepted=1,661 skipped=342 dup=0.3% words=551,152 rate=643/min
+  accepted=1,859 skipped=344 dup=0.3% words=627,298 rate=654/min
+  accepted=2,058 skipped=345 dup=0.3% words=705,917 rate=668/min
+
+--- maharashtratimes ---
+  accepted=2,098 skipped=505 dup=6.3% words=725,470 rate=630/min
+
+--- lokmat ---
+  accepted=2,183 skipped=620 dup=6.0% words=748,706 rate=594/min
+  accepted=2,183 skipped=820 dup=6.0% words=748,706 rate=487/min
+  accepted=2,183 skipped=1,020 dup=6.0% words=748,706 rate=454/min
+  accepted=2,183 skipped=1,220 dup=6.0% words=748,706 rate=431/min
+  accepted=2,183 skipped=1,420 dup=6.0% words=748,706 rate=409/min
+  accepted=2,183 skipped=1,620 dup=6.0% words=748,706 rate=390/min
+  accepted=2,183 skipped=1,820 dup=6.0% words=748,706 rate=369/min
+  accepted=2,183 skipped=2,020 dup=6.0% words=748,706 rate=349/min
+  accepted=2,183 skipped=2,220 dup=6.0% words=748,706 rate=331/min
+
+--- esakal ---
+  accepted=2,236 skipped=2,367 dup=5.9% words=762,689 rate=315/min
+  accepted=2,300 skipped=2,503 dup=5.7% words=785,197 rate=307/min
+  accepted=2,320 skipped=2,683 dup=5.7% words=790,513 rate=291/min
+  accepted=2,375 skipped=2,828 dup=5.6% words=805,269 rate=282/min
+  accepted=2,460 skipped=2,943 dup=5.5% words=827,291 rate=279/min
+  accepted=2,549 skipped=3,054 dup=5.4% words=851,172 rate=276/min
+  accepted=2,619 skipped=3,184 dup=5.3% words=869,732 rate=273/min
+  accepted=2,702 skipped=3,301 dup=5.2% words=892,992 rate=270/min
+  accepted=2,791 skipped=3,412 dup=5.1% words=916,331 rate=268/min
+  accepted=2,867 skipped=3,536 dup=4.9% words=934,429 rate=262/min
+  accepted=2,933 skipped=3,670 dup=4.8% words=950,230 rate=254/min
+  accepted=3,023 skipped=3,780 dup=4.7% words=973,345 rate=247/min
+  accepted=3,113 skipped=3,890 dup=4.6% words=998,897 rate=244/min
+  accepted=3,174 skipped=4,029 dup=4.6% words=1,015,596 rate=237/min
+  accepted=3,269 skipped=4,134 dup=4.4% words=1,040,832 rate=235/min
+  accepted=3,304 skipped=4,299 dup=4.4% words=1,049,721 rate=230/min
+  accepted=3,317 skipped=4,486 dup=4.4% words=1,053,127 rate=224/min
+  accepted=3,326 skipped=4,677 dup=4.3% words=1,055,140 rate=216/min
+  accepted=3,338 skipped=4,865 dup=4.3% words=1,058,229 rate=209/min
+  accepted=3,352 skipped=5,051 dup=4.3% words=1,061,282 rate=205/min
+  accepted=3,367 skipped=5,236 dup=4.3% words=1,064,465 rate=201/min
+  accepted=3,381 skipped=5,422 dup=4.3% words=1,067,736 rate=196/min
+  accepted=3,393 skipped=5,610 dup=4.3% words=1,070,216 rate=192/min
+  accepted=3,408 skipped=5,795 dup=4.2% words=1,073,010 rate=189/min
+  accepted=3,422 skipped=5,981 dup=4.2% words=1,078,809 rate=184/min
+  accepted=3,436 skipped=6,167 dup=4.2% words=1,082,326 rate=179/min
+  accepted=3,447 skipped=6,356 dup=4.2% words=1,085,077 rate=175/min
+  accepted=3,456 skipped=6,547 dup=4.2% words=1,087,283 rate=171/min
+  accepted=3,464 skipped=6,739 dup=4.2% words=1,088,778 rate=168/min
+  accepted=3,483 skipped=6,920 dup=4.1% words=1,092,502 rate=165/min
+  accepted=3,503 skipped=7,100 dup=4.1% words=1,096,618 rate=161/min
+  accepted=3,527 skipped=7,276 dup=4.1% words=1,104,370 rate=157/min
+  accepted=3,576 skipped=7,427 dup=4.1% words=1,119,019 rate=156/min
+  accepted=3,626 skipped=7,577 dup=4.0% words=1,136,838 rate=155/min
+  accepted=3,634 skipped=7,769 dup=4.0% words=1,138,622 rate=152/min
+  accepted=3,648 skipped=7,955 dup=4.0% words=1,141,764 rate=150/min
+  accepted=3,665 skipped=8,138 dup=4.0% words=1,144,709 rate=147/min
+
+--- abplive_marathi ---
+  accepted=3,722 skipped=8,281 dup=3.9% words=1,167,220 rate=149/min
+  accepted=3,738 skipped=8,465 dup=3.9% words=1,172,942 rate=147/min
+  accepted=3,738 skipped=8,665 dup=3.9% words=1,172,942 rate=146/min
+  accepted=3,738 skipped=8,865 dup=3.9% words=1,172,942 rate=146/min
+
+--- tv9marathi ---
+  accepted=3,930 skipped=8,873 dup=3.7% words=1,241,288 rate=150/min
+  accepted=4,011 skipped=8,992 dup=3.6% words=1,268,961 rate=151/min
+  accepted=4,012 skipped=9,191 dup=3.6% words=1,269,091 rate=150/min
+  accepted=4,022 skipped=9,381 dup=3.6% words=1,270,378 rate=148/min
+  accepted=4,036 skipped=9,567 dup=3.6% words=1,272,421 rate=147/min
+  accepted=4,043 skipped=9,760 dup=3.6% words=1,273,396 rate=146/min
+
+--- divyamarathi ---
+  accepted=4,224 skipped=9,779 dup=3.5% words=1,341,383 rate=151/min
+  accepted=4,411 skipped=9,792 dup=3.3% words=1,403,560 rate=157/min
+
+--- marathivishwakosh ---
+
+====================================================================
+RUN SUMMARY
+====================================================================
+Accepted this run:   4,211
+Accepted total:      4,411
+Words this run:      1,403,560
+Words per document:  333
+Throughput:          157 docs/min
+  -> ~55M words needs 165,013 docs = 17.5 hours at this rate
+Elapsed:             26.8 min
+
+Deduplication:       {'seen': 4355, 'exact_duplicates': 132, 'near_duplicates': 12, 'kept': 4211, 'duplicate_rate': 0.033065}
+
+Per site:
+  loksatta               1,858
+  esakal                 1,482
+  divyamarathi           368
+  tv9marathi             305
+  lokmat                 85
+  abplive_marathi        73
+  maharashtratimes       40
+
+Rejection reasons:
+  too_short                6,591
+  no_article_text          2,578
+  fetch_failed             425
+  duplicate                144
+  langid_undecided         49
+  langid_konkani_rejected  2
+
+Manifest: /Users/prakash/Desktop/individual-project-Pakkabhabad18/marathi/data/manifests/marathi_news.jsonl
+====================================================================
+[2026-08-16 08:24:00] SUPERVISOR: starting marathi_news
+====================================================================
+COLLECTING: marathi_news (mr, manual scrape)
+Date floor: 2025-01-01 | workers=8
+====================================================================
+Resuming: 5,655 collected, 22,151 urls seen
+
+--- loksatta ---
+
+--- maharashtratimes ---
+
+--- lokmat ---
+
+--- esakal ---

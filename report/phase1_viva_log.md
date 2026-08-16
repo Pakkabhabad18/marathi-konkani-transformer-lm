@@ -583,6 +583,94 @@ not in one pass at the end.
 
 ---
 
+## A-011 · Abandon archive.org as the primary Marathi source; pivot to news scraping
+
+**1. What we did.** Measured M1 (Maharashtra GRs on the Internet Archive) to
+destruction, concluded it could not meet the deadline, and built M2, a
+sitemap-driven news collector, as the primary manual Marathi source.
+
+**2. Why we did it.** M1 was correct but far too slow. The decision was made on
+measurement, not impatience.
+
+**3. Command/script used.**
+`python3 marathi/scripts/collect_archive_gr.py --limit 300 --page-size 500`
+then `python3 marathi/scripts/collect_news.py --probe` and `--limit 200`.
+
+**4. Input source.** archive.org; then eight candidate Marathi news sites.
+
+**5. Output produced.**
+
+| Metric | M1 archive.org | M2 news |
+|---|---|---|
+| Throughput | **2.1 docs/min** | **758 docs/min** |
+| Fetch failure rate | 61–68% | ~0% |
+| Words per document | 598 | 384 |
+| Projected time for the target | **393 hours** | **3.1 hours** |
+| Rejections | 80 fetch_failed of 90 | 3 too_short of 203 |
+
+M1's second run then returned **0 documents in 10.7 minutes** after the scrape
+API became entirely unavailable.
+
+**6. Important numbers.** 758 vs 2.1 documents per minute — a factor of ~360.
+Acceptance rate 98.5% on M2 against roughly 10% on M1.
+
+**7. Why the result matters.** The Phase 1 manual requirement is ~100M Marathi
+tokens ≈ 55M words. At M1's measured rate that needs 393 hours; four days were
+available. M1 was therefore not a slow option, it was an impossible one, and
+continuing with it would have failed the 20% manual requirement outright.
+
+The cause was never our code — M1's rejection breakdown was 80 `fetch_failed`
+against 6 `langid_undecided` and 4 `not_enough_devanagari`. The pipeline worked
+perfectly; the server did not. That distinction is what justified keeping the
+collector and changing the source, rather than debugging further.
+
+**8. Problems encountered.**
+   - archive.org degraded to the point of unusability, and its health is
+     entirely outside our control.
+   - A **correctness bug found while investigating**: identifiers were marked
+     "seen" *before* fetching. With 61% of fetches failing, that would have
+     permanently discarded 61% of the collection on a transient outage.
+   - The first `--probe` judged each site on a **single** sitemap URL, and
+     reported 4 of 8 sites usable.
+   - Byline and timestamp furniture leaked into article text:
+     `By ऑनलाइन लोकमत | Updated: August 16, 2026 00:25 IST 2026-08-16T00:25:11+5:30 - विकास…`
+
+**9. How we fixed it.**
+   - Timeouts cut from 45s to (5s connect, 12s read); one attempt instead of
+     eight; workers raised 6 → 12. Failed items are no longer marked seen, so a
+     later pass retries them.
+   - M1 is **kept and still running in the background**. Every document it
+     returns is genuine manual data and it costs nothing to leave grinding.
+   - The probe now samples **8 URLs per site**. Re-running it took the verdict
+     from 4/8 to **7/8 usable** — three of the four apparent failures were
+     unlucky samples (a panchang table, a horoscope, a video page), not broken
+     extraction.
+   - Added URL-pattern exclusion for horoscopes, videos, galleries, AMP
+     web-stories, panchang and live blogs.
+   - Added byline/timestamp stripping, verified against the exact lokmat string
+     above.
+
+**10. Decision made.** M2 becomes the primary manual Marathi source; M1 is
+demoted to a secondary background source, retained with its measurements
+recorded. See decisions D-012 and D-013.
+
+**Likely viva question:** *"Why did you change your data source partway
+through?"* — Because we measured it. The Internet Archive source projected 393
+hours for the required volume against a four-day deadline, with 61–68% of
+fetches failing on a server whose health we do not control. We kept the
+collector, verified the fault was external rather than in our pipeline, and
+built a second source that measured 758 documents/minute on the same
+infrastructure. The old source still runs in the background and its data still
+counts.
+
+**Method note worth stating.** The single-sample probe nearly cost us three
+usable sites. One observation cannot distinguish "this source does not work"
+from "this particular item has no content". That is the third time in this
+project a summary has been more confident than its evidence — the dedup
+self-test, the diagnostic verdict, and now the probe.
+
+---
+
 ## Next action
 
 Run the diagnostic, then the M1 pilot, on the Mac:

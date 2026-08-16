@@ -1,0 +1,74 @@
+====================================================================
+COLLECTING: konkani_news (kok, manual scrape)
+Date floor: 2015-01-01 | workers=6
+====================================================================
+Resuming: 2 collected, 3,808 urls seen
+
+--- sunaparant ---
+
+--- bhaangarbhuin ---
+
+--- konkani_akademi ---
+
+--- goa_gov ---
+
+--- dol_goa ---
+
+--- vishwakonkani ---
+
+--- goanvarta ---
+
+--- herald_goa ---
+  accepted=2 skipped=3,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=4,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=4,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=4,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=4,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=4,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=5,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=5,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=5,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=5,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=5,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=6,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=6,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=6,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=6,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=6,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=7,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=7,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=7,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=7,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=7,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=8,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=8,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=8,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=8,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=8,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=9,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=9,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=9,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=9,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=9,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=10,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=10,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=10,598 dup=0.0% words=0 rate=0/min
+
+====================================================================
+RUN SUMMARY
+====================================================================
+Accepted this run:   0
+Accepted total:      2
+Words this run:      0
+Elapsed:             27.1 min
+
+Deduplication:       {'seen': 0, 'exact_duplicates': 0, 'near_duplicates': 0, 'kept': 0, 'duplicate_rate': 0.0}
+
+Per site:
+
+Rejection reasons:
+  no_article_text              6,664
+  fetch_failed                 134
+  langid_undecided             1
+  too_short                    1
+====================================================================

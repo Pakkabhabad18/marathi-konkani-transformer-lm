@@ -3,3 +3,14 @@
 [2026-08-16 08:24:00] supervising marathi_archive_gr (pid 25534): python3 marathi/scripts/collect_archive_gr.py --workers 12
 [2026-08-16 08:24:00] supervising konkani_books (pid 25540): python3 konkani/scripts/ingest_books_corpus.py
 [2026-08-16 08:24:00] supervising konkani_news (pid 25546): python3 konkani/scripts/collect_news.py --workers 6
+[2026-08-16 08:24:52] ===== supervisor stop =====
+[2026-08-16 08:35:19] ===== supervisor start =====
+[2026-08-16 08:35:19] supervising marathi_news (pid 25991): python3 marathi/scripts/collect_news.py --workers 8
+[2026-08-16 08:35:19] supervising marathi_archive_gr (pid 25996): python3 marathi/scripts/collect_archive_gr.py --workers 12
+[2026-08-16 08:35:19] supervising konkani_books (pid 26002): python3 konkani/scripts/ingest_books_corpus.py
+[2026-08-16 08:35:19] supervising konkani_news (pid 26008): python3 konkani/scripts/collect_news.py --workers 6
+[2026-08-16 08:43:09] ===== supervisor stop =====
+[2026-08-16 08:43:09] ===== supervisor start =====
+[2026-08-16 08:43:09] supervising marathi_news (pid 26223): python3 marathi/scripts/collect_news.py --workers 8
+[2026-08-16 08:43:09] supervising marathi_archive_gr (pid 26228): python3 marathi/scripts/collect_archive_gr.py --workers 12
+[2026-08-16 08:43:09] supervising konkani_news (pid 26234): python3 konkani/scripts/collect_news.py --workers 6

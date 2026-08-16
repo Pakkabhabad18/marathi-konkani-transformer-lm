@@ -224,3 +224,28 @@ Traceback (most recent call last):
     raise ChunkedEncodingError(e)
 requests.exceptions.ChunkedEncodingError: ("Connection broken: BrokenPipeError(32, 'Broken pipe')", BrokenPipeError(32, 'Broken pipe'))
 [2026-08-16 08:24:00] SUPERVISOR: starting konkani_books
+====================================================================
+INGESTING: hf_konkani_books_corpus_v2
+Language: kok   Collection type: DOWNLOADED (not manual)
+Mode: WRITE | full corpus
+====================================================================
+  books=100 rows=201,730 segments=1,372 words=1,586,313 dup=0.0% (5,993 rows/s)
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+[2026-08-16 08:35:19] SUPERVISOR: starting konkani_books
+====================================================================
+INGESTING: hf_konkani_books_corpus_v2
+Language: kok   Collection type: DOWNLOADED (not manual)
+Mode: WRITE | full corpus
+====================================================================
+  books=100 rows=201,730 segments=1,372 words=1,586,313 dup=0.0% (7,856 rows/s)
+  books=200 rows=541,484 segments=3,428 words=3,986,604 dup=0.0% (7,468 rows/s)
+  books=300 rows=789,114 segments=5,037 words=5,854,824 dup=0.0% (8,135 rows/s)
+  books=400 rows=1,052,743 segments=6,335 words=7,348,889 dup=0.2% (8,153 rows/s)
+  books=500 rows=1,331,929 segments=7,526 words=8,720,535 dup=0.4% (7,692 rows/s)
+  books=600 rows=1,727,165 segments=9,879 words=11,479,609 dup=0.3% (6,647 rows/s)
+  books=700 rows=2,105,911 segments=11,754 words=13,664,679 dup=0.3% (6,809 rows/s)
+  books=800 rows=2,317,157 segments=13,119 words=15,244,580 dup=0.3% (6,533 rows/s)
+  books=900 rows=2,504,614 segments=13,913 words=16,140,844 dup=0.2% (6,437 rows/s)
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

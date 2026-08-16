@@ -671,6 +671,161 @@ self-test, the diagnostic verdict, and now the probe.
 
 ---
 
+## A-012 · Audit the actual text, not just the counts
+
+**1. What we did.** Built `tools/audit_quality.py` and ran it over both corpora.
+It prints real documents and measures OCR noise, junk characters, self-repetition,
+repeated opening phrases, script purity and language distribution per source.
+
+**2. Why we did it.** Every check up to this point measured a *count* -
+documents per minute, words, duplicate rate, manual ratio, langid distribution.
+All of those can look healthy while the corpus is OCR fragments and website
+furniture. Discovering that after training would be expensive; after the
+deadline, fatal.
+
+**3. Command/script used.**
+`python3 tools/audit_quality.py --language marathi --samples 3`
+
+**4. Input source.** The live corpora: 14 Marathi shards, 8 Konkani shards.
+
+**5. Output produced.**
+
+| Source | Devanagari | OCR noise | Self-repetition | Top boilerplate | langid |
+|---|---|---|---|---|---|
+| Marathi GRs | 86.0% | 9.8% | 4.1% | 0.6% | mr 100% |
+| Marathi news | 96.4% | 5.1% | 0.6% | 0.1% | mr 100% |
+| Konkani books | 97.1% | 9.0% | 0.2% | 0.1% | kok 97.2% |
+| Konkani Wikipedia | 94.2% | 5.6% | 1.1% | 0.1% | kok 95.1% |
+
+Zero automated flags on either language.
+
+**6. Important numbers.** Boilerplate is the one that matters most: the most
+common opening phrase covers only **0.6%** of GR documents and **0.1%** of news
+articles. With 170k formulaic government documents, that is the number that
+proves they are genuinely distinct rather than one template repeated.
+
+**7. Why the result matters.** The samples read as authentic language - real
+finance-department circulars in Marathi, a real report on an OBC census protest,
+a Konkani travel account describing Buddhist sculpture. That is the evidence no
+metric can provide, and it is why the tool prints documents rather than only
+statistics.
+
+**8. Problems encountered.** Two defects surfaced that the count-based checks had
+missed entirely, both recorded below as A-013 and A-014.
+
+**9. How we fixed them.** See those entries.
+
+**10. Decision made.** Run this audit before committing to any long collection
+run from a new source.
+
+**Likely viva question:** *"How do you know your corpus is good, not just
+large?"* — We measured OCR noise, boilerplate repetition, self-repetition, script
+purity and language per source, and we read samples from each. The boilerplate
+number is the sharpest: 0.6% maximum on the government corpus means the
+documents are distinct, not one form letter repeated 170,000 times.
+
+---
+
+## A-013 · A dry run was consuming the work it was previewing
+
+**1. What we did.** Ran `collect_archive_books.py --dry-run`, then ran it for
+real. The real run collected **zero** documents.
+
+**2. Why we did it.** The dry run is meant to be a safe preview.
+
+**3. Command/script used.**
+`python3 konkani/scripts/collect_archive_books.py --dry-run` then without it.
+
+**4. Input source.** archive.org Konkani book items.
+
+**5. Output produced.** Dry run: 4 books, 50 segments, 58,529 words. Real run:
+**0 books, 0 segments, 0 words**.
+
+**6. Important numbers.** 14 identifiers examined, 14 skipped.
+
+**7. Why the result matters.** The dry run called `checkpoint.mark_seen()` and
+persisted the checkpoint, so all 14 books were recorded as already processed. The
+real run skipped every one. **A preview that silently consumes the work it is
+previewing is worse than having no preview at all** - it looks like it succeeded.
+
+**8. Problems encountered.** Checking the other ingesters revealed the *same bug*
+in `ingest_books_corpus.py` and `ingest_indiccorp.py`. The second one had not
+been run yet - a dry run there would have quietly poisoned the IndicCorp ingest.
+
+**9. How we fixed it.** Under `--dry-run` all three now write their checkpoint
+into a temporary directory that is discarded.
+
+**10. Decision made.** After re-running: 5 books, 52 segments, **60,925 words**.
+
+**Method note.** The fix was found by grepping every script for the same pattern
+rather than fixing only the one that failed. One observed bug of a given shape
+usually means several.
+
+---
+
+## A-014 · Nested wikitext was deleting 10% of the Konkani manual corpus
+
+**1. What we did.** Fixed residual wikitext markup that the quality audit found
+surviving in the "filtered" Konkani Wikipedia corpus, then re-ingested.
+
+**2. Why we did it.** Sample output contained:
+
+```
+{{double image|right|flag of India.svg|195|Emblem of India.svg|84| चो बावटो| ...}}
+: the invitation, Bowyer Bible.]] : the man
+```
+
+**3. Command/script used.**
+`python3 konkani/scripts/ingest_wikipedia_manual.py --fresh`
+
+**4. Input source.** `konkani/data/processed/konkani_wikipedia_filtered.txt`.
+
+**5. Output produced.**
+
+| | before | after | change |
+|---|---:|---:|---:|
+| pages accepted | 2,223 | **2,459** | +236 |
+| words | 1,129,889 | **1,395,235** | +265,346 |
+| words per page | 508 | 567 | +59 |
+| near-duplicates removed | **228** | **1** | −227 |
+
+**6. Important numbers.** Word count went **up** by 265,346 after *removing*
+text. That is the finding.
+
+**7. Why the result matters.** The root cause is that the original cleaner used
+a single-pass `\{\{[^{}]*\}\}`. That regex cannot match a **nested** template -
+the inner braces are consumed first and the outer pair is stranded.
+
+But the consequence is the interesting part. Those 228 pages were never
+duplicates. They shared wikitext boilerplate - the same infobox templates and
+file links - and that shared markup pushed their MinHash similarity past the
+0.85 threshold, so the deduplicator deleted them as near-duplicates.
+**Boilerplate was destroying ~10% of the Konkani manual corpus**, and because
+Konkani is capped at 5x its manual total, each deleted page also cost five words
+of corpus ceiling.
+
+This is exactly the mechanism asserted in decision D-014 when byline furniture
+was stripped from the news crawler. Here it is measured rather than argued.
+
+**8. Problems encountered.** Re-running the script appended a *second* copy of
+every document to the manifest and shards, silently doubling the manual word
+total - the number that decides how much downloaded data the corpus may hold.
+
+**9. How we fixed it.** The script now refuses to run over existing output unless
+`--fresh` is passed, which deletes the previous copy first. The web collectors
+are immune to this because their checkpoints hold a seen-set; scripts that read a
+fixed input file have no such protection and needed an explicit guard.
+
+**10. Decision made.** D-015 and D-016 below.
+
+**Likely viva question:** *"Why does boilerplate removal matter?"* — Two reasons,
+and the second is not obvious. It stops the model learning that articles begin
+with English file names. And it stops the deduplicator confusing shared
+furniture for shared content: before the fix, 228 distinct Konkani articles were
+being deleted as near-duplicates purely because they carried the same infobox.
+
+---
+
 ## Next action
 
 Run the diagnostic, then the M1 pilot, on the Mac:

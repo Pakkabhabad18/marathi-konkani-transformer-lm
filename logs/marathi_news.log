@@ -136,3 +136,172 @@ Resuming: 5,655 collected, 22,151 urls seen
 --- lokmat ---
 
 --- esakal ---
+[2026-08-16 08:35:19] SUPERVISOR: starting marathi_news
+====================================================================
+COLLECTING: marathi_news (mr, manual scrape)
+Date floor: 2025-01-01 | workers=8
+====================================================================
+Resuming: 5,655 collected, 22,151 urls seen
+
+--- loksatta ---
+
+--- maharashtratimes ---
+
+--- lokmat ---
+
+--- esakal ---
+  accepted=5,668 skipped=17,135 dup=0.0% words=3,089 rate=8/min
+  accepted=5,677 skipped=17,326 dup=0.0% words=5,289 rate=10/min
+  accepted=5,687 skipped=17,516 dup=0.0% words=7,719 rate=11/min
+  accepted=5,695 skipped=17,708 dup=0.0% words=9,695 rate=11/min
+  accepted=5,715 skipped=17,888 dup=0.0% words=14,223 rate=13/min
+  accepted=5,725 skipped=18,078 dup=0.0% words=16,358 rate=13/min
+  accepted=5,736 skipped=18,267 dup=0.0% words=19,194 rate=14/min
+  accepted=5,746 skipped=18,457 dup=0.0% words=21,346 rate=14/min
+  accepted=5,753 skipped=18,650 dup=0.0% words=22,524 rate=13/min
+[2026-08-16 08:43:09] SUPERVISOR: starting marathi_news
+====================================================================
+COLLECTING: marathi_news (mr, manual scrape)
+Date floor: 2025-01-01 | workers=8
+====================================================================
+Resuming: 5,753 collected, 23,958 urls seen
+
+--- loksatta ---
+
+--- maharashtratimes ---
+
+--- lokmat ---
+
+--- esakal ---
+  accepted=5,766 skipped=18,837 dup=0.0% words=2,148 rate=11/min
+  accepted=5,781 skipped=19,022 dup=0.0% words=4,834 rate=18/min
+  accepted=5,796 skipped=19,207 dup=0.0% words=8,095 rate=20/min
+  accepted=5,824 skipped=19,379 dup=0.0% words=16,951 rate=28/min
+  accepted=5,857 skipped=19,546 dup=0.0% words=25,580 rate=34/min
+  accepted=5,915 skipped=19,688 dup=0.6% words=41,264 rate=46/min
+  accepted=5,987 skipped=19,816 dup=0.4% words=59,279 rate=58/min
+  accepted=6,057 skipped=19,946 dup=1.6% words=76,686 rate=64/min
+  accepted=6,124 skipped=20,079 dup=1.6% words=94,712 rate=69/min
+  accepted=6,192 skipped=20,211 dup=2.0% words=111,481 rate=74/min
+  accepted=6,235 skipped=20,368 dup=1.8% words=120,370 rate=71/min
+  accepted=6,335 skipped=20,468 dup=2.2% words=144,742 rate=75/min
+  accepted=6,413 skipped=20,590 dup=2.2% words=168,671 rate=79/min
+  accepted=6,465 skipped=20,738 dup=2.1% words=181,993 rate=80/min
+  accepted=6,544 skipped=20,859 dup=2.0% words=201,755 rate=84/min
+  accepted=6,652 skipped=20,951 dup=1.7% words=229,333 rate=91/min
+  accepted=6,697 skipped=21,106 dup=1.8% words=241,620 rate=91/min
+  accepted=6,773 skipped=21,230 dup=1.8% words=261,004 rate=94/min
+  accepted=6,885 skipped=21,318 dup=1.7% words=289,616 rate=97/min
+  accepted=6,965 skipped=21,438 dup=1.6% words=310,748 rate=99/min
+  accepted=7,080 skipped=21,523 dup=1.5% words=337,293 rate=104/min
+  accepted=7,177 skipped=21,626 dup=1.5% words=362,093 rate=107/min
+  accepted=7,265 skipped=21,738 dup=1.4% words=381,292 rate=109/min
+  accepted=7,353 skipped=21,850 dup=1.4% words=403,839 rate=112/min
+  accepted=7,471 skipped=21,932 dup=1.3% words=431,494 rate=115/min
+  accepted=7,572 skipped=22,031 dup=1.4% words=457,911 rate=118/min
+  accepted=7,670 skipped=22,133 dup=1.5% words=480,882 rate=119/min
+  accepted=7,759 skipped=22,244 dup=1.6% words=506,816 rate=120/min
+  accepted=7,870 skipped=22,333 dup=1.8% words=534,248 rate=122/min
+  accepted=7,960 skipped=22,443 dup=1.8% words=560,625 rate=123/min
+  accepted=8,050 skipped=22,553 dup=1.9% words=582,120 rate=124/min
+  accepted=8,160 skipped=22,643 dup=1.8% words=611,783 rate=126/min
+  accepted=8,258 skipped=22,745 dup=1.7% words=634,659 rate=128/min
+  accepted=8,327 skipped=22,876 dup=1.7% words=651,689 rate=128/min
+  accepted=8,380 skipped=23,023 dup=1.6% words=663,823 rate=127/min
+  accepted=8,437 skipped=23,166 dup=1.6% words=676,204 rate=126/min
+  accepted=8,521 skipped=23,282 dup=1.6% words=696,591 rate=127/min
+  accepted=8,582 skipped=23,421 dup=1.6% words=709,873 rate=126/min
+  accepted=8,596 skipped=23,607 dup=1.6% words=712,444 rate=124/min
+  accepted=8,613 skipped=23,790 dup=1.5% words=716,143 rate=122/min
+  accepted=8,631 skipped=23,972 dup=1.5% words=720,189 rate=120/min
+  accepted=8,649 skipped=24,154 dup=1.5% words=725,001 rate=118/min
+  accepted=8,784 skipped=24,219 dup=1.5% words=757,831 rate=120/min
+  accepted=8,859 skipped=24,344 dup=1.5% words=776,325 rate=121/min
+  accepted=8,959 skipped=24,444 dup=1.4% words=799,531 rate=122/min
+  accepted=9,040 skipped=24,563 dup=1.5% words=818,338 rate=123/min
+  accepted=9,153 skipped=24,650 dup=1.4% words=846,032 rate=125/min
+  accepted=9,242 skipped=24,761 dup=1.4% words=866,290 rate=125/min
+  accepted=9,303 skipped=24,900 dup=1.4% words=878,611 rate=125/min
+  accepted=9,418 skipped=24,985 dup=1.3% words=905,510 rate=125/min
+  accepted=9,483 skipped=25,120 dup=1.5% words=920,859 rate=124/min
+  accepted=9,586 skipped=25,217 dup=1.5% words=946,397 rate=123/min
+  accepted=9,683 skipped=25,320 dup=1.4% words=968,903 rate=123/min
+  accepted=9,781 skipped=25,422 dup=1.4% words=993,619 rate=123/min
+  accepted=9,866 skipped=25,537 dup=1.4% words=1,012,350 rate=123/min
+  accepted=9,970 skipped=25,633 dup=1.4% words=1,036,404 rate=125/min
+  accepted=10,049 skipped=25,754 dup=1.4% words=1,055,060 rate=124/min
+  accepted=10,164 skipped=25,839 dup=1.4% words=1,083,380 rate=125/min
+  accepted=10,229 skipped=25,974 dup=1.4% words=1,097,162 rate=125/min
+  accepted=10,330 skipped=26,073 dup=1.3% words=1,120,956 rate=125/min
+  accepted=10,388 skipped=26,215 dup=1.3% words=1,134,272 rate=124/min
+  accepted=10,433 skipped=26,370 dup=1.3% words=1,143,437 rate=122/min
+  accepted=10,526 skipped=26,477 dup=1.3% words=1,164,099 rate=123/min
+  accepted=10,587 skipped=26,616 dup=1.3% words=1,177,141 rate=121/min
+  accepted=10,705 skipped=26,698 dup=1.2% words=1,204,104 rate=122/min
+  accepted=10,792 skipped=26,811 dup=1.2% words=1,222,536 rate=122/min
+  accepted=10,899 skipped=26,904 dup=1.2% words=1,247,529 rate=123/min
+  accepted=10,983 skipped=27,020 dup=1.2% words=1,265,896 rate=122/min
+  accepted=11,085 skipped=27,118 dup=1.2% words=1,289,408 rate=123/min
+  accepted=11,155 skipped=27,248 dup=1.2% words=1,305,635 rate=123/min
+  accepted=11,263 skipped=27,340 dup=1.1% words=1,329,411 rate=124/min
+  accepted=11,314 skipped=27,489 dup=1.1% words=1,340,779 rate=124/min
+  accepted=11,438 skipped=27,565 dup=1.1% words=1,371,264 rate=125/min
+  accepted=11,531 skipped=27,672 dup=1.1% words=1,394,155 rate=125/min
+  accepted=11,583 skipped=27,820 dup=1.1% words=1,405,275 rate=125/min
+  accepted=11,705 skipped=27,898 dup=1.1% words=1,435,039 rate=126/min
+  accepted=11,779 skipped=28,024 dup=1.1% words=1,451,711 rate=126/min
+  accepted=11,886 skipped=28,117 dup=1.0% words=1,476,927 rate=127/min
+  accepted=11,950 skipped=28,253 dup=1.0% words=1,493,112 rate=127/min
+  accepted=12,047 skipped=28,356 dup=1.0% words=1,515,636 rate=127/min
+  accepted=12,090 skipped=28,513 dup=1.0% words=1,524,965 rate=126/min
+  accepted=12,201 skipped=28,602 dup=1.0% words=1,551,009 rate=127/min
+  accepted=12,256 skipped=28,747 dup=1.0% words=1,563,556 rate=126/min
+  accepted=12,366 skipped=28,837 dup=1.0% words=1,587,839 rate=127/min
+  accepted=12,443 skipped=28,960 dup=1.0% words=1,605,465 rate=127/min
+  accepted=12,535 skipped=29,068 dup=1.0% words=1,626,200 rate=127/min
+  accepted=12,619 skipped=29,184 dup=1.0% words=1,645,454 rate=127/min
+  accepted=12,692 skipped=29,311 dup=1.0% words=1,659,918 rate=127/min
+  accepted=12,768 skipped=29,435 dup=1.0% words=1,675,785 rate=126/min
+  accepted=12,858 skipped=29,545 dup=1.0% words=1,697,498 rate=127/min
+  accepted=12,946 skipped=29,657 dup=1.0% words=1,714,997 rate=127/min
+  accepted=13,037 skipped=29,766 dup=1.0% words=1,736,433 rate=127/min
+  accepted=13,097 skipped=29,906 dup=1.0% words=1,748,866 rate=127/min
+  accepted=13,199 skipped=30,004 dup=1.0% words=1,772,832 rate=127/min
+  accepted=13,252 skipped=30,151 dup=1.0% words=1,783,233 rate=126/min
+  accepted=13,347 skipped=30,256 dup=1.0% words=1,805,761 rate=127/min
+  accepted=13,408 skipped=30,395 dup=1.0% words=1,819,076 rate=126/min
+  accepted=13,499 skipped=30,504 dup=1.0% words=1,840,373 rate=126/min
+  accepted=13,554 skipped=30,649 dup=1.0% words=1,853,675 rate=126/min
+  accepted=13,665 skipped=30,738 dup=1.0% words=1,881,670 rate=127/min
+  accepted=13,732 skipped=30,871 dup=1.0% words=1,895,988 rate=127/min
+  accepted=13,814 skipped=30,989 dup=1.0% words=1,915,234 rate=127/min
+  accepted=13,909 skipped=31,094 dup=0.9% words=1,935,526 rate=127/min
+  accepted=13,951 skipped=31,252 dup=0.9% words=1,945,756 rate=126/min
+  accepted=14,064 skipped=31,339 dup=0.9% words=1,971,757 rate=127/min
+  accepted=14,137 skipped=31,466 dup=0.9% words=1,987,615 rate=126/min
+  accepted=14,246 skipped=31,557 dup=0.9% words=2,013,450 rate=127/min
+  accepted=14,315 skipped=31,688 dup=0.9% words=2,028,917 rate=127/min
+  accepted=14,425 skipped=31,778 dup=0.9% words=2,055,494 rate=127/min
+  accepted=14,474 skipped=31,929 dup=0.9% words=2,066,433 rate=127/min
+  accepted=14,566 skipped=32,037 dup=0.9% words=2,087,726 rate=127/min
+  accepted=14,637 skipped=32,166 dup=0.9% words=2,105,210 rate=127/min
+  accepted=14,723 skipped=32,280 dup=0.9% words=2,125,220 rate=127/min
+  accepted=14,822 skipped=32,381 dup=0.9% words=2,145,699 rate=126/min
+  accepted=14,905 skipped=32,498 dup=0.9% words=2,164,354 rate=126/min
+  accepted=14,989 skipped=32,614 dup=0.9% words=2,186,030 rate=126/min
+  accepted=15,026 skipped=32,777 dup=1.0% words=2,194,953 rate=125/min
+  accepted=15,140 skipped=32,863 dup=1.0% words=2,220,516 rate=126/min
+  accepted=15,211 skipped=32,992 dup=1.0% words=2,236,188 rate=124/min
+  accepted=15,327 skipped=33,076 dup=1.0% words=2,261,867 rate=124/min
+  accepted=15,389 skipped=33,214 dup=1.0% words=2,276,274 rate=123/min
+  accepted=15,497 skipped=33,306 dup=1.0% words=2,300,742 rate=123/min
+  accepted=15,533 skipped=33,470 dup=1.0% words=2,307,903 rate=122/min
+  accepted=15,647 skipped=33,556 dup=1.0% words=2,333,874 rate=122/min
+  accepted=15,705 skipped=33,698 dup=1.0% words=2,347,780 rate=121/min
+  accepted=15,807 skipped=33,796 dup=1.0% words=2,370,687 rate=121/min
+  accepted=15,897 skipped=33,906 dup=1.0% words=2,391,894 rate=120/min
+  accepted=16,011 skipped=33,992 dup=1.0% words=2,417,451 rate=120/min
+  accepted=16,065 skipped=34,138 dup=1.1% words=2,429,277 rate=120/min
+  accepted=16,182 skipped=34,221 dup=1.1% words=2,456,157 rate=120/min
+  accepted=16,237 skipped=34,366 dup=1.1% words=2,469,467 rate=120/min
+  accepted=16,365 skipped=34,438 dup=1.1% words=2,500,153 rate=121/min

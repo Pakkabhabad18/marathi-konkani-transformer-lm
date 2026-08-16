@@ -276,6 +276,83 @@ costs nothing, while fetching and then rejecting it costs a request.
 
 ---
 
+## D-015 · The 20% manual floor is enforced by discarding downloaded data
+
+**Decision.** `tools/make_splits.py` subsamples downloaded sources until
+`total <= 5 x manual`, capping to a 22% target so that split variance cannot
+push training below the 20% floor.
+
+**Why.** Measured on the real Konkani corpus: 1.13M manual words against 29.4M
+downloaded words is **3.7% manual** - a clear failure. Enforcing the floor meant
+discarding ~23.8M words of a perfectly good books corpus.
+
+That trade is deliberate and worth stating plainly: **a large corpus that fails a
+stated requirement is worth less than a smaller one that meets it.** The 500M
+token figure is a target; the 20% ratio is a requirement. When they conflict, the
+requirement wins.
+
+**Why 22% and not 20%.** Capping exactly at the floor lands on the boundary, and
+the stratified split then moves each split's ratio by a fraction of a percent -
+enough to drop training to 19.99% and fail by a few hundred words. Observed in
+testing before it could happen for real.
+
+**Implementation note.** Downloaded sources are subsampled *proportionally*, so
+the source mix of the downloaded portion is preserved rather than one source
+disappearing entirely.
+
+---
+
+## D-016 · Konkani manual collection is deliberately diversified away from Wikipedia
+
+**Decision.** Konkani manual data comes from three sources, not one: self-scraped
+Wikipedia (1,395,235 words), OCR of Internet Archive books (60,925 words), and
+vishwakonkani (520 words).
+
+**Why.** Before this, Konkani manual was **99.95% self-scraped Wikipedia**. Even
+though we wrote the crawler and cleaned the wikitext ourselves - which meets the
+brief's definition of manual collection - the TAs advised specifically against
+relying on Wikipedia. A manual claim resting almost entirely on one well-known
+public dataset is weak however legitimately it was gathered.
+
+OCR from digitised books is the *first* example the brief gives for manual
+collection. It is the strongest form of the claim available to us.
+
+**Honest accounting of the size.** The books contribute 60,925 words - about 4%
+of Konkani manual. This does not transform the corpus. It changes what the manual
+claim rests on, and it raises the corpus ceiling by ~305k words.
+
+**Why so little.** Of 14 candidate items, only 5 contributed and 267 segments
+were rejected as non-Devanagari. Konkani books on the Internet Archive include
+Romi (Latin script) and Kannada-script volumes, which decision D-001 excludes.
+That is a fact about how Konkani is published, not a defect - and it is more
+evidence for the shortfall the specification permits.
+
+---
+
+## D-017 · Scripts that read a fixed input must refuse to re-run silently
+
+**Decision.** Ingest scripts whose input is a file, rather than a stream of new
+URLs, refuse to run when previous output exists unless `--fresh` is passed. Dry
+runs never persist checkpoint state.
+
+**Why.** Two failures, one after the other:
+
+1. `collect_archive_books.py --dry-run` marked all 14 books as seen and
+   persisted that, so the real run collected **zero** documents. The same bug was
+   found in `ingest_books_corpus.py` and `ingest_indiccorp.py` by grepping for
+   the pattern rather than fixing only the script that failed.
+
+2. Re-running `ingest_wikipedia_manual.py` appended a second copy of every
+   document, doubling the manual word total - the single number that determines
+   how much downloaded data the corpus may hold.
+
+**The general principle.** The web collectors are safe from both because their
+checkpoints carry a seen-set of URLs. Scripts that re-read a fixed file have no
+such protection, so the guard has to be explicit. **Silent double-counting is
+more dangerous than a crash**, because the corpus still looks fine afterwards.
+
+---
+
 ## D-011 · Collection runs on the Mac, not in the cloud sandbox or on GPU
 
 **Decision.** All collection, preprocessing, statistics and tokenizer work runs

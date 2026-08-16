@@ -1,0 +1,100 @@
+{
+  "language": "konkani",
+  "seed": 20260819,
+  "ratios": {
+    "train": 0.98,
+    "val": 0.01,
+    "test": 0.01
+  },
+  "granularity": "document",
+  "stratified_by": "source",
+  "cross_source_dedup": true,
+  "ratio_cap_applied": true,
+  "ratio_cap_dropped": {
+    "hf_konkani_books_corpus_v2": {
+      "documents_before": 23984,
+      "documents_kept": 3471,
+      "words_dropped": 23769590
+    }
+  },
+  "leaked_documents": 0,
+  "splits": {
+    "train": {
+      "docs": 5584,
+      "words": 5037395,
+      "manual_docs": 2181,
+      "manual_words": 1106477,
+      "downloaded_docs": 3403,
+      "downloaded_words": 3930918,
+      "by_source": {
+        "hf_konkani_books_corpus_v2": {
+          "docs": 3403,
+          "words": 3930918,
+          "is_manual": false
+        },
+        "konkani_wikipedia_selfcollected": {
+          "docs": 2179,
+          "words": 1105957,
+          "is_manual": true
+        },
+        "news": {
+          "docs": 2,
+          "words": 520,
+          "is_manual": true
+        }
+      }
+    },
+    "val": {
+      "docs": 56,
+      "words": 48872,
+      "manual_docs": 22,
+      "manual_words": 11180,
+      "downloaded_docs": 34,
+      "downloaded_words": 37692,
+      "by_source": {
+        "hf_konkani_books_corpus_v2": {
+          "docs": 34,
+          "words": 37692,
+          "is_manual": false
+        },
+        "konkani_wikipedia_selfcollected": {
+          "docs": 22,
+          "words": 11180,
+          "is_manual": true
+        },
+        "news": {
+          "docs": 0,
+          "words": 0,
+          "is_manual": true
+        }
+      }
+    },
+    "test": {
+      "docs": 56,
+      "words": 51952,
+      "manual_docs": 22,
+      "manual_words": 12752,
+      "downloaded_docs": 34,
+      "downloaded_words": 39200,
+      "by_source": {
+        "hf_konkani_books_corpus_v2": {
+          "docs": 34,
+          "words": 39200,
+          "is_manual": false
+        },
+        "konkani_wikipedia_selfcollected": {
+          "docs": 22,
+          "words": 12752,
+          "is_manual": true
+        },
+        "news": {
+          "docs": 0,
+          "words": 0,
+          "is_manual": true
+        }
+      }
+    }
+  },
+  "train_manual_share": 0.21965261806945852,
+  "meets_manual_requirement": true
+}

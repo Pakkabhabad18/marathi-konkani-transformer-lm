@@ -1,0 +1,77 @@
+{
+  "language": "marathi",
+  "seed": 20260819,
+  "ratios": {
+    "train": 0.98,
+    "val": 0.01,
+    "test": 0.01
+  },
+  "granularity": "document",
+  "stratified_by": "source",
+  "cross_source_dedup": true,
+  "leaked_documents": 0,
+  "splits": {
+    "train": {
+      "docs": 11039,
+      "words": 6917542,
+      "manual_docs": 11039,
+      "manual_words": 6917542,
+      "downloaded_docs": 0,
+      "downloaded_words": 0,
+      "by_source": {
+        "archive_org_maharashtra_gr": {
+          "docs": 5497,
+          "words": 5149521,
+          "is_manual": true
+        },
+        "news": {
+          "docs": 5542,
+          "words": 1768021,
+          "is_manual": true
+        }
+      }
+    },
+    "val": {
+      "docs": 112,
+      "words": 68858,
+      "manual_docs": 112,
+      "manual_words": 68858,
+      "downloaded_docs": 0,
+      "downloaded_words": 0,
+      "by_source": {
+        "archive_org_maharashtra_gr": {
+          "docs": 56,
+          "words": 52773,
+          "is_manual": true
+        },
+        "news": {
+          "docs": 56,
+          "words": 16085,
+          "is_manual": true
+        }
+      }
+    },
+    "test": {
+      "docs": 112,
+      "words": 81215,
+      "manual_docs": 112,
+      "manual_words": 81215,
+      "downloaded_docs": 0,
+      "downloaded_words": 0,
+      "by_source": {
+        "archive_org_maharashtra_gr": {
+          "docs": 56,
+          "words": 65784,
+          "is_manual": true
+        },
+        "news": {
+          "docs": 56,
+          "words": 15431,
+          "is_manual": true
+        }
+      }
+    }
+  },
+  "train_manual_share": 1.0,
+  "meets_manual_requirement": true
+}

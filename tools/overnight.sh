@@ -35,10 +35,27 @@ RESTART_DELAY=60
 HEALTH_EVERY=1800          # 30 minutes
 
 # Each entry: name|command
+#
+# konkani_books is DELIBERATELY NOT SUPERVISED. Two reasons:
+#
+#  1. It has already collected 29.4M words, and the Konkani corpus is capped at
+#     5 x manual = ~5.6M words. Roughly 24M of those words are discarded at
+#     split time. Collecting more of it cannot help.
+#
+#  2. Unlike the web collectors, it streams a HuggingFace dataset from row zero
+#     on every start - the checkpoint records progress but cannot resume a
+#     stream mid-way. So a restart re-processes data already held, appending
+#     duplicates to the shards (harmless, since cross-source dedup removes them
+#     at split time, but pure waste).
+#
+# Run it manually if the Konkani corpus is ever rebuilt from scratch:
+#     python3 konkani/scripts/ingest_books_corpus.py
+#
+# Everything supervised below is MANUAL collection, which is the only thing that
+# raises either corpus ceiling.
 JOBS=(
   "marathi_news|python3 marathi/scripts/collect_news.py --workers 8"
   "marathi_archive_gr|python3 marathi/scripts/collect_archive_gr.py --workers 12"
-  "konkani_books|python3 konkani/scripts/ingest_books_corpus.py"
   "konkani_news|python3 konkani/scripts/collect_news.py --workers 6"
 )
 

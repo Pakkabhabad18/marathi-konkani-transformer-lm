@@ -120,3 +120,507 @@
 ====================================================================
 4 job(s) checked; 3 stalled.
 ====================================================================
+
+########## 2026-08-16 08:35:19 ##########
+
+====================================================================
+[ OK ]  marathi_archive_gr
+====================================================================
+  documents collected   5,611  (+47 since last check)
+  words                 5,268,725
+    manual              5,268,725 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  21,074,900 more words allowed
+
+  last checkpoint       2026-08-16 08:23:50 (11m 29s ago)
+  processing rate       4.4 docs/min (over last 10m 45s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.8 GB
+
+  script distribution   Devanagari=5,474  Mixed=137
+  langid distribution   mr=5,611
+  mean langid score     +0.960
+
+  by source:
+    archive_org_maharashtra_gr                5,611 docs     5,268,725 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[STALL]  marathi_news
+====================================================================
+  documents collected   5,655  (+0 since last check)
+  words                 1,799,692
+    manual              1,799,692 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  7,198,768 more words allowed
+
+  last checkpoint       2026-08-16 02:55:35 (5h 39m ago)
+  processing rate       0.0 docs/min (over last 10m 45s)
+  errors / 429s         0 / 0
+  duplicate rate        1.3%
+  disk free             25.8 GB
+
+  script distribution   Devanagari=5,651  Mixed=4
+  langid distribution   mr=5,655
+  mean langid score     +0.986
+
+  by source:
+    news_loksatta                             2,058 docs       782,805 words  [manual]
+    news_esakal                               2,726 docs       715,247 words  [manual]
+    news_divyamarathi                           368 docs       130,164 words  [manual]
+    news_tv9marathi                             305 docs       100,454 words  [manual]
+    news_abplive_marathi                         73 docs        28,233 words  [manual]
+    news_lokmat                                  85 docs        23,236 words  [manual]
+    news_maharashtratimes                        40 docs        19,553 words  [manual]
+
+  !! PROBLEM: checkpoint not written for 5h 39m (threshold 15m 0s)
+
+====================================================================
+[WARN]  konkani_books_corpus
+====================================================================
+  documents collected   25,413  (+1,298 since last check)
+  words                 29,429,150
+    manual              0 (0.0%)
+    downloaded          29,429,150
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  -29,429,150 more words allowed
+
+  last checkpoint       2026-08-16 08:24:41 (10m 38s ago)
+  processing rate       120.6 docs/min (over last 10m 45s)
+  errors / 429s         0 / 0
+  duplicate rate        2.7%
+  disk free             25.8 GB
+
+  script distribution   Devanagari=25,413
+  langid distribution   kok=24,527  undecided=886
+  mean langid score     -0.876
+
+  by source:
+    hf_konkani_books_corpus_v2               25,413 docs    29,429,150 words  [downloaded]
+
+  ~  warning: manual ratio below 20%: corpus is 29,429,150 words over what the manual total supports
+
+====================================================================
+[STALL]  konkani_news
+====================================================================
+  documents collected   2  (+0 since last check)
+  words                 520
+    manual              520 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  2,080 more words allowed
+
+  last checkpoint       2026-08-16 02:55:28 (5h 39m ago)
+  processing rate       0.0 docs/min (over last 10m 45s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.8 GB
+
+  script distribution   Devanagari=2
+  langid distribution   kok=2
+  mean langid score     -0.810
+
+  by source:
+    news_vishwakonkani                            2 docs           520 words  [manual]
+
+  !! PROBLEM: checkpoint not written for 5h 39m (threshold 15m 0s)
+
+====================================================================
+4 job(s) checked; 2 stalled.
+====================================================================
+
+########## 2026-08-16 08:43:09 ##########
+
+====================================================================
+[ OK ]  marathi_archive_gr
+====================================================================
+  documents collected   6,243  (+632 since last check)
+  words                 5,828,097
+    manual              5,828,097 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  23,312,388 more words allowed
+
+  last checkpoint       2026-08-16 08:41:56 (1m 12s ago)
+  processing rate       80.7 docs/min (over last 7m 49s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.4 GB
+
+  script distribution   Devanagari=6,076  Mixed=167
+  langid distribution   mr=6,243
+  mean langid score     +0.960
+
+  by source:
+    archive_org_maharashtra_gr                6,243 docs     5,828,097 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[ OK ]  marathi_news
+====================================================================
+  documents collected   5,753  (+98 since last check)
+  words                 1,822,216
+    manual              1,822,216 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  7,288,864 more words allowed
+
+  last checkpoint       2026-08-16 08:42:57 (11s ago)
+  processing rate       12.5 docs/min (over last 7m 49s)
+  errors / 429s         0 / 0
+  duplicate rate        1.3%
+  disk free             25.4 GB
+
+  script distribution   Devanagari=5,749  Mixed=4
+  langid distribution   mr=5,753
+  mean langid score     +0.986
+
+  by source:
+    news_loksatta                             2,058 docs       782,805 words  [manual]
+    news_esakal                               2,824 docs       737,771 words  [manual]
+    news_divyamarathi                           368 docs       130,164 words  [manual]
+    news_tv9marathi                             305 docs       100,454 words  [manual]
+    news_abplive_marathi                         73 docs        28,233 words  [manual]
+    news_lokmat                                  85 docs        23,236 words  [manual]
+    news_maharashtratimes                        40 docs        19,553 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[WARN]  konkani_books_corpus
+====================================================================
+  documents collected   40,597  (+15,184 since last check)
+  words                 47,016,182
+    manual              0 (0.0%)
+    downloaded          47,016,182
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  -47,016,182 more words allowed
+
+  last checkpoint       2026-08-16 08:41:55 (1m 14s ago)
+  processing rate       1938.2 docs/min (over last 7m 50s)
+  errors / 429s         0 / 0
+  duplicate rate        2.7%
+  disk free             25.4 GB
+
+  script distribution   Devanagari=40,597
+  langid distribution   kok=39,220  undecided=1,377
+  mean langid score     -0.877
+
+  by source:
+    hf_konkani_books_corpus_v2               40,597 docs    47,016,182 words  [downloaded]
+
+  ~  warning: manual ratio below 20%: corpus is 47,016,182 words over what the manual total supports
+
+====================================================================
+[STALL]  konkani_news
+====================================================================
+  documents collected   2  (+0 since last check)
+  words                 520
+    manual              520 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  2,080 more words allowed
+
+  last checkpoint       2026-08-16 08:42:00 (1m 9s ago)
+  processing rate       0.0 docs/min (over last 7m 50s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.4 GB
+
+  script distribution   Devanagari=2
+  langid distribution   kok=2
+  mean langid score     -0.810
+
+  by source:
+    news_vishwakonkani                            2 docs           520 words  [manual]
+
+  !! PROBLEM: checkpoint is fresh but zero documents added since last check - job is fetching and rejecting everything
+
+====================================================================
+4 job(s) checked; 1 stalled.
+====================================================================
+
+########## 2026-08-16 09:13:09 ##########
+
+====================================================================
+[ OK ]  marathi_archive_gr
+====================================================================
+  documents collected   9,988  (+302 since last check)
+  words                 9,009,064
+    manual              9,009,064 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  36,036,256 more words allowed
+
+  last checkpoint       2026-08-16 09:12:07 (1m 2s ago)
+  processing rate       113.9 docs/min (over last 2m 39s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.3 GB
+
+  script distribution   Devanagari=9,647  Mixed=341
+  langid distribution   mr=9,988
+  mean langid score     +0.961
+
+  by source:
+    archive_org_maharashtra_gr                9,988 docs     9,009,064 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[ OK ]  marathi_news
+====================================================================
+  documents collected   9,468  (+302 since last check)
+  words                 2,738,976
+    manual              2,738,976 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  10,955,904 more words allowed
+
+  last checkpoint       2026-08-16 09:12:25 (44s ago)
+  processing rate       113.9 docs/min (over last 2m 39s)
+  errors / 429s         0 / 0
+  duplicate rate        1.3%
+  disk free             25.3 GB
+
+  script distribution   Devanagari=9,463  Mixed=5
+  langid distribution   mr=9,468
+  mean langid score     +0.987
+
+  by source:
+    news_esakal                               6,539 docs     1,654,531 words  [manual]
+    news_loksatta                             2,058 docs       782,805 words  [manual]
+    news_divyamarathi                           368 docs       130,164 words  [manual]
+    news_tv9marathi                             305 docs       100,454 words  [manual]
+    news_abplive_marathi                         73 docs        28,233 words  [manual]
+    news_lokmat                                  85 docs        23,236 words  [manual]
+    news_maharashtratimes                        40 docs        19,553 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[STALL]  konkani_books_corpus
+====================================================================
+  documents collected   40,597  (+0 since last check)
+  words                 47,016,182
+    manual              0 (0.0%)
+    downloaded          47,016,182
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  -47,016,182 more words allowed
+
+  last checkpoint       2026-08-16 08:41:55 (31m 14s ago)
+  processing rate       0.0 docs/min (over last 2m 39s)
+  errors / 429s         0 / 0
+  duplicate rate        2.7%
+  disk free             25.3 GB
+
+  script distribution   Devanagari=40,597
+  langid distribution   kok=39,220  undecided=1,377
+  mean langid score     -0.877
+
+  by source:
+    hf_konkani_books_corpus_v2               40,597 docs    47,016,182 words  [downloaded]
+
+  !! PROBLEM: checkpoint not written for 31m 14s (threshold 15m 0s)
+
+  ~  warning: manual ratio below 20%: corpus is 47,016,182 words over what the manual total supports
+
+====================================================================
+[STALL]  konkani_news
+====================================================================
+  documents collected   2  (+0 since last check)
+  words                 520
+    manual              520 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  2,080 more words allowed
+
+  last checkpoint       2026-08-16 09:12:37 (32s ago)
+  processing rate       0.0 docs/min (over last 2m 39s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.3 GB
+
+  script distribution   Devanagari=2
+  langid distribution   kok=2
+  mean langid score     -0.810
+
+  by source:
+    news_vishwakonkani                            2 docs           520 words  [manual]
+
+  !! PROBLEM: checkpoint is fresh but zero documents added since last check - job is fetching and rejecting everything
+
+====================================================================
+4 job(s) checked; 2 stalled.
+====================================================================
+
+########## 2026-08-16 09:43:10 ##########
+
+====================================================================
+[ OK ]  marathi_archive_gr
+====================================================================
+  documents collected   13,156  (+1,816 since last check)
+  words                 11,964,401
+    manual              11,964,401 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  47,857,604 more words allowed
+
+  last checkpoint       2026-08-16 09:41:51 (1m 19s ago)
+  processing rate       110.1 docs/min (over last 16m 29s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.2 GB
+
+  script distribution   Devanagari=12,672  Mixed=484
+  langid distribution   mr=13,156
+  mean langid score     +0.964
+
+  by source:
+    archive_org_maharashtra_gr               13,156 docs    11,964,401 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[ OK ]  marathi_news
+====================================================================
+  documents collected   13,349  (+2,256 since last check)
+  words                 3,628,326
+    manual              3,628,326 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  14,513,304 more words allowed
+
+  last checkpoint       2026-08-16 09:43:00 (10s ago)
+  processing rate       136.8 docs/min (over last 16m 29s)
+  errors / 429s         0 / 0
+  duplicate rate        1.3%
+  disk free             25.2 GB
+
+  script distribution   Devanagari=13,344  Mixed=5
+  langid distribution   mr=13,349
+  mean langid score     +0.988
+
+  by source:
+    news_esakal                              10,420 docs     2,543,881 words  [manual]
+    news_loksatta                             2,058 docs       782,805 words  [manual]
+    news_divyamarathi                           368 docs       130,164 words  [manual]
+    news_tv9marathi                             305 docs       100,454 words  [manual]
+    news_abplive_marathi                         73 docs        28,233 words  [manual]
+    news_lokmat                                  85 docs        23,236 words  [manual]
+    news_maharashtratimes                        40 docs        19,553 words  [manual]
+
+  No problems detected.
+
+====================================================================
+[ OK ]  konkani_archive_books
+====================================================================
+  documents collected   0
+  words                 0
+    manual              0 (0.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  0 more words allowed
+
+  last checkpoint       2026-08-16 09:42:10 (1m 0s ago)
+  processing rate       n/a (first check, or interval too short)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.2 GB
+
+  No problems detected.
+
+====================================================================
+[STALL]  konkani_books_corpus
+====================================================================
+  documents collected   40,597  (+0 since last check)
+  words                 47,016,182
+    manual              0 (0.0%)
+    downloaded          47,016,182
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  -47,016,182 more words allowed
+
+  last checkpoint       2026-08-16 08:41:55 (1h 1m ago)
+  processing rate       0.0 docs/min (over last 16m 29s)
+  errors / 429s         0 / 0
+  duplicate rate        2.7%
+  disk free             25.2 GB
+
+  script distribution   Devanagari=40,597
+  langid distribution   kok=39,220  undecided=1,377
+  mean langid score     -0.877
+
+  by source:
+    hf_konkani_books_corpus_v2               40,597 docs    47,016,182 words  [downloaded]
+
+  !! PROBLEM: checkpoint not written for 1h 1m (threshold 15m 0s)
+
+  ~  warning: manual ratio below 20%: corpus is 47,016,182 words over what the manual total supports
+
+====================================================================
+[STALL]  konkani_news
+====================================================================
+  documents collected   2  (+0 since last check)
+  words                 520
+    manual              520 (100.0%)
+    downloaded          0
+  tokens                0   (filled by final tokenizer pass)
+    manual              0
+    downloaded          0
+  headroom at 20% rule  2,080 more words allowed
+
+  last checkpoint       2026-08-16 09:42:10 (1m 0s ago)
+  processing rate       0.0 docs/min (over last 16m 29s)
+  errors / 429s         0 / 0
+  duplicate rate        0.0%
+  disk free             25.2 GB
+
+  script distribution   Devanagari=2
+  langid distribution   kok=2
+  mean langid score     -0.810
+
+  by source:
+    news_vishwakonkani                            2 docs           520 words  [manual]
+
+  !! PROBLEM: checkpoint is fresh but zero documents added since last check - job is fetching and rejecting everything
+
+====================================================================
+5 job(s) checked; 2 stalled.
+====================================================================

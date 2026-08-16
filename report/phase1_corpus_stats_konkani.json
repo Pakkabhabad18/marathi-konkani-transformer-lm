@@ -1,0 +1,96 @@
+{
+  "language": "konkani",
+  "documents": 27638,
+  "words": {
+    "total": 30559559,
+    "manual": 1130409,
+    "downloaded": 29429150,
+    "manual_share": 0.03699035709252218
+  },
+  "sources": {
+    "hf_konkani_books_corpus_v2": {
+      "documents": 25413,
+      "words": 29429150,
+      "characters": 184943759,
+      "raw_characters": 185054844,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "news_vishwakonkani": {
+      "documents": 2,
+      "words": 520,
+      "characters": 3518,
+      "raw_characters": 240781,
+      "is_manual": true,
+      "collection_method": "manual_scrape"
+    },
+    "konkani_wikipedia_selfcollected": {
+      "documents": 2223,
+      "words": 1129889,
+      "characters": 7864423,
+      "raw_characters": 7864788,
+      "is_manual": true,
+      "collection_method": "manual_scrape"
+    }
+  },
+  "scripts": {
+    "Devanagari": 27638
+  },
+  "langid_labels": {
+    "kok": 26652,
+    "undecided": 986
+  },
+  "cleaning_steps": {
+    "unicode_nfc": 27638,
+    "strip_zero_width": 27638,
+    "strip_control_chars": 27638,
+    "normalize_danda_spacing": 27638,
+    "normalize_whitespace": 27638,
+    "reassemble_lines": 25413,
+    "segment_split": 25413,
+    "html_boilerplate_strip": 2,
+    "paragraph_extract": 2,
+    "wikitext_clean": 2223,
+    "length_filter": 2223,
+    "devanagari_only_D001": 2223
+  },
+  "raw_characters": 193160413,
+  "clean_characters": 192811700,
+  "splits": {
+    "train": {
+      "documents": 25687,
+      "words": 28334887,
+      "characters": 179019474
+    },
+    "val": {
+      "documents": 261,
+      "words": 288868,
+      "characters": 1818484
+    },
+    "test": {
+      "documents": 261,
+      "words": 284054,
+      "characters": 1772219
+    }
+  },
+  "tokens": {
+    "tokenizer": "konkani/tokenizer/konkani_bpe.model",
+    "vocab_size": 48000,
+    "byte_pieces": 256,
+    "splits": {
+      "train": {
+        "tokens": 44200630,
+        "unk_tokens": 0
+      },
+      "val": {
+        "tokens": 450152,
+        "unk_tokens": 0
+      },
+      "test": {
+        "tokens": 442172,
+        "unk_tokens": 0
+      }
+    }
+  },
+  "meets_manual_requirement": false
+}

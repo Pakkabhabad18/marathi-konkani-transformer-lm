@@ -7,5 +7,14 @@ __pycache__/
 konkani/data/
 marathi/data/
 
-# Health monitor snapshots (regenerable)
+# Tokenizer sweep working files: intermediate candidate models and the
+# concatenated training input (hundreds of MB). Regenerable by re-running
+# tools/build_tokenizer.py. Only the FINAL model and vocab are committed,
+# because those are Phase 1 deliverables.
+*/tokenizer/sweep/
+*_heldout.txt
+
+# Health monitor snapshots and supervisor state (regenerable)
 .health/
+.run/
+logs/

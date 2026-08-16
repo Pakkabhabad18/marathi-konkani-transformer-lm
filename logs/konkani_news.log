@@ -92,3 +92,156 @@ Resuming: 2 collected, 10,474 urls seen
 --- konkani_akademi ---
 
 --- goa_gov ---
+
+--- dol_goa ---
+
+--- vishwakonkani ---
+
+--- goanvarta ---
+
+--- herald_goa ---
+[2026-08-16 08:35:19] SUPERVISOR: starting konkani_news
+====================================================================
+COLLECTING: konkani_news (kok, manual scrape)
+Date floor: 2015-01-01 | workers=6
+====================================================================
+Resuming: 2 collected, 10,474 urls seen
+
+--- sunaparant ---
+
+--- bhaangarbhuin ---
+
+--- konkani_akademi ---
+
+--- goa_gov ---
+  accepted=2 skipped=10,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=10,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=11,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=11,398 dup=0.0% words=0 rate=0/min
+[2026-08-16 08:43:09] SUPERVISOR: starting konkani_news
+====================================================================
+COLLECTING: konkani_news (kok, manual scrape)
+Date floor: 2015-01-01 | workers=6
+====================================================================
+Resuming: 2 collected, 10,499 urls seen
+
+--- sunaparant ---
+
+--- bhaangarbhuin ---
+
+--- konkani_akademi ---
+
+--- goa_gov ---
+
+--- dol_goa ---
+
+--- vishwakonkani ---
+
+--- goanvarta ---
+
+--- herald_goa ---
+  accepted=2 skipped=11,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=11,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=11,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=12,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=12,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=12,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=12,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=12,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=13,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=13,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=13,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=13,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=13,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=14,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=14,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=14,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=14,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=14,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=15,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=15,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=15,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=15,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=15,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=16,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=16,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=16,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=16,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=16,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=17,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=17,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=17,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=17,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=17,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=18,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=18,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=18,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=18,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=18,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=19,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=19,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=19,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=19,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=19,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=20,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=20,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=20,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=20,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=20,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=21,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=21,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=21,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=21,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=21,998 dup=0.0% words=0 rate=0/min
+[2026-08-16 09:30:19] SUPERVISOR: konkani_news exited rc=143; restarting in 60s
+[2026-08-16 09:31:19] SUPERVISOR: starting konkani_news
+====================================================================
+COLLECTING: konkani_news (kok, manual scrape)
+Date floor: 2015-01-01 | workers=6
+====================================================================
+Resuming: 2 collected, 21,275 urls seen
+
+--- sunaparant ---
+
+--- bhaangarbhuin ---
+
+--- konkani_akademi ---
+
+--- goa_gov ---
+
+--- dol_goa ---
+
+--- vishwakonkani ---
+
+--- goanvarta ---
+
+--- herald_goa ---
+  accepted=2 skipped=22,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=22,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=22,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=22,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=22,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=23,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=23,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=23,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=23,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=23,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=24,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=24,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=24,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=24,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=24,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=25,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=25,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=25,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=25,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=25,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=26,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=26,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=26,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=26,798 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=26,998 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=27,198 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=27,398 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=27,598 dup=0.0% words=0 rate=0/min
+  accepted=2 skipped=27,798 dup=0.0% words=0 rate=0/min

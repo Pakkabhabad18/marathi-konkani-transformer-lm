@@ -1,0 +1,345 @@
+{
+  "language": "konkani",
+  "model_file": "konkani/tokenizer/konkani_bpe.model",
+  "vocab_file": "konkani/tokenizer/konkani_bpe.vocab",
+  "heldout_file": "konkani/tokenizer/konkani_heldout.txt",
+  "corpus_lines": 27638,
+  "training_lines": 24875,
+  "heldout_lines": 2763,
+  "chosen_vocab_size": 48000,
+  "selection_rule": "smallest vocabulary within 2% fertility of the best candidate",
+  "sweep": [
+    {
+      "vocab_size": 8000,
+      "documents": 2763,
+      "words": 3080282,
+      "characters": 19436013,
+      "tokens": 5768458,
+      "unk_tokens": 0,
+      "tokens_per_word": 1.8727045121193449,
+      "characters_per_token": 3.3693602345722202,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.4727651103872602
+    },
+    {
+      "vocab_size": 16000,
+      "documents": 2763,
+      "words": 3080282,
+      "characters": 19436013,
+      "tokens": 5260159,
+      "unk_tokens": 0,
+      "tokens_per_word": 1.7076874779646798,
+      "characters_per_token": 3.6949478143151184,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.5427162504524068
+    },
+    {
+      "vocab_size": 24000,
+      "documents": 2763,
+      "words": 3080282,
+      "characters": 19436013,
+      "tokens": 5048783,
+      "unk_tokens": 0,
+      "tokens_per_word": 1.6390651894858976,
+      "characters_per_token": 3.849643171433591,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.5751809627216793
+    },
+    {
+      "vocab_size": 32000,
+      "documents": 2763,
+      "words": 3080282,
+      "characters": 19436013,
+      "tokens": 4964779,
+      "unk_tokens": 0,
+      "tokens_per_word": 1.6117936604505692,
+      "characters_per_token": 3.9147790868435433,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.5833333333333334
+    },
+    {
+      "vocab_size": 48000,
+      "documents": 2763,
+      "words": 3080282,
+      "characters": 19436013,
+      "tokens": 4807530,
+      "unk_tokens": 0,
+      "tokens_per_word": 1.560743464397091,
+      "characters_per_token": 4.042827189845929,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.6128212088309808
+    }
+  ],
+  "final_heldout_report": {
+    "vocab_size": 48000,
+    "documents": 2763,
+    "words": 3080282,
+    "characters": 19436013,
+    "tokens": 4807530,
+    "unk_tokens": 0,
+    "tokens_per_word": 1.560743464397091,
+    "characters_per_token": 4.042827189845929,
+    "unk_rate": 0.0,
+    "byte_pieces": 256,
+    "single_token_word_rate": 0.6128212088309808
+  },
+  "token_frequency": {
+    "vocabulary_size": 48000,
+    "distinct_tokens_seen": 34892,
+    "vocabulary_utilisation": 0.7269166666666667,
+    "total_tokens": 4807530,
+    "coverage": {
+      "top_100": 0.25034373160437895,
+      "top_1000": 0.5666021844897484,
+      "top_5000": 0.8336659365620184,
+      "top_10000": 0.9270756500739465
+    },
+    "most_frequent": [
+      {
+        "id": 47871,
+        "piece": ".",
+        "count": 187972,
+        "share": 0.03909949599898493
+      },
+      {
+        "id": 47881,
+        "piece": ",",
+        "count": 86461,
+        "share": 0.017984495156556486
+      },
+      {
+        "id": 352,
+        "piece": "▁.",
+        "count": 65517,
+        "share": 0.0136279960811477
+      },
+      {
+        "id": 291,
+        "piece": "▁आनी",
+        "count": 52564,
+        "share": 0.010933681121074647
+      },
+      {
+        "id": 412,
+        "piece": "▁,",
+        "count": 32045,
+        "share": 0.006665585030150618
+      },
+      {
+        "id": 525,
+        "piece": "▁ना",
+        "count": 20608,
+        "share": 0.004286608715910249
+      },
+      {
+        "id": 345,
+        "piece": "▁एक",
+        "count": 20283,
+        "share": 0.0042190064336572
+      },
+      {
+        "id": 395,
+        "piece": "▁तो",
+        "count": 17510,
+        "share": 0.0036422029607719557
+      },
+      {
+        "id": 47919,
+        "piece": "।",
+        "count": 15329,
+        "share": 0.0031885396450984185
+      },
+      {
+        "id": 419,
+        "piece": "▁आसा",
+        "count": 15260,
+        "share": 0.0031741871605585406
+      },
+      {
+        "id": 47865,
+        "piece": "च",
+        "count": 14887,
+        "share": 0.003096600541234272
+      },
+      {
+        "id": 295,
+        "piece": "ाक",
+        "count": 14659,
+        "share": 0.0030491749401459793
+      },
+      {
+        "id": 340,
+        "piece": "▁ह्या",
+        "count": 14484,
+        "share": 0.0030127737112404917
+      },
+      {
+        "id": 47954,
+        "piece": "?",
+        "count": 13888,
+        "share": 0.0028888015259395158
+      },
+      {
+        "id": 817,
+        "piece": "▁हांव",
+        "count": 13621,
+        "share": 0.0028332636509808573
+      },
+      {
+        "id": 436,
+        "piece": "▁ते",
+        "count": 13362,
+        "share": 0.002779389832200735
+      },
+      {
+        "id": 47857,
+        "piece": "य",
+        "count": 12908,
+        "share": 0.002684954644068784
+      },
+      {
+        "id": 640,
+        "piece": "▁तें",
+        "count": 12480,
+        "share": 0.0025959276385170765
+      },
+      {
+        "id": 282,
+        "piece": "ान",
+        "count": 12314,
+        "share": 0.0025613984728124423
+      },
+      {
+        "id": 450,
+        "piece": "▁ताका",
+        "count": 12303,
+        "share": 0.0025591103955669545
+      },
+      {
+        "id": 1267,
+        "piece": "▁म्हाका",
+        "count": 11587,
+        "share": 0.0024101773675879296
+      },
+      {
+        "id": 651,
+        "piece": "▁पूण",
+        "count": 11290,
+        "share": 0.002348399281959759
+      },
+      {
+        "id": 422,
+        "piece": "▁हे",
+        "count": 11172,
+        "share": 0.002323854453326344
+      },
+      {
+        "id": 1123,
+        "piece": "▁?",
+        "count": 11102,
+        "share": 0.0023092939617641492
+      },
+      {
+        "id": 517,
+        "piece": "▁ती",
+        "count": 10081,
+        "share": 0.002096918791978417
+      }
+    ],
+    "hapax_tokens": 3457
+  },
+  "examples": [
+    {
+      "text": "गोंयची राजभास कोंकणी आसा आनी तिचो इतिहास खूब पोरनो आसा.",
+      "pieces": [
+        "▁गोंयची",
+        "▁राजभास",
+        "▁कोंकणी",
+        "▁आसा",
+        "▁आनी",
+        "▁तिचो",
+        "▁इतिहास",
+        "▁खूब",
+        "▁पोरनो",
+        "▁आसा",
+        "."
+      ],
+      "n_tokens": 11,
+      "n_words": 10,
+      "tokens_per_word": 1.1,
+      "unk": 0,
+      "roundtrip_ok": true
+    },
+    {
+      "text": "हांव सकाळीं उठून घरा भायर वचून काम करतां आनी सांजवेळार परत येतां.",
+      "pieces": [
+        "▁हांव",
+        "▁सकाळीं",
+        "▁उठून",
+        "▁घरा",
+        "▁भायर",
+        "▁वचून",
+        "▁काम",
+        "▁करतां",
+        "▁आनी",
+        "▁सांज",
+        "वेळार",
+        "▁परत",
+        "▁येत",
+        "ां",
+        "."
+      ],
+      "n_tokens": 15,
+      "n_words": 12,
+      "tokens_per_word": 1.25,
+      "unk": 0,
+      "roundtrip_ok": true
+    },
+    {
+      "text": "ह्या पुस्तकांत बरोवप्यान आपले ल्हानपणाचे अणभव बरे तरेन बरयल्यात.",
+      "pieces": [
+        "▁ह्या",
+        "▁पुस्तकांत",
+        "▁बरोवप्यान",
+        "▁आपले",
+        "▁ल्हानपण",
+        "ाचे",
+        "▁अणभव",
+        "▁बरे",
+        "▁तरेन",
+        "▁बरयल्यात",
+        "."
+      ],
+      "n_tokens": 11,
+      "n_words": 9,
+      "tokens_per_word": 1.2222222222222223,
+      "unk": 0,
+      "roundtrip_ok": true
+    },
+    {
+      "text": "गोंयांत कोंकणी शिकोवपाचें काम शाळांनी बरें तरेन चलता.",
+      "pieces": [
+        "▁गोंयांत",
+        "▁कोंकणी",
+        "▁शिकोवपाचें",
+        "▁काम",
+        "▁शाळ",
+        "ांनी",
+        "▁बरें",
+        "▁तरेन",
+        "▁चलता",
+        "."
+      ],
+      "n_tokens": 10,
+      "n_words": 8,
+      "tokens_per_word": 1.25,
+      "unk": 0,
+      "roundtrip_ok": true
+    }
+  ]
+}

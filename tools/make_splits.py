@@ -60,6 +60,8 @@ from common.dedup import Deduplicator, exact_hash                     # noqa: E4
 from common.manifest import atomic_write_json                          # noqa: E402
 
 SEED = 20260819          # the Phase 1 deadline; arbitrary but fixed and recorded
+MANUAL_FLOOR = 0.20      # specification requirement
+RATIO_TARGET = 0.22      # cap to this, leaving margin for split variance
 
 
 def classify(path: Path) -> tuple[str, bool]:
@@ -107,6 +109,9 @@ def main() -> int:
     parser.add_argument("--no-dedup", action="store_true",
                         help="skip the cross-source deduplication pass")
     parser.add_argument("--dedup-threshold", type=float, default=0.85)
+    parser.add_argument("--no-ratio-cap", action="store_true",
+                        help="do NOT subsample downloaded data to hold the 20%% "
+                             "manual floor (produces a non-compliant corpus)")
     args = parser.parse_args()
 
     lang = args.language
@@ -162,8 +167,79 @@ def main() -> int:
     else:
         print("\n--- Cross-source deduplication SKIPPED (--no-dedup) ---")
 
-    # ---- stratified, document-level split -------------------------------
+    # ---- enforce the manual ratio ----------------------------------------
+    # The 20% manual floor is a hard requirement, and downloaded data is what
+    # dilutes it. If the corpus is over-diluted, downloaded documents are
+    # subsampled until `total <= 5 x manual`.
+    #
+    # This is a real trade and it should be made deliberately: dropping data
+    # shrinks the corpus, but a large corpus that fails a stated requirement is
+    # worth less than a smaller one that meets it. What gets dropped, and how
+    # much, is printed rather than done quietly.
     rng = random.Random(SEED)
+
+    manual_words = sum(sum(len(d.split()) for d in docs)
+                       for (s, m), docs in groups.items() if m)
+    downloaded_words = sum(sum(len(d.split()) for d in docs)
+                           for (s, m), docs in groups.items() if not m)
+    total_words = manual_words + downloaded_words
+    share = manual_words / total_words if total_words else 0.0
+
+    print("\n--- Manual-ratio enforcement ---")
+    print(f"  manual      {manual_words:>14,}")
+    print(f"  downloaded  {downloaded_words:>14,}")
+    print(f"  share       {share:>13.1%}  (requirement: >= {MANUAL_FLOOR:.0%}, "
+              f"cap target {RATIO_TARGET:.0%})")
+
+    dropped_report: dict = {}
+    if not args.no_ratio_cap and share < RATIO_TARGET and manual_words:
+        # Cap to RATIO_TARGET (22%), not to the 20% floor itself. Capping
+        # exactly at the floor lands on the boundary, and the subsequent
+        # stratified split moves each split's ratio by a fraction of a percent -
+        # enough to drop training below 20% and fail the requirement by a few
+        # hundred words. The margin absorbs that.
+        allowed = int(manual_words * (1 - RATIO_TARGET) / RATIO_TARGET)
+        print(f"  downloaded allowed {allowed:>9,}  "
+              f"-> must drop {downloaded_words - allowed:,} words")
+
+        # Proportional subsample across downloaded sources, so the source mix of
+        # the downloaded portion is preserved rather than one source vanishing.
+        keep_fraction = allowed / downloaded_words
+        for key in list(groups):
+            source, is_manual = key
+            if is_manual:
+                continue
+            docs = groups[key][:]
+            rng.shuffle(docs)
+            kept, kept_words = [], 0
+            budget = int(sum(len(d.split()) for d in docs) * keep_fraction)
+            for doc in docs:
+                w = len(doc.split())
+                if kept_words + w > budget:
+                    continue
+                kept.append(doc)
+                kept_words += w
+            dropped_report[source] = {
+                "documents_before": len(groups[key]),
+                "documents_kept": len(kept),
+                "words_dropped": sum(len(d.split()) for d in groups[key]) - kept_words,
+            }
+            groups[key] = kept
+            print(f"    {source:36s} kept {len(kept):>8,} of "
+                  f"{dropped_report[source]['documents_before']:>8,} docs")
+
+        manual_words = sum(sum(len(d.split()) for d in docs)
+                           for (s, m), docs in groups.items() if m)
+        downloaded_words = sum(sum(len(d.split()) for d in docs)
+                               for (s, m), docs in groups.items() if not m)
+        new_total = manual_words + downloaded_words
+        print(f"  after capping: {manual_words / new_total:.1%} manual "
+              f"({new_total:,} words total)")
+    elif args.no_ratio_cap:
+        print("  capping DISABLED (--no-ratio-cap)")
+    else:
+        print("  no capping needed")
+
     splits: dict[str, list[str]] = {"train": [], "val": [], "test": []}
     per_split_stats: dict[str, dict] = {
         name: {"docs": 0, "words": 0, "manual_docs": 0, "manual_words": 0,
@@ -250,6 +326,8 @@ def main() -> int:
         "granularity": "document",
         "stratified_by": "source",
         "cross_source_dedup": not args.no_dedup,
+        "ratio_cap_applied": bool(dropped_report),
+        "ratio_cap_dropped": dropped_report,
         "leaked_documents": leaks,
         "splits": per_split_stats,
         "train_manual_share": train_share,

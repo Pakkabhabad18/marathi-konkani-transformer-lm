@@ -204,6 +204,78 @@ tracked continuously; tokens cannot.
 
 ---
 
+## D-012 · Marathi news scraping (M2) replaces archive.org (M1) as the primary manual source
+
+**Decision.** M2 — sitemap-driven collection from Marathi news and long-form
+sites — is the primary manual Marathi source. M1 (Maharashtra Government
+Resolutions on the Internet Archive) is demoted to a secondary background
+source; it is **not** deleted and keeps running.
+
+**Why.** Measured, not assumed:
+
+| | M1 | M2 |
+|---|---|---|
+| Throughput | 2.1 docs/min | **758 docs/min** |
+| Fetch failures | 61–68% | ~0% |
+| Time for ~55M words | **393 hours** | **3.1 hours** |
+
+Four days were available. M1 was not a slow option; it was an impossible one.
+
+The fault was external. M1's rejection breakdown was 80 `fetch_failed` against
+6 `langid_undecided` and 4 `not_enough_devanagari` — our filters worked fine,
+archive.org did not, and its second run returned 0 documents in 10.7 minutes
+after the scrape API went down entirely.
+
+**What would change it.** If archive.org recovers, M1 contributes more manual
+tokens at no extra cost, since it is already running and fully resumable.
+
+---
+
+## D-013 · Manual news collection uses a publication-date floor
+
+**Decision.** M2 collects only articles whose sitemap `lastmod` is on or after
+2025-01-01 (`--since`, default conservative).
+
+**Why.** IndicCorpV2 and Sangraha — our *downloaded* corpora — are themselves
+built from Marathi news crawls. Scraping the same sites and calling the result
+"manual" would be self-deception, and cross-deduplication would delete most of
+it anyway.
+
+Both public corpora are **fixed snapshots**. An article published after their
+release cannot be in them. The date floor therefore makes the manual claim true
+*by construction* rather than by assertion, and a content-hash check against the
+downloaded corpora then proves it empirically. The date filter makes overlap
+unlikely; the hash check makes it verified.
+
+**Supporting evidence.** The pilot's articles carried August 2026 timestamps —
+comfortably after any published snapshot of either corpus.
+
+---
+
+## D-014 · Boilerplate stripping is a corpus-quality decision, not cosmetics
+
+**Decision.** Byline and timestamp furniture is stripped from every scraped
+paragraph, and non-prose URL patterns are excluded before fetching.
+
+**Why.** The probe surfaced this real example from lokmat:
+
+```
+By ऑनलाइन लोकमत | Updated: August 16, 2026 00:25 IST
+2026-08-16T00:25:11+5:30 2026-08-16T00:25:40+5:30 - विकास कामांचा आढावा…
+```
+
+Two distinct harms if left in. First, the model would learn that Marathi
+articles begin with an English date stamp. Second, and less obvious, identical
+boilerplate across thousands of articles **inflates their pairwise similarity**,
+so unrelated articles start looking like near-duplicates and legitimate text
+gets deleted by the deduplicator.
+
+URL exclusion (horoscopes, videos, galleries, AMP web-stories, panchang, live
+blogs) is the cheaper half of the same decision: rejecting a page by its URL
+costs nothing, while fetching and then rejecting it costs a request.
+
+---
+
 ## D-011 · Collection runs on the Mac, not in the cloud sandbox or on GPU
 
 **Decision.** All collection, preprocessing, statistics and tokenizer work runs

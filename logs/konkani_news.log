@@ -1,0 +1,94 @@
+====================================================================
+COLLECTING: konkani_news (kok, manual scrape)
+Date floor: 2015-01-01 | workers=6
+====================================================================
+
+--- sunaparant ---
+
+--- bhaangarbhuin ---
+
+--- konkani_akademi ---
+
+--- goa_gov ---
+
+--- dol_goa ---
+
+--- vishwakonkani ---
+  accepted=2 skipped=198 dup=0.0% words=520 rate=3/min
+
+--- goanvarta ---
+
+--- herald_goa ---
+  accepted=2 skipped=398 dup=0.0% words=520 rate=1/min
+  accepted=2 skipped=598 dup=0.0% words=520 rate=1/min
+  accepted=2 skipped=798 dup=0.0% words=520 rate=1/min
+  accepted=2 skipped=998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=1,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=1,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=1,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=1,798 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=1,998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=2,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=2,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=2,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=2,798 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=2,998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=3,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=3,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=3,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=3,798 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=3,998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=4,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=4,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=4,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=4,798 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=4,998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=5,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=5,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=5,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=5,798 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=5,998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=6,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=6,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=6,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=6,798 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=6,998 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=7,198 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=7,398 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=7,598 dup=0.0% words=520 rate=0/min
+  accepted=2 skipped=7,798 dup=0.0% words=520 rate=0/min
+
+====================================================================
+RUN SUMMARY
+====================================================================
+Accepted this run:   2
+Accepted total:      2
+Words this run:      520
+Words per document:  260
+Throughput:          0 docs/min
+Elapsed:             32.0 min
+
+Deduplication:       {'seen': 2, 'exact_duplicates': 0, 'near_duplicates': 0, 'kept': 2, 'duplicate_rate': 0.0}
+
+Per site:
+  vishwakonkani            2
+
+Rejection reasons:
+  no_article_text              7,792
+  too_short                    5
+  langid_undecided             1
+====================================================================
+[2026-08-16 08:24:00] SUPERVISOR: starting konkani_news
+====================================================================
+COLLECTING: konkani_news (kok, manual scrape)
+Date floor: 2015-01-01 | workers=6
+====================================================================
+Resuming: 2 collected, 10,474 urls seen
+
+--- sunaparant ---
+
+--- bhaangarbhuin ---
+
+--- konkani_akademi ---
+
+--- goa_gov ---

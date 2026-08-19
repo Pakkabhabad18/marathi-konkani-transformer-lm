@@ -134,9 +134,28 @@
   "konkani": {
     "language": "konkani",
     "stage1_raw": {
-      "documents_fetched": 253089,
+      "documents_fetched": 256068,
       "documents_rejected": 236567,
       "by_job": {
+        "hf_cfilt_roundtripocr_konkani": {
+          "accepted": 2966,
+          "rejected": 0,
+          "rejection_reasons": {
+            "too_short": 67024,
+            "exact_duplicate": 1880882,
+            "langid_marathi_rejected": 1,
+            "near_duplicate": 1
+          }
+        },
+        "hf_konkani_raw_scrape": {
+          "accepted": 13,
+          "rejected": 0,
+          "rejection_reasons": {
+            "too_short": 98,
+            "not_devanagari_excluded_by_D001": 245,
+            "exact_duplicate": 14
+          }
+        },
         "konkani_archive_books": {
           "accepted": 2576,
           "rejected": 0,
@@ -169,13 +188,23 @@
       }
     },
     "stage2_accepted": {
-      "documents": 96932,
-      "words": 111451424,
-      "raw_chars": 709282404,
-      "clean_chars": 694545181,
+      "documents": 99911,
+      "words": 111550610,
+      "raw_chars": 709945988,
+      "clean_chars": 695208709,
       "manual_words": 64435242,
-      "downloaded_words": 47016182,
+      "downloaded_words": 47115368,
       "by_source": {
+        "hf_cfilt_roundtripocr_konkani": {
+          "documents": 2966,
+          "words": 87497,
+          "is_manual": false
+        },
+        "hf_konkani_raw_scrape": {
+          "documents": 13,
+          "words": 11689,
+          "is_manual": false
+        },
         "archive_org_konkani_books": {
           "documents": 53843,
           "words": 62997759,
@@ -208,25 +237,25 @@
       "ratio_cap_applied": false,
       "ratio_cap_dropped": {},
       "leaked_documents": 0,
-      "train_manual_share": 0.6939328539181507,
+      "train_manual_share": 0.6953231016645774,
       "splits": {
         "train": {
-          "documents": 78423,
-          "words": 90021485,
-          "manual_words": 62468866,
-          "downloaded_words": 27552619
+          "documents": 81894,
+          "words": 90769944,
+          "manual_words": 63114439,
+          "downloaded_words": 27655505
         },
         "val": {
-          "documents": 799,
-          "words": 926734,
-          "manual_words": 642478,
-          "downloaded_words": 284256
+          "documents": 835,
+          "words": 923742,
+          "manual_words": 644632,
+          "downloaded_words": 279110
         },
         "test": {
-          "documents": 799,
-          "words": 921239,
-          "manual_words": 639471,
-          "downloaded_words": 281768
+          "documents": 835,
+          "words": 932060,
+          "manual_words": 648846,
+          "downloaded_words": 283214
         }
       }
     },
@@ -236,20 +265,20 @@
       "byte_pieces": 256,
       "splits": {
         "train": {
-          "tokens": 165815092,
+          "tokens": 167166865,
           "unk_tokens": 0
         },
         "val": {
-          "tokens": 1694714,
+          "tokens": 1717629,
           "unk_tokens": 0
         },
         "test": {
-          "tokens": 1694331,
+          "tokens": 1722104,
           "unk_tokens": 0
         }
       }
     },
-    "final_train_tokens": 165815092,
-    "final_manual_tokens": 115064540
+    "final_train_tokens": 167166865,
+    "final_manual_tokens": 116234983
   }
 }

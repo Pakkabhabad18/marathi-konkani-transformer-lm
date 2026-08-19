@@ -1,13 +1,29 @@
 {
   "language": "konkani",
-  "documents": 96932,
+  "documents": 99911,
   "words": {
-    "total": 111451424,
+    "total": 111550610,
     "manual": 64435242,
-    "downloaded": 47016182,
-    "manual_share": 0.5781464218886966
+    "downloaded": 47115368,
+    "manual_share": 0.5776323589803767
   },
   "sources": {
+    "hf_cfilt_roundtripocr_konkani": {
+      "documents": 2966,
+      "words": 87497,
+      "characters": 585619,
+      "raw_characters": 585605,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "hf_konkani_raw_scrape": {
+      "documents": 13,
+      "words": 11689,
+      "characters": 77909,
+      "raw_characters": 77979,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
     "archive_org_konkani_books": {
       "documents": 53843,
       "words": 62997759,
@@ -50,22 +66,24 @@
     }
   },
   "scripts": {
-    "Devanagari": 96771,
+    "Devanagari": 99750,
     "Mixed": 161
   },
   "langid_labels": {
-    "kok": 92809,
-    "undecided": 4123
+    "undecided": 6673,
+    "kok": 93238
   },
   "cleaning_steps": {
-    "unicode_nfc": 96932,
-    "strip_zero_width": 96932,
-    "strip_control_chars": 96932,
-    "normalize_danda_spacing": 96932,
-    "normalize_whitespace": 96932,
+    "unicode_nfc": 99911,
+    "strip_zero_width": 99911,
+    "strip_control_chars": 99911,
+    "normalize_danda_spacing": 99911,
+    "normalize_whitespace": 99911,
+    "hf_ingest": 2979,
+    "devanagari_only_D001": 59281,
+    "exact_dedup": 2979,
     "ocr_text_layer": 53843,
     "segment_split": 94440,
-    "devanagari_only_D001": 56302,
     "reassemble_lines": 40597,
     "html_boilerplate_strip": 33,
     "paragraph_extract": 33,
@@ -73,23 +91,23 @@
     "residual_wikitext_strip": 2459,
     "length_filter": 2459
   },
-  "raw_characters": 709282404,
-  "clean_characters": 694545181,
+  "raw_characters": 709945988,
+  "clean_characters": 695208709,
   "splits": {
     "train": {
-      "documents": 78423,
-      "words": 90021485,
-      "characters": 559779334
+      "documents": 81894,
+      "words": 90769944,
+      "characters": 564425057
     },
     "val": {
-      "documents": 799,
-      "words": 926734,
-      "characters": 5756139
+      "documents": 835,
+      "words": 923742,
+      "characters": 5762644
     },
     "test": {
-      "documents": 799,
-      "words": 921239,
-      "characters": 5731683
+      "documents": 835,
+      "words": 932060,
+      "characters": 5799883
     }
   },
   "tokens": {
@@ -98,15 +116,15 @@
     "byte_pieces": 256,
     "splits": {
       "train": {
-        "tokens": 165815092,
+        "tokens": 167166865,
         "unk_tokens": 0
       },
       "val": {
-        "tokens": 1694714,
+        "tokens": 1717629,
         "unk_tokens": 0
       },
       "test": {
-        "tokens": 1694331,
+        "tokens": 1722104,
         "unk_tokens": 0
       }
     }

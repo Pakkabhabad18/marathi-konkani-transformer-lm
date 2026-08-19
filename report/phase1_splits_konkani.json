@@ -14,96 +14,126 @@
   "leaked_documents": 0,
   "splits": {
     "train": {
-      "docs": 78423,
-      "words": 90021485,
-      "manual_docs": 54633,
-      "manual_words": 62468866,
-      "downloaded_docs": 23790,
-      "downloaded_words": 27552619,
+      "docs": 81894,
+      "words": 90769944,
+      "manual_docs": 55185,
+      "manual_words": 63114439,
+      "downloaded_docs": 26709,
+      "downloaded_words": 27655505,
       "by_source": {
         "archive_org_konkani_books": {
-          "docs": 52191,
-          "words": 61071228,
+          "docs": 52743,
+          "words": 61711353,
           "is_manual": true
+        },
+        "hf_cfilt_roundtripocr_konkani": {
+          "docs": 2908,
+          "words": 85752,
+          "is_manual": false
         },
         "hf_konkani_books_corpus_v2": {
           "docs": 23790,
-          "words": 27552619,
+          "words": 27559053,
+          "is_manual": false
+        },
+        "hf_konkani_raw_scrape": {
+          "docs": 11,
+          "words": 10700,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
           "docs": 2411,
-          "words": 1357904,
+          "words": 1367400,
           "is_manual": true
         },
         "news": {
           "docs": 31,
-          "words": 39734,
+          "words": 35686,
           "is_manual": true
         }
       }
     },
     "val": {
-      "docs": 799,
-      "words": 926734,
-      "manual_docs": 557,
-      "manual_words": 642478,
-      "downloaded_docs": 242,
-      "downloaded_words": 284256,
+      "docs": 835,
+      "words": 923742,
+      "manual_docs": 563,
+      "manual_words": 644632,
+      "downloaded_docs": 272,
+      "downloaded_words": 279110,
       "by_source": {
         "archive_org_konkani_books": {
-          "docs": 532,
-          "words": 622126,
+          "docs": 538,
+          "words": 629918,
           "is_manual": true
+        },
+        "hf_cfilt_roundtripocr_konkani": {
+          "docs": 29,
+          "words": 843,
+          "is_manual": false
         },
         "hf_konkani_books_corpus_v2": {
           "docs": 242,
-          "words": 284256,
+          "words": 278198,
+          "is_manual": false
+        },
+        "hf_konkani_raw_scrape": {
+          "docs": 1,
+          "words": 69,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
           "docs": 24,
-          "words": 19226,
+          "words": 12737,
           "is_manual": true
         },
         "news": {
           "docs": 1,
-          "words": 1126,
+          "words": 1977,
           "is_manual": true
         }
       }
     },
     "test": {
-      "docs": 799,
-      "words": 921239,
-      "manual_docs": 557,
-      "manual_words": 639471,
-      "downloaded_docs": 242,
-      "downloaded_words": 281768,
+      "docs": 835,
+      "words": 932060,
+      "manual_docs": 563,
+      "manual_words": 648846,
+      "downloaded_docs": 272,
+      "downloaded_words": 283214,
       "by_source": {
         "archive_org_konkani_books": {
-          "docs": 532,
-          "words": 619978,
+          "docs": 538,
+          "words": 629163,
           "is_manual": true
+        },
+        "hf_cfilt_roundtripocr_konkani": {
+          "docs": 29,
+          "words": 902,
+          "is_manual": false
         },
         "hf_konkani_books_corpus_v2": {
           "docs": 242,
-          "words": 281768,
+          "words": 281392,
+          "is_manual": false
+        },
+        "hf_konkani_raw_scrape": {
+          "docs": 1,
+          "words": 920,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
           "docs": 24,
-          "words": 18105,
+          "words": 15098,
           "is_manual": true
         },
         "news": {
           "docs": 1,
-          "words": 1388,
+          "words": 4585,
           "is_manual": true
         }
       }
     }
   },
-  "train_manual_share": 0.6939328539181507,
+  "train_manual_share": 0.6953231016645774,
   "meets_manual_requirement": true
 }

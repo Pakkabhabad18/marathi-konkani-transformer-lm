@@ -9,92 +9,101 @@
   "granularity": "document",
   "stratified_by": "source",
   "cross_source_dedup": true,
-  "ratio_cap_applied": true,
-  "ratio_cap_dropped": {
-    "hf_konkani_books_corpus_v2": {
-      "documents_before": 23984,
-      "documents_kept": 3471,
-      "words_dropped": 23769590
-    }
-  },
+  "ratio_cap_applied": false,
+  "ratio_cap_dropped": {},
   "leaked_documents": 0,
   "splits": {
     "train": {
-      "docs": 5584,
-      "words": 5037395,
-      "manual_docs": 2181,
-      "manual_words": 1106477,
-      "downloaded_docs": 3403,
-      "downloaded_words": 3930918,
+      "docs": 78423,
+      "words": 90021485,
+      "manual_docs": 54633,
+      "manual_words": 62468866,
+      "downloaded_docs": 23790,
+      "downloaded_words": 27552619,
       "by_source": {
+        "archive_org_konkani_books": {
+          "docs": 52191,
+          "words": 61071228,
+          "is_manual": true
+        },
         "hf_konkani_books_corpus_v2": {
-          "docs": 3403,
-          "words": 3930918,
+          "docs": 23790,
+          "words": 27552619,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
-          "docs": 2179,
-          "words": 1105957,
+          "docs": 2411,
+          "words": 1357904,
           "is_manual": true
         },
         "news": {
-          "docs": 2,
-          "words": 520,
+          "docs": 31,
+          "words": 39734,
           "is_manual": true
         }
       }
     },
     "val": {
-      "docs": 56,
-      "words": 48872,
-      "manual_docs": 22,
-      "manual_words": 11180,
-      "downloaded_docs": 34,
-      "downloaded_words": 37692,
+      "docs": 799,
+      "words": 926734,
+      "manual_docs": 557,
+      "manual_words": 642478,
+      "downloaded_docs": 242,
+      "downloaded_words": 284256,
       "by_source": {
+        "archive_org_konkani_books": {
+          "docs": 532,
+          "words": 622126,
+          "is_manual": true
+        },
         "hf_konkani_books_corpus_v2": {
-          "docs": 34,
-          "words": 37692,
+          "docs": 242,
+          "words": 284256,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
-          "docs": 22,
-          "words": 11180,
+          "docs": 24,
+          "words": 19226,
           "is_manual": true
         },
         "news": {
-          "docs": 0,
-          "words": 0,
+          "docs": 1,
+          "words": 1126,
           "is_manual": true
         }
       }
     },
     "test": {
-      "docs": 56,
-      "words": 51952,
-      "manual_docs": 22,
-      "manual_words": 12752,
-      "downloaded_docs": 34,
-      "downloaded_words": 39200,
+      "docs": 799,
+      "words": 921239,
+      "manual_docs": 557,
+      "manual_words": 639471,
+      "downloaded_docs": 242,
+      "downloaded_words": 281768,
       "by_source": {
+        "archive_org_konkani_books": {
+          "docs": 532,
+          "words": 619978,
+          "is_manual": true
+        },
         "hf_konkani_books_corpus_v2": {
-          "docs": 34,
-          "words": 39200,
+          "docs": 242,
+          "words": 281768,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
-          "docs": 22,
-          "words": 12752,
+          "docs": 24,
+          "words": 18105,
           "is_manual": true
         },
         "news": {
-          "docs": 0,
-          "words": 0,
+          "docs": 1,
+          "words": 1388,
           "is_manual": true
         }
       }
     }
   },
-  "train_manual_share": 0.21965261806945852,
+  "train_manual_share": 0.6939328539181507,
   "meets_manual_requirement": true
 }

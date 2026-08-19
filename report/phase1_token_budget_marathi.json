@@ -1,0 +1,140 @@
+{
+  "measured": {
+    "language": "marathi",
+    "tokenizer": "/Users/prakash/Desktop/individual-project-Pakkabhabad18/marathi/tokenizer/marathi_bpe.model",
+    "tokenizer_found": true,
+    "sampling_diagnostics": {
+      "shards_available": 220,
+      "lines_scanned": 2887866,
+      "attributed_by_directory": 2789630,
+      "attributed_by_hash": 248,
+      "unattributed": 97988,
+      "attribution_rate": 0.9660690627612223,
+      "scan_capped": false
+    },
+    "unmeasured_sources": [],
+    "unmeasured_word_share": 0.0,
+    "per_source": {
+      "archive_org_maharashtra_gr": {
+        "documents": 154001,
+        "words": 152312784,
+        "raw_chars": 1125780272,
+        "clean_chars": 1096847675,
+        "manual": true,
+        "clean_ratio": 0.9742999609074692,
+        "words_per_doc": 989.0376296257816,
+        "fertility": 1.9866575227645065,
+        "fertility_sample_docs": 300
+      },
+      "ai4bharat_indiccorp_v2_mar": {
+        "documents": 2635630,
+        "words": 211436384,
+        "raw_chars": 1453512807,
+        "clean_chars": 1452838285,
+        "manual": false,
+        "clean_ratio": 0.9995359366654689,
+        "words_per_doc": 80.22233166263854,
+        "fertility": 1.3435910266032858,
+        "fertility_sample_docs": 300
+      },
+      "news_loksatta": {
+        "documents": 2684,
+        "words": 1030716,
+        "raw_chars": 1165750456,
+        "clean_chars": 7316695,
+        "manual": true,
+        "clean_ratio": 0.006276381846853852,
+        "words_per_doc": 384.02235469448584,
+        "fertility": 1.3831775700934579,
+        "fertility_sample_docs": 2
+      },
+      "news_maharashtratimes": {
+        "documents": 76,
+        "words": 34226,
+        "raw_chars": 32119088,
+        "clean_chars": 246341,
+        "manual": true,
+        "clean_ratio": 0.007669613782309136,
+        "words_per_doc": 450.3421052631579,
+        "fertility": 1.3680638356415666,
+        "fertility_sample_docs": 34
+      },
+      "news_lokmat": {
+        "documents": 1158,
+        "words": 319054,
+        "raw_chars": 104363855,
+        "clean_chars": 2214981,
+        "manual": true,
+        "clean_ratio": 0.021223641077650877,
+        "words_per_doc": 275.5215889464594,
+        "fertility": 1.4648829431438126,
+        "fertility_sample_docs": 2
+      },
+      "news_esakal": {
+        "documents": 90644,
+        "words": 22828494,
+        "raw_chars": 124577969027,
+        "clean_chars": 161822801,
+        "manual": true,
+        "clean_ratio": 0.0012989680459867495,
+        "words_per_doc": 251.84782224968006,
+        "fertility": 1.3720651242502142,
+        "fertility_sample_docs": 204
+      },
+      "news_abplive_marathi": {
+        "documents": 2290,
+        "words": 777748,
+        "raw_chars": 647202591,
+        "clean_chars": 5471096,
+        "manual": true,
+        "clean_ratio": 0.008453451942376417,
+        "words_per_doc": 339.6279475982533,
+        "fertility": 1.2916666666666667,
+        "fertility_sample_docs": 1
+      },
+      "news_tv9marathi": {
+        "documents": 654,
+        "words": 208695,
+        "raw_chars": 263043836,
+        "clean_chars": 1428576,
+        "manual": true,
+        "clean_ratio": 0.0054309426965625605,
+        "words_per_doc": 319.10550458715596,
+        "fertility": 1.4173228346456692,
+        "fertility_sample_docs": 1
+      },
+      "news_divyamarathi": {
+        "documents": 730,
+        "words": 270062,
+        "raw_chars": 262921899,
+        "clean_chars": 1912477,
+        "manual": true,
+        "clean_ratio": 0.007273935747740815,
+        "words_per_doc": 369.94794520547947,
+        "fertility": 1.334070796460177,
+        "fertility_sample_docs": 4
+      }
+    },
+    "mean_measured_fertility": 1.4401664800299285,
+    "manual_words": 177781779,
+    "downloaded_words": 211436384,
+    "manual_tokens": 337516043,
+    "downloaded_tokens": 284084028,
+    "total_tokens": 621600071,
+    "manual_share_tokens": 0.5429794150397065
+  },
+  "plan": {
+    "manual_fertility": 1.8984850137772236,
+    "downloaded_fertility": 1.3435910266032858,
+    "manual_target_tokens": 100000000,
+    "manual_gap_tokens": 0,
+    "manual_gap_words": 0,
+    "downloaded_target_tokens": 162483957,
+    "downloaded_gap_tokens": 0,
+    "downloaded_gap_words": 0,
+    "max_downloaded_tokens_at_20pct": 1350064172,
+    "downloaded_admissible_tokens": 0,
+    "downloaded_admissible_words": 0,
+    "projected_total_tokens": 621600071
+  }
+}

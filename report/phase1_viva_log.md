@@ -826,6 +826,77 @@ being deleted as near-duplicates purely because they carried the same infobox.
 
 ---
 
+## A-015 · Establishing that Konkani web sources are exhausted
+
+**1. What we did.** Expanded the Konkani site list from 8 to 18 candidates,
+added a fallback text extractor, and re-probed.
+
+**2. Why we did it.** Konkani manual collection is the hard cap on the Konkani
+corpus (`total <= 5 x manual`), so before accepting a small corpus we needed to
+be sure the limit was the language's availability and not our tooling.
+
+Two specific doubts had to be eliminated:
+  - Six sites failed with `no_article_text` on every sampled page. Those pages
+    exist and contain Devanagari. That could easily have been our `<p>`-only
+    extractor rather than the sites.
+  - The original list was only 8 sites, chosen without local verification.
+
+**3. Command/script used.** `python3 konkani/scripts/collect_news.py --probe`
+
+**4. Input source.** 18 Goan and Mangalorean news outlets, government
+departments and cultural institutions.
+
+**5. Output produced.** **1 of 18 usable.**
+
+| Outcome | Sites |
+|---|---:|
+| usable | 1 (vishwakonkani) |
+| `robots.txt` unreachable | 6 |
+| no extractable article text | 10 |
+| publishes Marathi, rejected by the language gate | 1 (goanvarta) |
+
+**6. Important numbers.** 1/18 for Konkani against **7/8** for Marathi, on the
+same crawler, the same extractor and the same machine.
+
+**7. Why the result matters.** This is the third independent measurement of the
+same fact, and together they are the justification for the shortfall the
+specification explicitly permits:
+
+| Measurement | Marathi | Konkani |
+|---|---:|---:|
+| Internet Archive items | 170,796 | **44** |
+| Web sites usable | 7 of 8 | **1 of 18** |
+| Largest public corpus | IndicCorpV2 ~27.8M rows | Sangraha **10.1M tokens** |
+
+The `goanvarta` result is worth singling out: a site we selected *because* we
+believed it published Konkani turned out to publish Marathi, and our own
+language gate caught it - 6 of 8 sampled pages rejected as `langid_mr`. That is
+the cross-corpus contamination guard working on live data we had wrongly
+trusted.
+
+**8. Problems encountered.** The first probe's `no_article_text` failures were
+ambiguous between "the site has no prose" and "our parser only reads `<p>`".
+
+**9. How we fixed it.** Added a fallback extractor: when `<p>` extraction yields
+nothing, the de-tagged document is segmented on line breaks and blocks are kept
+by Devanagari density and length. Verified on synthetic pages that it recovers
+`<div>`-based content and still rejects navigation-only pages. Re-probing with
+it changed nothing - so the failures really were the sites.
+
+**10. Decision made.** Konkani manual collection is **complete** at 1,456,680
+words from three sources. The corpus is capped at ~7.3M words / ~11.4M tokens,
+and the shortfall is reported with the evidence above rather than apologised
+for.
+
+**Likely viva question:** *"Did you try hard enough to find Konkani data?"* —
+18 web sources probed with two different extractors, the entire Konkani holdings
+of the Internet Archive enumerated, and the largest systematic Indic corpus
+effort checked. One usable site, five usable books, 10.1M tokens in Sangraha.
+The limit is the language's digital presence, and we measured it three
+independent ways rather than asserting it.
+
+---
+
 ## Next action
 
 Run the diagnostic, then the M1 pilot, on the Mac:
@@ -841,3 +912,438 @@ Nothing scales until this reports. What we are looking for: the real
 distribution of rejection reasons, the real near-duplicate rate, and words per
 accepted document — which together give the first honest estimate of how many
 manual Marathi tokens M1 can actually supply.
+
+---
+
+## A-016 · Konkani source discovery — the shortfall was largely self-inflicted
+
+**What we did.** Re-ran Konkani source discovery from scratch, excluding
+Wikipedia as a target per TA guidance, using systematic enumeration rather than
+one-book-at-a-time search.
+
+**Why we did it.** Konkani manual collection stood at 1,456,680 words, 95.8% of
+it self-scraped Wikipedia, and we had concluded ~11.4M tokens was the feasible
+ceiling. That conclusion rested on a single measurement.
+
+**What we found.** The measurement was wrong by a factor of ~115.
+
+```
+language:(Konkani OR Konknni OR Concani) AND mediatype:texts   ->     44 items
+language:kok AND mediatype:texts                               ->  5,093 items
+```
+
+Archive.org's `language` field is free text; cataloguers write the ISO 639-2
+code `kok`, not the English name. Our query measured our own spelling list. Two
+faults cancelled to hide it: the wrong query *and* a missing pagination cursor —
+with 44 results, one page is the whole result set.
+
+**How the data was probed.** `konkani/scripts/discover_sources.py` (new) reads
+`/metadata/<id>` to resolve the real OCR filename, downloads the text, and runs
+the project's own normalization, script profiling and language ID over it. It
+holds no seen-set and writes no manifest, so previewing cannot consume the work.
+
+**Measurements obtained.** 8 items inspected, 5 bodies downloaded:
+
+| item | pages | djvu bytes | script | langid |
+|---|---:|---:|---|---|
+| `acchev0000pund` | 212 | 623,038 | Devanagari 0.969 | `kok` −0.60 confident |
+| `Lokdhan` | 52 | 160,278 | Devanagari 0.978 | `kok` −1.00 confident |
+| `aamachodotor0000drbh` | 128 | 442,440 | Devanagari | — |
+| `20veashekddeachy0000drje` | 450 | 2,046,727 | **Kannada 0.962** | rejected |
+| `27kavitha0000step` | 62 | 140,343 | **Kannada** | rejected |
+
+Measured 15.86 bytes/word on Devanagari Konkani; median item ≈ 27,856 words.
+
+**What was rejected and why.** Vishwa Konkani eBooks — 9 children's picture
+books, under 5,000 words total, rejected on measured volume. Goa Konkani Akademi
+and Konkani Bhasha Mandal — catalogues of printed books, no full text exposed; a
+catalogue entry is not corpus text. IndicNLP Catalog — one transliteration
+dataset, not prose. Goa University IR — **deferred, not rejected**: its TLS chain
+fails verification from our environment, which is our limitation, not the
+source's, and must not be written down as "unavailable".
+
+**Effect on the manual percentage.** At the pessimistic 30% Devanagari estimate,
+Konkani manual rises 1.46M → ~31.2M words, the corpus goes ~13M → ~139M tokens,
+and the manual share rises from exactly 20.0% to ~39.9%. The binding constraint
+flips: today manual caps the corpus and we discard ~41M downloaded words to hold
+the floor; afterwards the 47M-word downloaded pool becomes the cap instead.
+
+**Technical decisions and justification.** D-018 (query and pagination fix),
+D-019 (body script measured, never inferred), D-020 (discovery cannot mutate
+collection state). No `common/` module was changed — the probe showed the
+existing pipeline classifies the new material correctly, so there was no
+justification to touch it.
+
+**Likely viva question:** *"You claimed Konkani data didn't exist. Was that
+true?"* — No, and we found the error ourselves and left the trail visible. What
+was true is that no *prepared* Konkani corpus exists at scale: Sangraha holds
+10.1M tokens and the IndicNLP Catalog lists one Konkani resource. We conflated
+"nobody has packaged this language" with "this language has no digital text".
+Archive.org holds roughly five thousand scanned Konkani books with OCR text
+layers that nobody had assembled into a corpus. Assembling them is precisely
+what manual collection means, and it is now the strongest part of Model L rather
+than the weakest.
+
+**Open risk carried forward.** The downloaded books corpus
+(`omdeep22/Konkani_books_corpus-v2`) declares no provenance and its rows are OCR
+lines averaging 7.52 words — consistent with archive.org `_djvu.txt` dumps. If
+it derives from the same scans, counting ours as manual and theirs as downloaded
+double-counts the same text on both sides of the ratio. This must be tested
+before the collection run; if overlap is high the correct response is to drop
+the downloaded corpus, not ours.
+
+---
+
+## A-017 · Konkani probe executed at n=120 — the estimate firms up
+
+**What we did.** Ran `discover_sources.py --sample 120` on the Mac: enumerate
+archive.org across every language spelling, then download and measure a random
+seeded sample of 120 items with the project's own script and language ID.
+
+**Measurements obtained.**
+
+```
+unique candidates                 5,178
+items fetched                       120      fetch failures: 0
+accepted (Devanagari, not mr)        58      = 48.3%  (95% CI 39.4-57.3%)
+rejected, not Devanagari             59
+rejected by Marathi gate              3
+median / mean words per item     16,776 / 28,852
+```
+
+**What the numbers say.**
+
+*Zero fetch failures in 120.* The Marathi GR source ran at 61% failure and
+needed timeout and concurrency rebuilding before it was viable. This source
+needs none of that, so collection should be fast and near-lossless.
+
+*Three Marathi rejections.* Marathi contamination inside `language:kok` is real
+but small (2.5%), and our closed-class function-word gate catches it. This is
+direct evidence for the cross-corpus independence requirement, measured on the
+new source rather than assumed from the old one.
+
+*48.3% Devanagari.* Slightly below the 60% our 8-item hand sample suggested —
+the small sample had been biased toward large, well-catalogued books. This is
+exactly why the probe stage exists.
+
+**Effect on the corpus.** Expected yield 72.2M words (mean x N); conservative
+floor 42.0M (median x N). Konkani manual rises from 1.46M to 43.4M-73.7M words,
+the corpus from ~13M to 161M-215M tokens, and the manual share from exactly
+20.0% to 48-61%.
+
+**Error corrected in our own method (D-021).** The script originally headlined
+the median-based figure. `mean x N` is the unbiased estimator of a sum; `median
+x N` on a right-skewed distribution is a planning floor, not an estimate.
+Reporting a deliberate underestimate as the better number would not have
+survived questioning.
+
+**Likely viva question:** *"How confident are you in 72M words when you only
+looked at 120 items?"* — The dominant uncertainty is the Devanagari accept
+share, and it is quantified: 58/120 gives a 95% confidence interval of
+39.4%-57.3%, which propagates to 58.9M-85.6M words. The per-item size estimate
+is weaker, since book lengths are heavy-tailed and 58 accepted items is thin in
+the tail. Both figures are reported, the interval is stated rather than implied,
+and the collection run measures the true value anyway — the estimate only has to
+be good enough to justify starting.
+
+---
+
+## A-018 · Measured token budget for Marathi, and a tooling bug caught in the act
+
+**What we did.** Built `tools/token_budget.py` to convert word counts into the
+token units every project target is stated in, using fertility measured per
+source rather than a single global constant.
+
+**Why.** The specification states >=100M manual tokens and ~500M total tokens.
+Collectors count words. The conversion factor is fertility, a measured property
+of a tokenizer applied to particular text - and mixing the units has already
+produced two false alarms in this project ("11.2% manual", and reading 96.1M
+manual words as "nearly at the 100M target" when it is ~171M tokens).
+
+**Problem that occurred.** The first run reported every source except
+`archive_org_maharashtra_gr` with `n=0` sampled documents and a fertility marked
+`(est)`. The path-guessing code assumed each source had its own shard directory;
+in reality all news sources share `manual/news/` and downloaded data lives under
+`processed/`. Every unsampled source inherited the one measured source's
+fertility, so the tool applied OCR-book fertility (1.882) to web-crawl fragments
+and printed `manual 1.882 downloaded 1.882` without complaint.
+
+**How it was caught.** The `n` column showed 300 for one source and 0 for eight,
+and the manual and downloaded fertilities were identical to three decimals - two
+things that cannot both be true of genuinely per-source measurement. The number
+about to be used, `96,717,817 words to ingest`, was therefore not trustworthy.
+
+**Fix.** Attribution now goes through the `content_hash` already recorded in
+every manifest row: walk all shards under `<lang>/data/`, hash each line, look up
+its source. This is layout-independent, so it survives future reorganisation.
+Verified on a fixture reproducing the real directory layout: 100% hash hit rate,
+all sources measured, and manual/downloaded fertility now differ.
+
+**Additional hardening.** The tool now prints the sampling hit rate, names every
+source it failed to measure, states their share of total words, and raises a
+blocking warning that all token figures are provisional. Verified by deleting a
+source's shards and confirming the warning fires. Silent fallback to a worse
+method was the actual defect; the wrong paths were only its trigger.
+
+**Also flagged, not yet resolved.** Two figures need checking before they are
+quoted:
+
+1. The IndicCorp run summary does not balance. Accepted 787,602 plus all
+   rejection reasons totals 2,047,353 against 4,094,707 "source rows read" -
+   exactly half. Probably blank rows skipped before the counter, possibly a
+   double increment; either way the row count and the "% of budget" progress
+   line derived from it are unverified.
+2. `clean/raw` for the news sources reads 0.001-0.020, i.e. the extractor keeps
+   0.1-2% of the fetched bytes. Plausible if `raw_chars` records full page HTML,
+   but 0.1% is extreme and the reduction-rate table in the report depends on it.
+
+**Likely viva question:** *"How do you know your token counts are right?"* - We
+measure fertility per source on a random sample of real documents, attribute
+each document to its source by content hash, and print the sampling hit rate
+alongside the result. We know the failure mode because we hit it: the first
+version silently applied one source's fertility to the whole corpus, and the
+tool now refuses to report that quietly.
+
+---
+
+## A-019 · Why we measure token budgets by sampling, and never assume a global fertility
+
+**The question this answers.** Every requirement in the specification is written
+in tokens - at least 100M manual tokens, roughly 500M total, at least 20% manual.
+Every number our collection pipeline produces is written in words. Converting
+between them requires **fertility**, tokens per word, and the entire Phase 1
+accounting rests on that one conversion being right.
+
+**Why fertility cannot simply be assumed.** Fertility is not a property of a
+language. It is a property of a *particular tokenizer* applied to *particular
+text*. A SentencePiece BPE model trained on our Marathi corpus splits clean
+newspaper prose into fewer pieces per word than OCR'd government resolutions,
+because the OCR text carries scanning artefacts, broken conjuncts and stray
+punctuation that fall back to shorter subword units - in the limit to individual
+byte pieces, since we enable `byte_fallback`. An 80-word IndicCorp web-crawl
+fragment behaves differently again.
+
+So a single global multiplier is wrong in a specific and dangerous way: its error
+is proportional to how much the corpus composition differs from whatever mix
+produced the average. Our composition is changing right now - the downloaded
+share is growing from 0% toward roughly 60% - so a global multiplier would drift
+worst exactly when we depend on it most, while continuing to print a confident
+number to three decimal places.
+
+**What we do instead.** Fertility is measured per source, on a random sample of
+real documents drawn from the shards, and corpus totals are computed as
+
+```
+tokens = SUM over sources of ( words_s * fertility_s )
+```
+
+which stays correct as the mixture shifts, because each source's contribution is
+weighted by its own measured rate.
+
+**Why the sampling had to be attributed carefully.** A per-source figure is only
+meaningful if each sampled document is assigned to the right source, and this is
+where two successive bugs appeared:
+
+1. **D-022** - the tool guessed shard paths as
+   `data/<manual|downloaded>/<source>/`. Only one Marathi source is stored that
+   way. Eight sampled nothing, silently inherited the mean of the one that
+   worked, and the tool applied OCR fertility (1.882) to web-crawl fragments
+   while printing `manual 1.882 downloaded 1.882`.
+2. **D-023** - replacing paths with content-hash lookup inverted the failure.
+   The collectors flatten newlines when writing shards but hash the unflattened
+   text, so multi-paragraph documents never match. `archive_org_maharashtra_gr`,
+   48.6% of all Marathi words, became unsamplable.
+
+The resolution attributes by directory where the directory name is unambiguously
+one source, and by content hash where a directory is shared - and counts
+whatever neither method resolves rather than absorbing it into an average.
+
+**The design principle that came out of this.** Both bugs were survivable; what
+made them dangerous was that the tool *degraded quietly* into a worse method
+while still reporting precise numbers. The tool now prints its attribution rate,
+names any source it could not measure, and states what share of the corpus is
+affected - with the alarm scaled to that share, so a 0.1% source does not raise
+the same flag as a 48.6% one.
+
+**Likely viva question:** *"Why not just multiply words by a constant?"* -
+Because we measured, and the constant does not exist. Fertility differs
+measurably between our OCR, news and crawl sources, and our corpus mixture is
+still changing. A constant would have been wrong by an amount we could not have
+bounded, in the direction of overstating our token count - and the 20% manual
+requirement is checked on tokens, not words.
+
+---
+
+## A-020 · Cross-source deduplication: why it exists, and why it was 18 docs/s
+
+### Why cross-source deduplication is necessary
+
+The corpus is assembled from sources that overlap in the real world. IndicCorpV2
+is built from Marathi web crawls; our own news scraping targets Marathi news
+sites. The same article can therefore legitimately arrive twice - once as
+manually scraped text, once inside the downloaded corpus.
+
+That matters because Phase 1 turns on `manual_tokens / total_tokens >= 0.20`. A
+document counted on both sides inflates the numerator as "our manual work" and
+the denominator as "downloaded data" simultaneously. Nothing crashes, the corpus
+looks larger, and the ratio becomes meaningless. Deduplication across sources is
+what makes the ratio describe distinct text.
+
+Manual documents are indexed first and downloaded documents are checked against
+them, so when the same text exists on both sides the manual copy is the survivor.
+Dropping the manual copy instead would quietly reduce the very ratio the design
+protects.
+
+### Why document-level splitting is necessary
+
+Splits are drawn over whole documents, never over sentences or chunks. If a
+single document were cut across train and test, the model would see part of a
+test document during training - the test loss would then measure memorisation
+rather than generalisation, and would be optimistically biased by an amount
+nobody can estimate afterwards. Document-level assignment makes leakage
+structurally impossible, and a content-hash check verifies it afterwards rather
+than assuming it.
+
+### Why source-stratified splitting is necessary
+
+Each source is split independently and the pieces combined. Our sources differ
+sharply in register - formulaic government resolutions, news prose, web-crawl
+fragments - and they differ in size by two orders of magnitude. An unstratified
+random split would give validation and test sets whose source mix drifts from
+training by chance, so a change in loss could reflect the sampled mix rather than
+the model. Stratification also guarantees the small sources appear in every
+split at all. The seed is fixed, so the partition reproduces exactly.
+
+### Algorithm: exact duplicates
+
+SHA-256 over the canonical form of the document. Canonicalisation lowercases,
+collapses whitespace and folds every digit run to a single placeholder, so two
+government resolutions differing only in reference number and date hash
+identically. Constant-time set membership; catches the line-fragment repetition
+that dominates OCR'd sources.
+
+### Algorithm: near duplicates
+
+MinHash over character 5-gram shingles with banded LSH.
+
+Character n-grams rather than word n-grams because Devanagari case marking is
+agglutinative and the OCR is noisy: one mis-recognised character destroys a whole
+word token but damages only five shingles out of thousands.
+
+MinHash: hash every shingle under 128 fixed permutations and keep the minimum per
+permutation. The probability two documents share a given minimum equals their
+Jaccard similarity, so a fixed-length signature estimates similarity in constant
+time instead of O(n^2) set comparison. LSH then splits each signature into bands;
+two documents become candidates if any whole band matches exactly, so only
+plausible pairs are ever compared.
+
+### Why the run was 18 docs/s, and what changed
+
+The banding was mistuned. With `b` bands of `r` rows, a pair becomes a candidate
+with probability `1 - (1 - s^r)^b`, whose 50% point is about `(1/b)^(1/r)`:
+
+```
+bands=32 rows=4  ->  candidates from s ~ 0.42 upward
+bands=16 rows=8  ->  candidates from s ~ 0.71 upward
+```
+
+Our duplicate threshold is **0.85**. Every candidate generated below it was
+fetched, scored by a 128-element Python loop, and discarded. The Maharashtra GR
+corpus is formulaic by design - shared departmental headers, reference blocks,
+closing paragraphs - so a very large share of its pairs sit in that 0.42-0.85
+dead band. Measured on 5,000 formulaic documents:
+
+| bands x rows | indexing docs/s | candidates per query |
+|---|---:|---:|
+| 32 x 4 | 249 | **349.8** |
+| 16 x 8 | 1,237 | **0.4** |
+
+Candidate lists scale with index size, and the real index is 251,880 documents -
+50x larger - which puts the per-query candidate count in the tens of thousands
+and the throughput at roughly 18 docs/s. The measurement matches the symptom.
+
+### Why the optimised implementation is equivalent in quality
+
+Nothing about what counts as a duplicate changed: same canonicalisation, same
+SHA-256 exact test, same MinHash estimator, same 0.85 Jaccard threshold. Only
+which pairs are *offered* for scoring changed, and the pairs no longer offered
+are ones that could not have reached 0.85.
+
+The theoretical cost is 0.6% of recall exactly at the threshold - P(candidate) at
+s=0.85 falls from 1.000 to 0.994. Measured on planted duplicates:
+
+| variant | caught, 32x4 | caught, 16x8 |
+|---|---:|---:|
+| identical | 100/100 | 100/100 |
+| ~97% similar | 100/100 | 100/100 |
+| ~90% similar | 70/100 | 70/100 |
+| ~70% similar | 0/100 | 0/100 |
+
+Identical behaviour at every level. The two configurations diverge only well
+below 0.85, where both are supposed to answer "not a duplicate".
+
+### Why the earlier run was killed by the OS
+
+`zsh: killed` at 86.6% was the macOS OOM killer, not a timeout. Signatures were
+stored as tuples of 128 Python ints; a Python int is a ~28-byte object plus an
+8-byte pointer, so one signature cost ~4.6 KB against 512 B of actual data. At
+2.5M indexed signatures that is ~11.5 GB, on top of ~2.3 GB of document strings.
+Two changes remove it: indexing only the manual side (251,880 rather than 2.5M
+signatures), and storing each signature as `array("I")` - together roughly
+11.5 GB down to ~124 MB.
+
+**Likely viva question:** *"Your deduplication was 18 docs/s. Was the algorithm
+wrong?"* - The algorithm was right and the parameters were wrong. LSH banding
+trades candidate volume against recall, and ours was tuned to a 0.42 similarity
+threshold while the duplicate decision was made at 0.85 - so the index spent
+essentially all of its time generating candidates it was then guaranteed to
+reject. Retuning the bands to match the decision threshold removed ~875x the
+candidate volume while leaving measured duplicate detection unchanged.
+
+---
+
+## A-021 · Vocabulary size: why 10,000 and not 48,000
+
+**What we did.** Rebuilt both tokenizers from 48,000 to 10,000 vocabulary items,
+selected by a sweep over 6k / 8k / 10k measured on held-out text.
+
+**Why.** Three reasons, all measurable.
+
+*It did not fit the model.* At `d_model = 384`, a 48k vocabulary needs
+36,864,000 parameters for embedding plus unembedding alone - **147% of the ~25M
+budget** the specification allows for the whole model. At 10k it is 7,680,000,
+about 31%, leaving the rest for the transformer blocks.
+
+*The vocabulary was mostly unused.* At 48k, **2,779 Konkani slots held a piece
+occurring exactly once** in held-out text - parameters that cannot be learned.
+At 10k that is **41**, and vocabulary utilisation rises 82.8% -> **97.5%**.
+Whole-word tokens fall 61.4% -> **50.1%**, so the tokenizer does real subword
+segmentation instead of memorising words: `पोर|नो`, `उठ|ून`, `सांज|वेळार`.
+
+*It made the corpus bigger.* Finer segmentation yields more tokens from the same
+text: Marathi 525,255,454 -> **647,434,614** (+23.3%, from 105% to **129.5%** of
+the ~500M target); Konkani +16.0%. Unknown-token rate stayed at **0.000000%**
+for both, because `byte_fallback` guarantees every byte is representable.
+
+**How the choice was made.** `build_tokenizer.py` trains each candidate vocabulary
+and evaluates fertility, UNK rate, utilisation and hapax count on a held-out set
+the tokenizer never saw, then selects the smallest vocabulary within a tolerance
+of the best fertility. Smallest-within-tolerance rather than best-outright,
+because parameters spent on vocabulary are parameters not spent on depth.
+
+**Likely viva question:** *"Why 10k? Larger vocabularies give shorter sequences."*
+- They do, and that is the trade: a larger vocabulary lowers fertility and
+shortens sequences, but every additional item costs `2 x d_model` parameters and
+Phase 2 has a hard ~25M budget. At 48k the embeddings alone exceeded the entire
+budget, and the extra capacity was not even being used - 2,779 pieces appeared
+once each. At 10k we keep fertility comfortably above 1 (1.82 on Konkani), reach
+97.5% vocabulary utilisation, and free three quarters of the budget for the
+layers that do the modelling. We also kept the 48k models so the comparison is
+reproducible rather than asserted.
+
+**Related correction we should own.** The 48k tokenizers were built and used to
+produce a full set of statistics before the TA guidance was read carefully. Every
+downstream artifact - corpus statistics, pipeline accounting, plots - was
+regenerated after the rebuild. The lesson is that a tokenizer is not a late-stage
+detail: it sets the units every later number is reported in, so a change to it
+invalidates every token figure in the report.

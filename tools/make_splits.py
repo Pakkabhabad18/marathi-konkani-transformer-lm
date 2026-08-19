@@ -109,6 +109,15 @@ def main() -> int:
     parser.add_argument("--no-dedup", action="store_true",
                         help="skip the cross-source deduplication pass")
     parser.add_argument("--dedup-threshold", type=float, default=0.85)
+    parser.add_argument("--exact-only", action="store_true",
+                        help="exact SHA-256 dedup over all documents, skipping "
+                             "the MinHash near-duplicate pass. Removes 100%% of "
+                             "split leakage (which is hash-based) in minutes "
+                             "rather than the ~74 min full pass.")
+    parser.add_argument("--benchmark", type=int, default=0,
+                        help="index the manual side, stream only N downloaded "
+                             "documents, report measured docs/s and a projected "
+                             "full-run time, then EXIT without writing splits")
     parser.add_argument("--no-ratio-cap", action="store_true",
                         help="do NOT subsample downloaded data to hold the 20%% "
                              "manual floor (produces a non-compliant corpus)")
@@ -147,15 +156,144 @@ def main() -> int:
         # both a manual and a downloaded source, the copy that survives is the
         # manual one. Dropping the manual copy instead would silently reduce the
         # manual ratio - the one number the whole corpus design protects.
-        ordered = sorted(groups.items(), key=lambda kv: (not kv[0][1], kv[0][0]))
-        for key, docs in ordered:
+        # MEMORY-BOUNDED CROSS-SOURCE DEDUP (D-029).
+        #
+        # The previous version registered every document in the MinHash index.
+        # On the full Marathi corpus that meant ~2.5M signatures and macOS
+        # SIGKILLed the job at 86.6% - killed by memory, not by time.
+        #
+        # The fix follows from what this pass is actually for. Within-source
+        # duplicates were already removed during collection; what remains to
+        # detect is a document appearing in BOTH a manual and a downloaded
+        # source. That only requires indexing the MANUAL side (248k docs for
+        # Marathi) and streaming the downloaded side past it with
+        # register=False, so the index never grows beyond the manual corpus.
+        #
+        # Manual is also the side we must never drop - dropping the manual copy
+        # would silently reduce the manual ratio, the one number the corpus
+        # design protects - so indexing manual and discarding matching
+        # downloaded documents is both the cheap option and the correct one.
+        import time as _time
+        _t0 = _time.time()
+        _seen = 0
+        _PROGRESS_EVERY = 25_000
+
+        def _tick():
+            _el = _time.time() - _t0
+            _rate = _seen / _el if _el else 0
+            _left = (total_docs - _seen) / _rate if _rate else 0
+            print(f"    {_seen:>10,}/{total_docs:,} ({_seen/total_docs:5.1%})  "
+                  f"{_rate:>6.0f} docs/s  eta {_left/60:>5.1f} min", flush=True)
+
+        seen_exact: set[str] = set()
+        _exact_dropped = 0
+        near_dup_enabled = not args.exact_only
+        if args.exact_only:
+            print("  --exact-only: SHA-256 exact dedup over every document; "
+                  "MinHash near-duplicate pass skipped")
+        manual_keys = [k for k in groups if k[1]]
+        downloaded_keys = [k for k in groups if not k[1]]
+
+        print(f"  indexing {sum(len(groups[k]) for k in manual_keys):,} manual "
+              f"documents; streaming "
+              f"{sum(len(groups[k]) for k in downloaded_keys):,} downloaded "
+              f"past the index at constant memory")
+
+        for key in sorted(manual_keys):
             keep = []
-            for doc in docs:
-                if deduper.is_duplicate(doc):
+            for doc in groups[key]:
+                h = exact_hash(doc)
+                if h in seen_exact:
+                    removed_by_source[key[0]] += 1
+                    _exact_dropped += 1
+                elif near_dup_enabled and deduper.is_duplicate(doc):
                     removed_by_source[key[0]] += 1
                 else:
+                    seen_exact.add(h)
                     keep.append(doc)
+                _seen += 1
+                if _seen % _PROGRESS_EVERY == 0:
+                    _tick()
             cleaned[key] = keep
+
+        _index_secs = _time.time() - _t0
+        _n_manual = sum(len(groups[k]) for k in manual_keys)
+        _n_downloaded = sum(len(groups[k]) for k in downloaded_keys)
+        print(f"  manual side indexed: {_n_manual:,} docs in "
+              f"{_index_secs/60:.1f} min ({_n_manual/max(_index_secs,1e-9):,.0f} docs/s)")
+
+        _bench_left = args.benchmark if args.benchmark else None
+        _stream_t0 = _time.time()
+        _streamed = 0
+        _stop = False
+        for key in sorted(downloaded_keys):
+            keep = []
+            for doc in groups[key]:
+                # EXACT-HASH GATE FIRST (D-031).
+                #
+                # `register=False` deliberately keeps the MinHash index bounded
+                # by the manual side, which means downloaded documents are never
+                # compared against EACH OTHER. That is fine for near-duplicates
+                # but catastrophic for exact ones: two identical IndicCorp rows
+                # both survive, the split assigns them to different splits, and
+                # the leakage check fails - measured, 15,372 documents shared
+                # between train and val.
+                #
+                # The cause is that the IndicCorp ingest ran in two sessions,
+                # each with its own in-memory deduper, so duplicates spanning
+                # the two runs were never seen together.
+                #
+                # An exact-hash set costs ~64 bytes per document - trivial next
+                # to a MinHash signature - and catches 100% of hash-level
+                # leakage, because the leakage check IS a content-hash
+                # comparison. So exact dedup covers every document while the
+                # expensive near-duplicate index stays manual-only.
+                h = exact_hash(doc)
+                if h in seen_exact:
+                    removed_by_source[key[0]] += 1
+                    _exact_dropped += 1
+                elif near_dup_enabled and deduper.is_duplicate(doc, register=False):
+                    removed_by_source[key[0]] += 1
+                else:
+                    seen_exact.add(h)
+                    keep.append(doc)
+                _seen += 1
+                _streamed += 1
+                if _seen % _PROGRESS_EVERY == 0:
+                    _tick()
+                if _bench_left is not None and _streamed >= _bench_left:
+                    _stop = True
+                    break
+            cleaned[key] = keep
+            if _stop:
+                break
+        print(f"  exact-hash duplicates dropped from downloaded: "
+              f"{_exact_dropped:,}")
+
+        if args.benchmark:
+            _el = _time.time() - _stream_t0
+            _rate = _streamed / _el if _el else 0.0
+            _proj = (_n_downloaded / _rate / 60) if _rate else float("inf")
+            st = deduper.stats.to_dict()
+            print("\n" + "=" * 66)
+            print("  BENCHMARK — nothing was written, no splits produced")
+            print("=" * 66)
+            print(f"  manual indexed        {_n_manual:>12,} docs "
+                  f"({_index_secs/60:.1f} min)")
+            print(f"  downloaded streamed   {_streamed:>12,} docs "
+                  f"({_el:.1f} s)")
+            print(f"  measured rate         {_rate:>12,.0f} docs/s")
+            print(f"  exact duplicates      {st['exact_duplicates']:>12,}")
+            print(f"  near duplicates       {st['near_duplicates']:>12,}")
+            print(f"  accepted              {st['kept']:>12,}")
+            print("-" * 66)
+            print(f"  PROJECTED full stream {_proj:>12,.1f} min "
+                  f"for {_n_downloaded:,} downloaded docs")
+            print(f"  PROJECTED total       "
+                  f"{_index_secs/60 + _proj:>12,.1f} min including indexing")
+            print("=" * 66)
+            print("\n  If that is acceptable, re-run without --benchmark.\n")
+            return 0
 
         groups = cleaned
         print(f"  {deduper.stats.to_dict()}")

@@ -63,7 +63,16 @@ from common.scriptid import identify_marathi_konkani, profile_script  # noqa: E4
 from common.textnorm import NORMALIZATION_STEPS, normalize            # noqa: E402
 
 DATASET_NAME = "ai4bharat/IndicCorpV2"
-DATASET_CONFIG = "mar_Deva"
+# The dataset exposes ONE builder config containing every language as a separate
+# split. `mar_Deva` is the split name, not the config - passing it as the config
+# fails with "BuilderConfig 'mar_Deva' not found. Available: ['indiccorp_v2']".
+# Caught by a --dry-run before the real ingest.
+DATASET_CONFIG = "indiccorp_v2"
+DATASET_SPLIT = "mar_Deva"
+
+# Free disk required before starting. 205M downloaded words is roughly 3.5-4 GB
+# of text, plus the HuggingFace cache while streaming.
+MIN_FREE_GB = 12.0
 SOURCE_NAME = "ai4bharat_indiccorp_v2_mar"
 JOB_NAME = "marathi_indiccorp"
 LANGUAGE = "mr"
@@ -162,6 +171,20 @@ def main() -> int:
         print("  will rise as manual collection continues, so consider waiting")
         print("  until the manual crawls finish before doing the full ingest.")
 
+    # DISK CHECK BEFORE, NOT DURING.
+    # Running out of space part-way through leaves a truncated shard and a
+    # manifest that disagrees with it. Cheaper to refuse up front.
+    import shutil
+    free_gb = shutil.disk_usage(REPO_ROOT).free / 1e9
+    est_gb = cap * 6 * 3 / 1e9      # ~6 chars/word, ~3 bytes/char in Devanagari
+    print(f"\n  disk free                        {free_gb:>15,.1f} GB")
+    print(f"  estimated output for this cap    {est_gb:>15,.1f} GB")
+    if free_gb < MIN_FREE_GB and not args.dry_run:
+        print(f"\n  STOP: only {free_gb:.1f} GB free, below the {MIN_FREE_GB:.0f} GB "
+              f"minimum.")
+        print("  Free space first, or lower the cap with --max-words.")
+        return 1
+
     print("=" * 70)
 
     if not args.dry_run:
@@ -180,9 +203,26 @@ def main() -> int:
     deduper = Deduplicator(threshold=args.dedup_threshold)
     manifest = None if args.dry_run else ManifestWriter(MANIFEST_PATH)
 
-    print(f"\nStreaming {DATASET_NAME} [{DATASET_CONFIG}] ...")
-    dataset = load_dataset(DATASET_NAME, DATASET_CONFIG, split="train",
-                           streaming=True)
+    print(f"\nStreaming {DATASET_NAME} [{DATASET_CONFIG}] split={DATASET_SPLIT} ...")
+    try:
+        dataset = load_dataset(DATASET_NAME, DATASET_CONFIG,
+                               split=DATASET_SPLIT, streaming=True)
+    except ValueError as exc:
+        # Report what IS available rather than just failing - the config/split
+        # distinction is the exact thing that went wrong here once already.
+        print(f"\nERROR loading dataset: {exc}", file=sys.stderr)
+        try:
+            from datasets import get_dataset_config_names, get_dataset_split_names
+            configs = get_dataset_config_names(DATASET_NAME)
+            print(f"\n  available configs: {configs}", file=sys.stderr)
+            for cfg in configs:
+                splits = get_dataset_split_names(DATASET_NAME, cfg)
+                marathi = [s for s in splits if "mar" in s.lower()]
+                print(f"  config '{cfg}': {len(splits)} splits; "
+                      f"Marathi-looking: {marathi}", file=sys.stderr)
+        except Exception:
+            pass
+        return 1
 
     rejected: dict[str, int] = {}
     accepted = words_total = rows = 0

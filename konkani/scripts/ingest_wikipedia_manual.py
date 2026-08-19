@@ -154,7 +154,21 @@ def main() -> int:
     parser.add_argument("--dedup-threshold", type=float, default=0.85)
     parser.add_argument("--fresh", action="store_true",
                         help="delete previous output and re-ingest from scratch")
+    parser.add_argument("--include-all-scripts", action="store_true",
+                        help="also admit Roman (Romi) and Kannada-script Konkani, "
+                             "written to a SEPARATE source so the Devanagari-only "
+                             "corpus stays reproducible (overrides D-001)")
     args = parser.parse_args()
+
+    # A scope change writes to its own source, its own shards and its own
+    # manifest. Mixing it into the Devanagari corpus would make the earlier
+    # numbers irreproducible.
+    global SOURCE_NAME, JOB_NAME, OUT_DIR, MANIFEST_PATH
+    if args.include_all_scripts:
+        SOURCE_NAME = "konkani_wikipedia_allscripts"
+        JOB_NAME = "konkani_wikipedia_allscripts"
+        OUT_DIR = DATA_DIR / "manual" / SOURCE_NAME
+        MANIFEST_PATH = DATA_DIR / "manifests" / f"{JOB_NAME}.jsonl"
 
     text_path, meta_path = pick_input()
     rows = load_metadata(meta_path)
@@ -238,12 +252,27 @@ def main() -> int:
 
             # Roman and mixed-script pages are excluded by decision D-001. They
             # are counted above so the excluded sub-corpus is reported, not lost.
+            #
+            # --include-all-scripts overrides this. Konkani is genuinely written
+            # in Devanagari, Roman (Romi) and Kannada script, and the Roman
+            # material is real Konkani, not noise: 1,203 Roman + 156 Kannada +
+            # 141 mixed pages were being discarded. Given how scarce Konkani
+            # text is, admitting them is a defensible scope change - but it is a
+            # scope CHANGE, so it writes to its own source name and its own
+            # shards, keeping the Devanagari-only corpus reproducible.
             if profile.devanagari_ratio < MIN_DEVANAGARI_RATIO:
-                note("not_devanagari_excluded_by_D001")
-                continue
+                if not args.include_all_scripts:
+                    note("not_devanagari_excluded_by_D001")
+                    continue
+                if profile.script not in ("Latin", "Kannada", "Mixed"):
+                    note("script_not_recognised")
+                    continue
 
             langid = identify_marathi_konkani(text)
-            if langid.label == "mr":
+            # The discriminator reads Devanagari function words. On Roman or
+            # Kannada script it has nothing to read and always abstains, so
+            # applying it there would reject everything for the wrong reason.
+            if profile.script == "Devanagari" and langid.label == "mr":
                 note("langid_marathi_rejected")
                 continue
 

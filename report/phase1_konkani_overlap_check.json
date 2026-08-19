@@ -1,0 +1,15 @@
+{
+  "archive_titles": 4368,
+  "corpus_titles": 0,
+  "shared_titles": 0,
+  "shared_title_rate": 0.0,
+  "shared_title_examples": [],
+  "archive_items_fetched": 117,
+  "archive_paragraphs": 7006,
+  "corpus_paragraphs": 40000,
+  "exact_shared_paragraphs": 0,
+  "exact_overlap_rate": 0.0,
+  "near_duplicate_paragraphs": 0,
+  "near_duplicate_rate": 0.0,
+  "verdict": "LOW OVERLAP - the two sources are substantially independent. Both may be used, with normal deduplication."
+}

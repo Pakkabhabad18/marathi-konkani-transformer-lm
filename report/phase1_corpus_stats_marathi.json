@@ -1,128 +1,137 @@
 {
   "language": "marathi",
-  "documents": 11266,
+  "documents": 2887867,
   "words": {
-    "total": 7068417,
-    "manual": 7068417,
-    "downloaded": 0,
-    "manual_share": 1.0
+    "total": 389218163,
+    "manual": 177781779,
+    "downloaded": 211436384,
+    "manual_share": 0.45676639967081906
   },
   "sources": {
     "archive_org_maharashtra_gr": {
-      "documents": 5611,
-      "words": 5268725,
-      "characters": 37813957,
-      "raw_characters": 38805629,
+      "documents": 154001,
+      "words": 152312784,
+      "characters": 1096847675,
+      "raw_characters": 1125780272,
       "is_manual": true,
       "collection_method": "manual_ocr"
     },
+    "ai4bharat_indiccorp_v2_mar": {
+      "documents": 2635630,
+      "words": 211436384,
+      "characters": 1452838285,
+      "raw_characters": 1453512807,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
     "news_loksatta": {
-      "documents": 2058,
-      "words": 782805,
-      "characters": 5557242,
-      "raw_characters": 893369108,
+      "documents": 2684,
+      "words": 1030716,
+      "characters": 7316695,
+      "raw_characters": 1165750456,
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
     "news_maharashtratimes": {
-      "documents": 40,
-      "words": 19553,
-      "characters": 140468,
-      "raw_characters": 16851069,
+      "documents": 76,
+      "words": 34226,
+      "characters": 246341,
+      "raw_characters": 32119088,
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
     "news_lokmat": {
-      "documents": 85,
-      "words": 23236,
-      "characters": 162302,
-      "raw_characters": 5510569,
+      "documents": 1158,
+      "words": 319054,
+      "characters": 2214981,
+      "raw_characters": 104363855,
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
     "news_esakal": {
-      "documents": 2726,
-      "words": 715247,
-      "characters": 5090693,
-      "raw_characters": 3798596033,
+      "documents": 90644,
+      "words": 22828494,
+      "characters": 161822801,
+      "raw_characters": 124577969027,
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
     "news_abplive_marathi": {
-      "documents": 73,
-      "words": 28233,
-      "characters": 195304,
-      "raw_characters": 20803396,
+      "documents": 2290,
+      "words": 777748,
+      "characters": 5471096,
+      "raw_characters": 647202591,
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
     "news_tv9marathi": {
-      "documents": 305,
-      "words": 100454,
-      "characters": 688674,
-      "raw_characters": 118166205,
+      "documents": 654,
+      "words": 208695,
+      "characters": 1428576,
+      "raw_characters": 263043836,
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
     "news_divyamarathi": {
-      "documents": 368,
-      "words": 130164,
-      "characters": 924921,
-      "raw_characters": 132411036,
+      "documents": 730,
+      "words": 270062,
+      "characters": 1912477,
+      "raw_characters": 262921899,
       "is_manual": true,
       "collection_method": "manual_scrape"
     }
   },
   "scripts": {
-    "Devanagari": 11125,
-    "Mixed": 141
+    "Devanagari": 2883929,
+    "Mixed": 3938
   },
   "langid_labels": {
-    "mr": 11266
+    "mr": 2231440,
+    "undecided": 656427
   },
   "cleaning_steps": {
-    "unicode_nfc": 11266,
-    "strip_zero_width": 11266,
-    "strip_control_chars": 11266,
-    "normalize_danda_spacing": 11266,
-    "normalize_whitespace": 11266,
-    "html_boilerplate_strip": 5655,
-    "paragraph_extract": 5655
+    "unicode_nfc": 2887867,
+    "strip_zero_width": 2887867,
+    "strip_control_chars": 2887867,
+    "normalize_danda_spacing": 2887867,
+    "normalize_whitespace": 2887867,
+    "html_boilerplate_strip": 98236,
+    "paragraph_extract": 98236
   },
-  "raw_characters": 5024513045,
-  "clean_characters": 50573561,
+  "raw_characters": 129632663831,
+  "clean_characters": 2730098927,
   "splits": {
     "train": {
-      "documents": 11039,
-      "words": 6917542,
-      "characters": 49492595
+      "documents": 2058209,
+      "words": 319677665,
+      "characters": 2251075046
     },
     "val": {
-      "documents": 112,
-      "words": 68858,
-      "characters": 497226
+      "documents": 21001,
+      "words": 3212666,
+      "characters": 22642570
     },
     "test": {
-      "documents": 112,
-      "words": 81215,
-      "characters": 577761
+      "documents": 21001,
+      "words": 3202861,
+      "characters": 22600921
     }
   },
   "tokens": {
     "tokenizer": "marathi/tokenizer/marathi_bpe.model",
-    "vocab_size": 48000,
+    "vocab_size": 10000,
     "byte_pieces": 256,
     "splits": {
       "train": {
-        "tokens": 12323432,
+        "tokens": 647434614,
         "unk_tokens": 0
       },
       "val": {
-        "tokens": 123402,
+        "tokens": 6455588,
         "unk_tokens": 0
       },
       "test": {
-        "tokens": 157655,
+        "tokens": 6447160,
         "unk_tokens": 0
       }
     }

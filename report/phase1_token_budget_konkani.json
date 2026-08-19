@@ -1,0 +1,99 @@
+{
+  "measured": {
+    "language": "konkani",
+    "tokenizer": "/Users/prakash/Desktop/individual-project-Pakkabhabad18/konkani/tokenizer/konkani_bpe.model",
+    "tokenizer_found": true,
+    "sampling_diagnostics": {
+      "shards_available": 46,
+      "lines_scanned": 96383,
+      "attributed_by_directory": 96350,
+      "attributed_by_hash": 0,
+      "unattributed": 33,
+      "attribution_rate": 0.9996576159696212,
+      "scan_capped": false
+    },
+    "unmeasured_sources": [
+      "news_vishwakonkani",
+      "news_goanews"
+    ],
+    "unmeasured_word_share": 0.00038125285293284,
+    "per_source": {
+      "archive_org_konkani_books": {
+        "documents": 53296,
+        "words": 62359932,
+        "raw_chars": 393930857,
+        "clean_chars": 384730501,
+        "manual": true,
+        "clean_ratio": 0.9766447440292803,
+        "words_per_doc": 1170.0677724407085,
+        "fertility": 1.5895580209282327,
+        "fertility_sample_docs": 300
+      },
+      "hf_konkani_books_corpus_v2": {
+        "documents": 40597,
+        "words": 47016182,
+        "raw_chars": 296112785,
+        "clean_chars": 295942481,
+        "manual": false,
+        "clean_ratio": 0.9994248677915072,
+        "words_per_doc": 1158.1196147498583,
+        "fertility": 1.5183850077699403,
+        "fertility_sample_docs": 300
+      },
+      "news_vishwakonkani": {
+        "documents": 2,
+        "words": 520,
+        "raw_chars": 240781,
+        "clean_chars": 3518,
+        "manual": true,
+        "clean_ratio": 0.014610787396015467,
+        "words_per_doc": 260.0,
+        "fertility": null,
+        "fertility_sample_docs": 0
+      },
+      "news_goanews": {
+        "documents": 31,
+        "words": 41728,
+        "raw_chars": 5310801,
+        "clean_chars": 283658,
+        "manual": true,
+        "clean_ratio": 0.05341152869407082,
+        "words_per_doc": 1346.0645161290322,
+        "fertility": null,
+        "fertility_sample_docs": 0
+      },
+      "konkani_wikipedia_selfcollected": {
+        "documents": 2459,
+        "words": 1395235,
+        "raw_chars": 9639043,
+        "clean_chars": 9626399,
+        "manual": true,
+        "clean_ratio": 0.9986882515204051,
+        "words_per_doc": 567.3993493289955,
+        "fertility": 1.6481998837003515,
+        "fertility_sample_docs": 300
+      }
+    },
+    "mean_measured_fertility": 1.5853809707995081,
+    "manual_words": 63797415,
+    "downloaded_words": 47016182,
+    "manual_tokens": 101491335,
+    "downloaded_tokens": 71388665,
+    "total_tokens": 172880001,
+    "manual_share_tokens": 0.5870623245495415
+  },
+  "plan": {
+    "manual_fertility": 1.590837739038928,
+    "downloaded_fertility": 1.5183850077699401,
+    "manual_target_tokens": 100000000,
+    "manual_gap_tokens": 0,
+    "manual_gap_words": 0,
+    "downloaded_target_tokens": 398508665,
+    "downloaded_gap_tokens": 327120000,
+    "downloaded_gap_words": 215439429,
+    "max_downloaded_tokens_at_20pct": 405965340,
+    "downloaded_admissible_tokens": 327120000,
+    "downloaded_admissible_words": 215439429,
+    "projected_total_tokens": 500000000
+  }
+}

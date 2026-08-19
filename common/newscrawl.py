@@ -136,22 +136,56 @@ def strip_byline(text: str) -> str:
     return _LEAD_DASH.sub("", text).strip()
 
 
+def _keep_block(text: str) -> str | None:
+    """Shared acceptance test for a candidate paragraph."""
+    text = strip_byline(re.sub(r"\s+", " ", text).strip())
+    if len(text.split()) < 6 or not _DEVA.search(text):
+        return None
+    non_ws = sum(1 for c in text if not c.isspace())
+    if non_ws and len(_DEVA.findall(text)) / non_ws < 0.45:
+        return None
+    return text
+
+
 def extract_article_text(html_text: str) -> str:
-    """Pull article prose out of a page: drop furniture tags, keep <p> content."""
+    """Pull article prose out of a page.
+
+    PRIMARY: keep <p> elements. News sites put body text in paragraphs.
+
+    FALLBACK: if <p> extraction yields nothing, strip all tags and segment the
+    remaining text on line breaks, keeping blocks that look like prose.
+
+    The fallback exists because of a measured failure. In the Konkani probe,
+    `dol_goa` and `herald_goa` both returned `no_article_text` on all 8 sampled
+    URLs - the pages exist and contain Devanagari, but their body text is not
+    inside <p> tags (some Indian publishers wrap paragraphs in <div>, or emit
+    text nodes directly). Rejecting those sites would have been a conclusion
+    about our extractor rather than about the sites.
+
+    The fallback is deliberately the second choice: it is cruder and admits more
+    navigation text, so it is only used when the precise method finds nothing.
+    """
     import html as _html
 
     cleaned = _TAG_STRIP.sub(" ", html_text)
     paragraphs = []
 
     for raw in _PARA.findall(cleaned):
-        text = _html.unescape(_TAGS.sub(" ", raw))
-        text = strip_byline(re.sub(r"\s+", " ", text).strip())
-        if len(text.split()) < 6 or not _DEVA.search(text):
+        text = _keep_block(_html.unescape(_TAGS.sub(" ", raw)))
+        if text:
+            paragraphs.append(text)
+
+    if paragraphs:
+        return "\n\n".join(paragraphs)
+
+    # Fallback: block-level segmentation of the de-tagged document.
+    flattened = _html.unescape(_TAGS.sub("\n", cleaned))
+    for block in flattened.split("\n"):
+        if len(block.strip()) < 40:
             continue
-        non_ws = sum(1 for c in text if not c.isspace())
-        if non_ws and len(_DEVA.findall(text)) / non_ws < 0.45:
-            continue
-        paragraphs.append(text)
+        text = _keep_block(block)
+        if text and len(text.split()) >= 12:
+            paragraphs.append(text)
 
     return "\n\n".join(paragraphs)
 

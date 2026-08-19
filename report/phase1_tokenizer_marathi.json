@@ -2,256 +2,229 @@
   "language": "marathi",
   "model_file": "marathi/tokenizer/marathi_bpe.model",
   "vocab_file": "marathi/tokenizer/marathi_bpe.vocab",
-  "heldout_file": "marathi/tokenizer/marathi_heldout.txt",
-  "corpus_lines": 11265,
-  "training_lines": 10139,
-  "heldout_lines": 1126,
-  "chosen_vocab_size": 48000,
+  "heldout_file": "marathi/data/tokenizer_sweep/marathi_heldout.txt",
+  "corpus_lines": 2000000,
+  "training_lines": 1995000,
+  "heldout_lines": 5000,
+  "chosen_vocab_size": 10000,
   "selection_rule": "smallest vocabulary within 2% fertility of the best candidate",
   "sweep": [
     {
+      "vocab_size": 6000,
+      "documents": 5000,
+      "words": 765954,
+      "characters": 5435064,
+      "tokens": 1721516,
+      "unk_tokens": 0,
+      "tokens_per_word": 2.2475448917297904,
+      "characters_per_token": 3.1571382432693045,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.50457
+    },
+    {
       "vocab_size": 8000,
-      "documents": 1126,
-      "words": 757580,
-      "characters": 5326098,
-      "tokens": 1694354,
+      "documents": 5000,
+      "words": 765954,
+      "characters": 5435064,
+      "tokens": 1618529,
       "unk_tokens": 0,
-      "tokens_per_word": 2.2365347554053696,
-      "characters_per_token": 3.143438738303802,
+      "tokens_per_word": 2.113089036678443,
+      "characters_per_token": 3.3580269491618626,
       "unk_rate": 0.0,
       "byte_pieces": 256,
-      "single_token_word_rate": 0.5357904085257549
+      "single_token_word_rate": 0.548835
     },
     {
-      "vocab_size": 16000,
-      "documents": 1126,
-      "words": 757580,
-      "characters": 5326098,
-      "tokens": 1533804,
+      "vocab_size": 10000,
+      "documents": 5000,
+      "words": 765954,
+      "characters": 5435064,
+      "tokens": 1555527,
       "unk_tokens": 0,
-      "tokens_per_word": 2.0246099421843238,
-      "characters_per_token": 3.472476274673948,
+      "tokens_per_word": 2.030836055428916,
+      "characters_per_token": 3.494033854764334,
       "unk_rate": 0.0,
       "byte_pieces": 256,
-      "single_token_word_rate": 0.6078818827708703
-    },
-    {
-      "vocab_size": 24000,
-      "documents": 1126,
-      "words": 757580,
-      "characters": 5326098,
-      "tokens": 1471327,
-      "unk_tokens": 0,
-      "tokens_per_word": 1.9421407640117216,
-      "characters_per_token": 3.619928132903155,
-      "unk_rate": 0.0,
-      "byte_pieces": 256,
-      "single_token_word_rate": 0.6431172291296625
-    },
-    {
-      "vocab_size": 32000,
-      "documents": 1126,
-      "words": 757580,
-      "characters": 5326098,
-      "tokens": 1434434,
-      "unk_tokens": 0,
-      "tokens_per_word": 1.8934422767232504,
-      "characters_per_token": 3.713031063123155,
-      "unk_rate": 0.0,
-      "byte_pieces": 256,
-      "single_token_word_rate": 0.6587255772646536
-    },
-    {
-      "vocab_size": 48000,
-      "documents": 1126,
-      "words": 757580,
-      "characters": 5326098,
-      "tokens": 1396778,
-      "unk_tokens": 0,
-      "tokens_per_word": 1.8437366350748436,
-      "characters_per_token": 3.8131313637528654,
-      "unk_rate": 0.0,
-      "byte_pieces": 256,
-      "single_token_word_rate": 0.6736678507992895
+      "single_token_word_rate": 0.58106
     }
   ],
   "final_heldout_report": {
-    "vocab_size": 48000,
-    "documents": 1126,
-    "words": 757580,
-    "characters": 5326098,
-    "tokens": 1396778,
+    "vocab_size": 10000,
+    "documents": 5000,
+    "words": 765954,
+    "characters": 5435064,
+    "tokens": 1555527,
     "unk_tokens": 0,
-    "tokens_per_word": 1.8437366350748436,
-    "characters_per_token": 3.8131313637528654,
+    "tokens_per_word": 2.030836055428916,
+    "characters_per_token": 3.494033854764334,
     "unk_rate": 0.0,
     "byte_pieces": 256,
-    "single_token_word_rate": 0.6736678507992895
+    "single_token_word_rate": 0.58106
   },
   "token_frequency": {
-    "vocabulary_size": 48000,
-    "distinct_tokens_seen": 30177,
-    "vocabulary_utilisation": 0.6286875,
-    "total_tokens": 1396778,
+    "vocabulary_size": 10000,
+    "distinct_tokens_seen": 9755,
+    "vocabulary_utilisation": 0.9755,
+    "total_tokens": 1555527,
     "coverage": {
-      "top_100": 0.36101943186390395,
-      "top_1000": 0.6754208614396847,
-      "top_5000": 0.8889802101694042,
-      "top_10000": 0.9499977806065101
+      "top_100": 0.3375518393444794,
+      "top_1000": 0.7067951890259699,
+      "top_5000": 0.9447833435228061
     },
     "most_frequent": [
       {
-        "id": 47878,
+        "id": 9884,
         "piece": ".",
-        "count": 86499,
-        "share": 0.06192752176795453
+        "count": 85626,
+        "share": 0.055046296207008946
       },
       {
-        "id": 47884,
+        "id": 9896,
         "piece": ",",
-        "count": 49731,
-        "share": 0.035604083111274665
+        "count": 47154,
+        "share": 0.030313842189817343
       },
       {
-        "id": 47901,
+        "id": 9911,
         "piece": "-",
-        "count": 41710,
-        "share": 0.02986158143957021
+        "count": 16831,
+        "share": 0.010820127198049279
       },
       {
-        "id": 47936,
-        "piece": "/",
-        "count": 18630,
-        "share": 0.01333783894076224
-      },
-      {
-        "id": 2081,
-        "piece": "▁|",
-        "count": 16293,
-        "share": 0.011664702622750359
-      },
-      {
-        "id": 47910,
-        "piece": ")",
-        "count": 13921,
-        "share": 0.009966508636304409
-      },
-      {
-        "id": 375,
-        "piece": "▁(",
-        "count": 12521,
-        "share": 0.008964201898941707
-      },
-      {
-        "id": 269,
-        "piece": "▁व",
-        "count": 10656,
-        "share": 0.007628986138097822
-      },
-      {
-        "id": 47856,
+        "id": 9861,
         "piece": "▁",
-        "count": 9470,
-        "share": 0.006779889144874848
+        "count": 16444,
+        "share": 0.010571336916684828
       },
       {
-        "id": 293,
-        "piece": "▁आहे",
-        "count": 7970,
-        "share": 0.0057059890691290955
-      },
-      {
-        "id": 818,
-        "piece": "▁शासन",
-        "count": 6582,
-        "share": 0.00471227353237236
+        "id": 9977,
+        "piece": "/",
+        "count": 13832,
+        "share": 0.008892163234710808
       },
       {
         "id": 283,
+        "piece": "▁आहे",
+        "count": 13013,
+        "share": 0.008365653569497668
+      },
+      {
+        "id": 9921,
+        "piece": ")",
+        "count": 11767,
+        "share": 0.007564638865156311
+      },
+      {
+        "id": 457,
+        "piece": "▁(",
+        "count": 10621,
+        "share": 0.006827911055224371
+      },
+      {
+        "id": 271,
+        "piece": "▁व",
+        "count": 9583,
+        "share": 0.006160613091254603
+      },
+      {
+        "id": 9919,
+        "piece": "२",
+        "count": 7985,
+        "share": 0.005133308518592092
+      },
+      {
+        "id": 280,
         "piece": "▁या",
-        "count": 5768,
-        "share": 0.004129503757934332
+        "count": 7755,
+        "share": 0.004985448661450428
       },
       {
-        "id": 2751,
-        "piece": "१९",
-        "count": 5215,
-        "share": 0.0037335925966760644
+        "id": 2210,
+        "piece": "२०",
+        "count": 7636,
+        "share": 0.00490894725710322
       },
       {
-        "id": 644,
-        "piece": "▁मुंबई",
-        "count": 5055,
-        "share": 0.0036190432552631845
+        "id": 128,
+        "piece": "<0x7C>",
+        "count": 7395,
+        "share": 0.004754015841576521
       },
       {
-        "id": 505,
-        "piece": "▁विभाग",
-        "count": 4909,
-        "share": 0.003514516981223931
+        "id": 9917,
+        "piece": "०",
+        "count": 6905,
+        "share": 0.004439010058970368
       },
       {
-        "id": 633,
-        "piece": "▁महाराष्ट्र",
-        "count": 4566,
-        "share": 0.0032689518305700693
+        "id": 9937,
+        "piece": "४",
+        "count": 5874,
+        "share": 0.0037762121776092603
       },
       {
-        "id": 316,
-        "piece": "▁आणि",
-        "count": 4113,
-        "share": 0.002944634007694852
-      },
-      {
-        "id": 885,
-        "piece": "▁पद",
-        "count": 4099,
-        "share": 0.002934610940321225
-      },
-      {
-        "id": 447,
-        "piece": "▁करण्यात",
-        "count": 4047,
-        "share": 0.002897382404362039
-      },
-      {
-        "id": 47877,
-        "piece": "ो",
-        "count": 3992,
-        "share": 0.0028580060682513613
-      },
-      {
-        "id": 47905,
+        "id": 9914,
         "piece": "१",
-        "count": 3970,
-        "share": 0.0028422555338070902
+        "count": 5775,
+        "share": 0.0037125681521439358
       },
       {
-        "id": 1029,
-        "piece": "▁निर्णय",
-        "count": 3925,
-        "share": 0.0028100385315347177
+        "id": 9936,
+        "piece": "३",
+        "count": 5688,
+        "share": 0.0036566385540077414
       },
       {
-        "id": 423,
-        "piece": "क्र",
-        "count": 3846,
-        "share": 0.002753479794212108
+        "id": 284,
+        "piece": "च्या",
+        "count": 5468,
+        "share": 0.00351520738630702
       },
       {
-        "id": 380,
-        "piece": "▁२",
-        "count": 3717,
-        "share": 0.0026611243876979735
+        "id": 325,
+        "piece": "▁आणि",
+        "count": 5376,
+        "share": 0.0034560634434503547
       },
       {
-        "id": 855,
-        "piece": "▁-",
-        "count": 3601,
-        "share": 0.0025780761151736353
+        "id": 3323,
+        "piece": "▁शासन",
+        "count": 5297,
+        "share": 0.003405276796866914
+      },
+      {
+        "id": 9944,
+        "piece": "६",
+        "count": 4791,
+        "share": 0.0030799851111552546
+      },
+      {
+        "id": 9939,
+        "piece": "e",
+        "count": 4770,
+        "share": 0.003066484863329277
+      },
+      {
+        "id": 1151,
+        "piece": "००",
+        "count": 4700,
+        "share": 0.003021484037242684
+      },
+      {
+        "id": 9978,
+        "piece": "A",
+        "count": 4687,
+        "share": 0.003013126740969459
+      },
+      {
+        "id": 568,
+        "piece": "▁मुंबई",
+        "count": 4556,
+        "share": 0.0029289109092931207
       }
     ],
-    "hapax_tokens": 5987
+    "hapax_tokens": 106
   },
   "examples": [
     {
@@ -261,15 +234,16 @@
         "▁शेतकऱ्यांनी",
         "▁सरकारकडे",
         "▁तातडीने",
-        "▁मदतीची",
+        "▁मदती",
+        "ची",
         "▁मागणी",
         "▁केली",
         "▁आहे",
         "."
       ],
-      "n_tokens": 9,
+      "n_tokens": 10,
       "n_words": 8,
-      "tokens_per_word": 1.125,
+      "tokens_per_word": 1.25,
       "unk": 0,
       "roundtrip_ok": true
     },
@@ -285,13 +259,14 @@
         "▁झाला",
         "▁आणि",
         "▁वाहतूक",
-        "▁विस्कळीत",
+        "▁विस्क",
+        "ळीत",
         "▁झाली",
         "."
       ],
-      "n_tokens": 12,
+      "n_tokens": 13,
       "n_words": 11,
-      "tokens_per_word": 1.0909090909090908,
+      "tokens_per_word": 1.1818181818181819,
       "unk": 0,
       "roundtrip_ok": true
     },
@@ -300,9 +275,11 @@
       "pieces": [
         "▁या",
         "▁पुस्तकात",
-        "▁लेखकाने",
+        "▁लेख",
+        "काने",
         "▁आपले",
-        "▁बालपणी",
+        "▁बाल",
+        "पणी",
         "चे",
         "▁अनुभव",
         "▁अतिशय",
@@ -312,9 +289,9 @@
         "▁आहेत",
         "."
       ],
-      "n_tokens": 13,
+      "n_tokens": 15,
       "n_words": 11,
-      "tokens_per_word": 1.1818181818181819,
+      "tokens_per_word": 1.3636363636363635,
       "unk": 0,
       "roundtrip_ok": true
     },
@@ -325,17 +302,20 @@
         "▁विज्ञान",
         "▁आणि",
         "▁कृत्रिम",
-        "▁बुद्धिमत्ता",
+        "▁बुद्ध",
+        "िम",
+        "त्ता",
         "▁या",
-        "▁विषयांचा",
+        "▁विष",
+        "यांचा",
         "▁अभ्यास",
         "▁वाढत",
         "▁आहे",
         "."
       ],
-      "n_tokens": 11,
+      "n_tokens": 14,
       "n_words": 10,
-      "tokens_per_word": 1.1,
+      "tokens_per_word": 1.4,
       "unk": 0,
       "roundtrip_ok": true
     }

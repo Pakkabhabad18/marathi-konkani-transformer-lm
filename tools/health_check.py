@@ -261,12 +261,49 @@ def check_job(job_name: str, cp_path: Path, mf_path: Path, quiet: bool = False) 
     return result
 
 
+def mark_finished(job_name: str) -> int:
+    """Record a job as deliberately complete so it stops reporting as stalled.
+
+    WHY THIS MATTERS MORE THAN IT LOOKS
+    -----------------------------------
+    A one-shot collector that finishes its source is indistinguishable, to a
+    checkpoint-freshness check, from a collector that hung. Three of five jobs
+    were reporting STALL for entirely benign reasons - one had completed, one
+    was intentionally stopped, one had exhausted a small source.
+
+    That is alarm fatigue, and it is dangerous: a monitor that is usually wrong
+    trains you to ignore it, and then the one real stall goes unnoticed. Marking
+    finished jobs keeps the alert meaningful.
+    """
+    for name, cp_path, _ in discover_jobs():
+        if name != job_name:
+            continue
+        try:
+            state = json.loads(cp_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            print(f"Cannot read checkpoint for '{job_name}'.")
+            return 1
+        state["finished"] = True
+        atomic_write_json(cp_path, state)
+        print(f"Marked '{job_name}' as finished. It will report [DONE] from now on.")
+        return 0
+
+    print(f"No job named '{job_name}'. Known jobs: "
+          f"{', '.join(j[0] for j in discover_jobs())}")
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Health monitor for collection jobs.")
     parser.add_argument("--job", help="job name (checkpoint stem), e.g. marathi_archive_gr")
     parser.add_argument("--all", action="store_true", help="check every discovered job")
     parser.add_argument("--json", action="store_true", help="machine-readable output only")
+    parser.add_argument("--mark-finished", metavar="JOB",
+                        help="record a job as complete so it stops reporting STALL")
     args = parser.parse_args()
+
+    if args.mark_finished:
+        return mark_finished(args.mark_finished)
 
     jobs = discover_jobs()
     if not jobs:

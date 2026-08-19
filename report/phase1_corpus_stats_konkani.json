@@ -1,18 +1,26 @@
 {
   "language": "konkani",
-  "documents": 27638,
+  "documents": 96932,
   "words": {
-    "total": 30559559,
-    "manual": 1130409,
-    "downloaded": 29429150,
-    "manual_share": 0.03699035709252218
+    "total": 111451424,
+    "manual": 64435242,
+    "downloaded": 47016182,
+    "manual_share": 0.5781464218886966
   },
   "sources": {
+    "archive_org_konkani_books": {
+      "documents": 53843,
+      "words": 62997759,
+      "characters": 388689125,
+      "raw_characters": 397978994,
+      "is_manual": true,
+      "collection_method": "manual_ocr"
+    },
     "hf_konkani_books_corpus_v2": {
-      "documents": 25413,
-      "words": 29429150,
-      "characters": 184943759,
-      "raw_characters": 185054844,
+      "documents": 40597,
+      "words": 47016182,
+      "characters": 295942481,
+      "raw_characters": 296112785,
       "is_manual": false,
       "collection_method": "downloaded_dataset"
     },
@@ -24,73 +32,84 @@
       "is_manual": true,
       "collection_method": "manual_scrape"
     },
+    "news_goanews": {
+      "documents": 31,
+      "words": 41728,
+      "characters": 283658,
+      "raw_characters": 5310801,
+      "is_manual": true,
+      "collection_method": "manual_scrape"
+    },
     "konkani_wikipedia_selfcollected": {
-      "documents": 2223,
-      "words": 1129889,
-      "characters": 7864423,
-      "raw_characters": 7864788,
+      "documents": 2459,
+      "words": 1395235,
+      "characters": 9626399,
+      "raw_characters": 9639043,
       "is_manual": true,
       "collection_method": "manual_scrape"
     }
   },
   "scripts": {
-    "Devanagari": 27638
+    "Devanagari": 96771,
+    "Mixed": 161
   },
   "langid_labels": {
-    "kok": 26652,
-    "undecided": 986
+    "kok": 92809,
+    "undecided": 4123
   },
   "cleaning_steps": {
-    "unicode_nfc": 27638,
-    "strip_zero_width": 27638,
-    "strip_control_chars": 27638,
-    "normalize_danda_spacing": 27638,
-    "normalize_whitespace": 27638,
-    "reassemble_lines": 25413,
-    "segment_split": 25413,
-    "html_boilerplate_strip": 2,
-    "paragraph_extract": 2,
-    "wikitext_clean": 2223,
-    "length_filter": 2223,
-    "devanagari_only_D001": 2223
+    "unicode_nfc": 96932,
+    "strip_zero_width": 96932,
+    "strip_control_chars": 96932,
+    "normalize_danda_spacing": 96932,
+    "normalize_whitespace": 96932,
+    "ocr_text_layer": 53843,
+    "segment_split": 94440,
+    "devanagari_only_D001": 56302,
+    "reassemble_lines": 40597,
+    "html_boilerplate_strip": 33,
+    "paragraph_extract": 33,
+    "wikitext_clean": 2459,
+    "residual_wikitext_strip": 2459,
+    "length_filter": 2459
   },
-  "raw_characters": 193160413,
-  "clean_characters": 192811700,
+  "raw_characters": 709282404,
+  "clean_characters": 694545181,
   "splits": {
     "train": {
-      "documents": 25687,
-      "words": 28334887,
-      "characters": 179019474
+      "documents": 78423,
+      "words": 90021485,
+      "characters": 559779334
     },
     "val": {
-      "documents": 261,
-      "words": 288868,
-      "characters": 1818484
+      "documents": 799,
+      "words": 926734,
+      "characters": 5756139
     },
     "test": {
-      "documents": 261,
-      "words": 284054,
-      "characters": 1772219
+      "documents": 799,
+      "words": 921239,
+      "characters": 5731683
     }
   },
   "tokens": {
     "tokenizer": "konkani/tokenizer/konkani_bpe.model",
-    "vocab_size": 48000,
+    "vocab_size": 10000,
     "byte_pieces": 256,
     "splits": {
       "train": {
-        "tokens": 44200630,
+        "tokens": 165815092,
         "unk_tokens": 0
       },
       "val": {
-        "tokens": 450152,
+        "tokens": 1694714,
         "unk_tokens": 0
       },
       "test": {
-        "tokens": 442172,
+        "tokens": 1694331,
         "unk_tokens": 0
       }
     }
   },
-  "meets_manual_requirement": false
+  "meets_manual_requirement": true
 }

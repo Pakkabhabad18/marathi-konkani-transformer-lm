@@ -65,14 +65,37 @@ from common.newscrawl import CrawlConfig, run_crawl, run_probe   # noqa: E402
 # Goa-based outlets and institutions; several publish primarily as e-paper
 # images, which carry no extractable text and will fail the probe.
 SITES = [
+    # --- confirmed usable by --probe on 16 Aug 2026 ---
+    {"name": "vishwakonkani",    "home": "https://vishwakonkani.org"},
+
+    # --- failed the first probe with `no_article_text`, retried because that
+    #     was a limitation of our <p>-only extractor, not of the sites ---
+    {"name": "dol_goa",          "home": "https://dol.goa.gov.in"},
+    {"name": "herald_goa",       "home": "https://www.heraldgoa.in"},
+
+    # --- failed with unreachable robots.txt; kept so the failure stays on the
+    #     record rather than being quietly removed from the inventory ---
     {"name": "sunaparant",       "home": "https://www.sunaparant.com"},
     {"name": "bhaangarbhuin",    "home": "https://www.bhaangarbhuin.com"},
     {"name": "konkani_akademi",  "home": "https://konkaniakademi.goa.gov.in"},
     {"name": "goa_gov",          "home": "https://www.goa.gov.in"},
-    {"name": "dol_goa",          "home": "https://dol.goa.gov.in"},
-    {"name": "vishwakonkani",    "home": "https://vishwakonkani.org"},
+
+    # --- rejected: publishes Marathi, caught by the language gate
+    #     (6 of 8 sampled pages returned langid_mr_rejected) ---
     {"name": "goanvarta",        "home": "https://www.goanvarta.net"},
-    {"name": "herald_goa",       "home": "https://www.heraldgoa.in"},
+
+    # --- NEW unverified candidates. Goan and Mangalorean outlets and
+    #     institutions that publish Devanagari Konkani. --probe decides. ---
+    {"name": "prudentmedia",     "home": "https://www.prudentmedia.in"},
+    {"name": "goanews",          "home": "https://www.goanews.com"},
+    {"name": "gomantaktimes",    "home": "https://www.gomantaktimes.com"},
+    {"name": "navhindtimes",     "home": "https://www.navhindtimes.in"},
+    {"name": "goa_assembly",     "home": "https://www.goavidhansabha.gov.in"},
+    {"name": "tskk",             "home": "https://www.tskk.org"},
+    {"name": "kalaacademy",      "home": "https://kalaacademy.goa.gov.in"},
+    {"name": "goa_dip",          "home": "https://dip.goa.gov.in"},
+    {"name": "raknno",           "home": "https://www.raknno.com"},
+    {"name": "kodialkhaber",     "home": "https://www.kodialkhaber.com"},
 ]
 
 

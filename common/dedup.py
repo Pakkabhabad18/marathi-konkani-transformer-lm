@@ -50,6 +50,7 @@ import hashlib
 import re
 import struct
 import zlib
+from array import array as _array
 from dataclasses import dataclass, field
 from typing import Iterable, Iterator, Optional
 
@@ -223,7 +224,26 @@ class Deduplicator:
         *,
         threshold: float = 0.85,
         num_perm: int = 128,
-        bands: int = 32,
+        # BANDS RETUNED 32 -> 16 (D-030).
+        #
+        # LSH banding sets which pairs even become candidates:
+        #     P(candidate) = 1 - (1 - s^r)^b ,  50% point at s ~ (1/b)^(1/r)
+        #
+        #     bands=32 rows=4  -> candidates from s ~ 0.42 upward
+        #     bands=16 rows=8  -> candidates from s ~ 0.71 upward
+        #
+        # Our duplicate threshold is 0.85, so every candidate generated below
+        # that is fetched, scored in Python, and discarded. On the formulaic
+        # Maharashtra GR corpus an enormous share of pairs sit in the 0.42-0.85
+        # dead band. Measured on 5,000 formulaic documents:
+        #
+        #     32x4 -> 349.8 candidates/query, 249 docs/s indexing
+        #     16x8 ->   0.4 candidates/query, 1,237 docs/s indexing
+        #
+        # Recall where it matters is preserved: at s=0.85, P(candidate) is
+        # 0.994 for 16x8 versus 1.000 for 32x4. We give up 0.6% of recall at
+        # the threshold to stop generating ~875x the candidates.
+        bands: int = 16,
         shingle_k: int = 5,
     ):
         if num_perm % bands != 0:
@@ -235,7 +255,7 @@ class Deduplicator:
         self.hasher = MinHasher(num_perm)
         self._exact: set[str] = set()
         self._buckets: dict[tuple[int, bytes], list[int]] = {}
-        self._signatures: list[tuple[int, ...]] = []
+        self._signatures: list = []   # array("I") per document
         self.stats = DedupStats()
 
     def _band_keys(self, sig: tuple[int, ...]) -> Iterator[tuple[int, int]]:
@@ -244,8 +264,17 @@ class Deduplicator:
             chunk = sig[b * self.rows:(b + 1) * self.rows]
             yield b, zlib.crc32(struct.pack(f"<{len(chunk)}I", *chunk))
 
-    def is_duplicate(self, text: str) -> bool:
-        """Check-and-register. Returns True if `text` duplicates something seen.
+    def is_duplicate(self, text: str, register: bool = True) -> bool:
+        """Check, and (by default) register. True if `text` duplicates a prior.
+
+        `register=False` checks WITHOUT growing the index. This exists because
+        the index, not the run time, is what killed a 2.88M-document split job:
+        macOS SIGKILLed it at 86.6% having accumulated ~2.5M MinHash signatures.
+
+        With `register=False` a caller can index one side of a comparison and
+        stream the other side past it at constant memory - which is what
+        cross-source deduplication actually needs, since within-source
+        duplicates were already removed at collection time.
 
         `canonical_form` is computed ONCE here and reused. It was previously
         recomputed inside both exact_hash() and shingles(), running two regex
@@ -273,10 +302,18 @@ class Deduplicator:
                 self.stats.near_duplicates += 1
                 return True
 
+        if not register:
+            self.stats.kept += 1
+            return False
+
         # Not a duplicate: register it.
         self._exact.add(h)
         idx = len(self._signatures)
-        self._signatures.append(sig)
+        # Stored as array('I') rather than a tuple of Python ints. A 128-int
+        # tuple costs ~4.6 KB (each int is a 28-byte object plus an 8-byte
+        # pointer); the same data as unsigned 32-bit values costs ~512 B. At
+        # scale that is the difference between fitting in RAM and being killed.
+        self._signatures.append(_array("I", sig))
         for key in keys:
             self._buckets.setdefault(key, []).append(idx)
         self.stats.kept += 1

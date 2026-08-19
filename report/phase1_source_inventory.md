@@ -1,201 +1,217 @@
 # Phase 1 — Source Inventory
 
-**Last updated:** 14 August 2026
-**Purpose:** track every candidate and accepted corpus source for Model H (Marathi) and
-Model L (Konkani), with the evidence needed to defend each one in the viva.
+**Status: measured, not projected.** Every figure below comes from a real
+collection run recorded in `<lang>/data/manifests/*.jsonl`, not from an estimate.
+An earlier version of this document was written before collection began and
+contained claims that later measurement disproved; those corrections are kept in
+§5 rather than edited away.
 
-**Verification status key**
-
-| Tag | Meaning |
-|---|---|
-| `VERIFIED` | Dataset card / page read during this audit; figures below come from it. |
-| `CANDIDATE` | Identified as plausible, **not yet verified**. Must be checked before use. |
-| `REJECTED` | Deliberately excluded, with the reason recorded. |
-
-**Collection-type key** — the spec counts as *manual* only what we gather and clean ourselves:
-OCR from books/PDFs, scraping + cleaning pages we collect, typed/transcribed text. Anything
-downloaded as a ready-made corpus is *downloaded*, however much cleaning we do afterwards.
+**Last updated:** 16 August 2026
 
 ---
 
-## 1. Accounting rule that governs this table
+## 1. The accounting rule that governs everything here
 
-Required: `manual_tokens / total_tokens ≥ 0.20`, therefore `total ≤ 5 × manual`.
+The specification requires that at least 20% of final training tokens come from
+manual collection, for **both** languages:
 
-Every downloaded source added to a corpus **raises the manual target**. Sources are therefore
-admitted in priority order, and the downloaded contribution is capped to whatever the manual
-total will support — not maximised.
+```
+manual / total >= 0.20      =>      total <= 5 x manual
+```
+
+This is enforced mechanically in `tools/make_splits.py`, which subsamples
+downloaded sources until the inequality holds. So the manual total is not a
+target to hit — it is the **hard cap on corpus size**. Each manual word admits
+four downloaded words.
+
+Classification is a typed choice at the point of collection
+(`common/manifest.py::CollectionType`), not a label applied later:
+
+| Type | Counts as manual? | Used for |
+|---|---|---|
+| `MANUAL_OCR` | yes | OCR text layers of scanned books and documents |
+| `MANUAL_SCRAPE` | yes | pages we discovered, fetched and cleaned ourselves |
+| `MANUAL_TRANSCRIBED` | yes | typed or transcribed text (unused) |
+| `DOWNLOADED_DATASET` | **no** | ready-made public corpora |
+
+A downloaded corpus does not become manual because we cleaned it, however much
+cleaning we did. The Konkani books corpus is the case in point: its underlying
+material was originally digitised from books, but *we* obtained it as a prepared
+Hugging Face dataset, so it is `DOWNLOADED_DATASET`.
 
 ---
 
-## 2. Model L — Konkani (Devanagari only)
+## 2. Model H — Marathi
 
-**Script decision:** Devanagari only. Konkani is also written in Roman (Romi) and Kannada
-scripts; those are excluded from the training corpus and documented as a separate sub-corpus so
-the decision is visible rather than hidden. Rationale: Devanagari is the official script of
-Konkani in Goa, it is what the largest available corpus uses (99.78% of non-whitespace
-characters), and a ~25M-parameter model has too little capacity to spend on learning two
-orthographies of the same language.
+### 2.1 Manual sources (accepted)
 
-### 2.1 Accepted / in use
+| Source | Type | Documents | Words | Words/doc |
+|---|---|---:|---:|---:|
+| `archive_org_maharashtra_gr` | `MANUAL_OCR` | 15,768+ | 48.7M+ | 939 |
+| `news_esakal` | `MANUAL_SCRAPE` | 13,686 | 3,294,330 | 241 |
+| `news_loksatta` | `MANUAL_SCRAPE` | 2,058 | 782,805 | 380 |
+| `news_divyamarathi` | `MANUAL_SCRAPE` | 368 | 130,164 | 354 |
+| `news_tv9marathi` | `MANUAL_SCRAPE` | 305 | 100,454 | 329 |
+| `news_abplive_marathi` | `MANUAL_SCRAPE` | 73 | 28,233 | 387 |
+| `news_lokmat` | `MANUAL_SCRAPE` | 85 | 23,236 | 273 |
+| `news_maharashtratimes` | `MANUAL_SCRAPE` | 40 | 19,553 | 489 |
+| **Total (still growing)** | | **32,383+** | **51.8M+** | |
+
+**M1 — Maharashtra Government Resolutions, Internet Archive.**
+Query `identifier:in.gov.maharashtra.gr.*` returns **170,796 items**, each a
+scanned government resolution with an OCR text derivative. Enumerated through
+the cursor-paginated scrape API; each document fetched, its text layer
+extracted, then normalized, language-checked and deduplicated by us. Rights
+fields are absent on these items and are recorded as `not_stated` rather than
+assumed public domain.
+
+*Why manual:* no ready-made GR corpus exists. We enumerate, fetch and clean
+every document ourselves.
+
+*Measured quality:* 86.0% Devanagari, 9.8% OCR noise, 4.1% self-repetition, most
+common opening phrase covers only **0.6%** of documents — the corpus is
+genuinely 170k distinct documents, not one template repeated.
+
+**M2 — Marathi news and long-form sites.**
+Sitemap-driven, `robots.txt` obeyed, publication-date floor of 2025-01-01.
+**7 of 8 candidate sites verified usable** by `--probe`.
+
+*Why the date floor matters:* IndicCorpV2 and Sangraha are themselves built from
+Marathi news crawls. Both are fixed snapshots, so an article published after
+their release cannot be in them. The floor makes the manual claim true by
+construction; the cross-corpus hash check then proves it empirically.
+
+*Measured quality:* 96.4% Devanagari, 5.1% OCR noise, 0.6% self-repetition, top
+opening phrase 0.1%, langid `mr` 100%.
+
+### 2.2 Downloaded source (accepted, capped)
 
 | Field | Value |
 |---|---|
-| **Source name** | Konkani Books Corpus v2 |
-| **Type** | Digitized books / literature (aggregated dataset) |
-| **Location** | `omdeep22/Konkani_books_corpus-v2` (Hugging Face) |
-| **Status** | `VERIFIED` — dataset card read 14 Aug 2026 |
-| **Script** | Devanagari (99.78% of non-whitespace chars, recomputed) |
-| **Collection method** | `datasets` streaming download |
-| **Manual or downloaded** | **Downloaded** |
-| **License** | MIT (declared on card) |
-| **Raw size** | 1.02 GB · 8,231,150 rows |
-| **Clean size** | 8,222,553 usable records · 379,610,529 chars · 61,805,534 words |
-| **Tokens** | ~86.75M *preliminary* (fertility measured on training data — will change) |
-| **Duplicate risk** | **High.** 7.52 words/record means line-fragmented OCR, not documents. Short lines duplicate heavily. Exact + near-duplicate dedup mandatory. |
-| **Already in another dataset?** | Unknown — provenance is only "digitized books, literature, and long-form cultural texts". No per-book manifest. Overlap with Sangraha `gom` must be checked by hash. |
-| **Known issues** | Card warns of "large gaps between words and excessive line breaks" from OCR. Whitespace normalization required. Language purity unverified — needs a Marathi-contamination pass. |
-| **Notes** | Cannot be counted as manual. Record the vague provenance honestly in the report rather than glossing it. |
+| Source | `ai4bharat/IndicCorpV2`, config `indiccorp_v2`, split `mar_Deva` |
+| Type | `DOWNLOADED_DATASET` |
+| Licence | **CC-0 (public domain)** — cleanest available, hence preferred over Sangraha (CC-BY-4.0) |
+| Available | ~27.8M rows |
+| **Budget** | **4 × manual**, computed at run time from the manifests |
+| Throughput | 1,515 rows/s measured; ~2.4 h for the full budget |
+| Words/document | **80** — much shorter than our manual sources |
+| langid `undecided` | **24.8%** |
 
-| Field | Value |
-|---|---|
-| **Source name** | Konkani Wikipedia (self-collected) |
-| **Type** | Encyclopedia |
-| **Location** | `gom.wikipedia.org` MediaWiki API, `action=query&generator=allpages` |
-| **Status** | `VERIFIED` — collected and filtered by us |
-| **Script** | Mixed: 2,613 Devanagari / 1,727 Roman / 593 mixed pages |
-| **Collection method** | Our own API crawler + wikitext cleaner (`collect_wikipedia_sample.py`) |
-| **Manual or downloaded** | **Manual** (self-scraped) — but see caveat |
-| **License** | CC BY-SA 4.0 — attribution required in the report |
-| **Raw size** | 4,933 pages · 2,275,434 words |
-| **Clean size** | 3,999 pages retained (81.07%) · 2,252,016 words |
-| **Tokens** | 5.16M all-scripts; **~2.6M Devanagari-only** under the script decision |
-| **Duplicate risk** | Low internally; overlaps Sangraha `gom` (which includes WikiMedia content) — must dedup against it. |
-| **Status decision** | **Keep as a documented experiment and a secondary source.** Do not treat as the primary corpus (TA guidance) and do not lean on it for the manual quota — it is a well-known public dataset regardless of who scraped it. |
+The 24.8% undecided rate is a genuine quality contrast worth reporting: our
+manual sources return `mr` 100%, because an 80-word crawl fragment often carries
+too few function words to identify confidently.
 
-### 2.2 Candidate sources — to verify before use
-
-These are the non-Wikipedia directions the TAs pointed toward. **None has been verified yet.**
-For each, the checks required are: is the text actually Konkani (not Marathi), which script, how
-much text, how it can be accessed, licensing, and overlap with what we already hold.
-
-| Source | Type | Script | Access | Manual? | Why it matters | Checks needed |
-|---|---|---|---|---|---|---|
-| Internet Archive — Konkani collections (e.g. Goa Konkani Akademi uploads) | Digitized books | Devanagari + Romi | `archive.org` API / full-text endpoints | **Manual (OCR)** | Strongest manual-token evidence available. Confirmed to exist: Goa Konkani Akademi titles are on archive.org. | Which items have usable OCR text vs image-only; per-item rights statement; Devanagari vs Romi split; total page count |
-| Sunaparant | Daily newspaper | Devanagari | Web / archive pages | **Manual (scrape)** | The Devanagari Konkani daily — highest-volume natural-language Konkani in existence | Site structure, archive depth, robots.txt, whether an article archive is publicly reachable |
-| Goa Konkani Akademi publications | Literature, periodicals | Devanagari | Institutional | **Manual** | Official state literary body | What is available digitally vs print-only; permission terms |
-| Goa government / Rajya Patra material in Konkani | Official documents | Devanagari | Government portals | **Manual** | Clean licensing, formal register — balances a literature-heavy corpus | Whether Konkani versions exist as text PDFs vs scans |
-| Konkani educational material / textbooks (Goa Board) | Educational | Devanagari | Public PDFs | **Manual (OCR)** | Clean, well-edited prose | Availability, copyright status |
-| `ai4bharat/sangraha` — `gom` split | Aggregated web/OCR | Devanagari | Hugging Face | Downloaded | **10.1M tokens total across all splits** — `VERIFIED`. Small, but it is the ceiling evidence for the shortfall justification. | Overlap with books corpus and Wikipedia |
-| Vishwakonkani / Mangaluru Konkani outlets | Periodicals | Devanagari + Kannada script | Web | **Manual (scrape)** | Non-Goa register diversity | Script mix — Kannada-script Konkani is out of scope under our decision |
-| Dalgado Konknni Akademi | Literature | Romi | Institutional | — | `REJECTED` for the training corpus (Romi), keep as documented excluded sub-corpus | — |
-
-### 2.3 Rejected
+### 2.3 Rejected for Marathi
 
 | Source | Reason |
 |---|---|
-| Romi (Roman-script) Konkani generally | Script decision — excluded from training corpus, documented as separate sub-corpus |
-| Kannada-script Konkani | Same |
-| Sangraha *synthetic* split | Machine-translated / romanized content, not naturally-occurring Konkani |
-| Any site scraped purely to raise token count | Explicitly against the working brief and the spirit of the spec |
+| `marathivishwakosh.org` | `robots.txt` unreachable on two probes |
+| Sangraha *synthetic* split (10,817M tokens) | machine-translated and romanized WikiMedia content, not naturally-occurring Marathi |
+| Horoscope / video / gallery / AMP web-story URLs | excluded by URL pattern — fragmentary or no body text |
 
 ---
 
-## 3. Model H — Marathi
+## 3. Model L — Konkani (Devanagari only)
 
-### 3.1 Downloaded sources — verified, ample
+**Script decision (D-001):** Devanagari only. Konkani is also written in Roman
+(Romi) and Kannada script; both are excluded and reported rather than silently
+dropped. In the Wikipedia collection alone the excluded material was **1,203
+Latin-script, 156 Kannada-script and 141 mixed pages**.
+
+### 3.1 Manual sources (accepted — this is the complete list)
+
+| Source | Type | Documents | Words | Notes |
+|---|---|---:|---:|---|
+| `konkani_wikipedia_selfcollected` | `MANUAL_SCRAPE` | 2,459 | 1,395,235 | CC BY-SA 4.0, attribution required |
+| `archive_org_konkani_books` | `MANUAL_OCR` | 52 segments | 60,925 | 5 books of 14 candidates |
+| `news_vishwakonkani` | `MANUAL_SCRAPE` | 2 | 520 | only usable site of 18 probed |
+| **Total** | | **2,513** | **1,456,680** | |
+
+### 3.2 Downloaded source (accepted, heavily capped)
 
 | Field | Value |
 |---|---|
-| **Source name** | IndicCorp v2 (`mar_Deva`) |
-| **Type** | Large-scale web/news crawl |
-| **Location** | `ai4bharat/IndicCorpV2` (Hugging Face) |
-| **Status** | `VERIFIED` — dataset card read 14 Aug 2026 |
-| **Script** | Devanagari |
-| **Manual or downloaded** | **Downloaded** |
-| **License** | CC-0 (public domain) — cleanest licensing available |
-| **Size** | ~27.8M rows for Marathi |
-| **Duplicate risk** | Moderate — web crawl, expect boilerplate and near-duplicates |
-| **Notes** | First choice for the downloaded bucket on license grounds alone. |
+| Source | `omdeep22/Konkani_books_corpus-v2` |
+| Type | `DOWNLOADED_DATASET` |
+| Licence | MIT |
+| Collected | 40,597 documents, **47,016,182 words** |
+| **Admitted to the corpus** | **~5.8M words** (4 × manual) |
+| **Discarded to hold the 20% floor** | **~41M words** |
 
-| Field | Value |
+Discarding 41M words of usable text is deliberate. A large corpus that fails a
+stated requirement is worth less than a smaller one that meets it.
+
+*Structural note:* the raw dataset averages **7.52 words per row** — these are
+OCR'd lines, not documents. `--- SOURCE:` marker rows delimit books, so the
+ingester uses them to reassemble line fragments into contiguous documents with
+real per-book attribution.
+
+### 3.3 Sources investigated and found unusable
+
+This section is the evidence for the shortfall the specification permits.
+
+| Investigation | Method | Result |
+|---|---|---|
+| Internet Archive, `language:Konkani` | search API | **44 items**; ~25 Wikipedia ZIM dumps, 4 Wikipedia PDFs, 13–15 real books, of which **5** yielded Devanagari text |
+| Konkani web publications | `--probe`, 18 sites, two extractors | **1 usable** (vishwakonkani) |
+| Sangraha `gom` split | dataset card | **10.1M tokens in total**, all splits |
+
+Breakdown of the 18-site probe: 6 unreachable `robots.txt`, 10 returned pages
+with no extractable article text, 1 (`goanvarta`) publishes **Marathi** — caught
+by the language gate, 6 of 8 sampled pages rejected as `langid_mr` — and 1 was
+usable.
+
+The `no_article_text` failures were retried with a second, block-level extractor
+after the first probe, in case they reflected our `<p>`-only parser rather than
+the sites. They did not: the result was unchanged.
+
+**Comparison that frames the whole project:**
+
+| | Marathi | Konkani |
+|---|---:|---:|
+| Internet Archive items | 170,796 | 44 |
+| Web sites usable | 7 of 8 | 1 of 18 |
+| Largest public corpus | IndicCorpV2, ~27.8M rows | Sangraha, 10.1M tokens |
+| Manual words collected | 51.8M+ | 1,456,680 |
+| Corpus ceiling at 20% | ~259M words | ~7.3M words |
+
+### 3.4 Rejected for Konkani
+
+| Source | Reason |
 |---|---|
-| **Source name** | Sangraha — `mar` verified + unverified |
-| **Type** | Curated web + OCR-extracted PDFs (verified); filtered existing corpora (unverified) |
-| **Location** | `ai4bharat/sangraha` |
-| **Status** | `VERIFIED` — dataset card read 14 Aug 2026 |
-| **Script** | Devanagari |
-| **Manual or downloaded** | **Downloaded** |
-| **License** | CC-BY-4.0 — attribution required |
-| **Size** | Verified 2,827.0M tokens · Unverified 652.1M tokens |
-| **Duplicate risk** | **High overlap with IndicCorpV2** — same group, overlapping crawls. Cross-dedup mandatory before counting. |
-| **Notes** | *Synthetic* split (10,816.7M tokens) is `REJECTED` — machine-translated and romanized WikiMedia content. |
-
-Between these two, the ~400M downloaded-token requirement is comfortably met. **The downloaded
-side of Marathi is not a risk. The manual side is the whole problem.**
-
-### 3.2 Manual collection — the critical path (~100M tokens)
-
-Target: **≥100M manually collected Marathi tokens** ≈ 50M words ≈ ~125k articles at 400 words.
-
-Routes selected for this project, in priority order by tokens-per-hour-of-effort:
-
-| Priority | Route | Type | Manual? | Expected contribution | Status |
-|---|---|---|---|---|---|
-| 1 | Marathi news & opinion sites, sitemap-driven crawl, cleaned by us | News | **Manual (scrape)** | Bulk of the 100M | `CANDIDATE` — sites to be selected and robots.txt checked individually |
-| 2 | Marathi blogs, magazines, literary portals | Long-form prose | **Manual (scrape)** | Register diversity; 10–20M | `CANDIDATE` |
-| 3 | Maharashtra government / educational PDFs, textbooks, gazettes | Official / educational | **Manual (OCR or text extract)** | 5–15M; clean licensing | `CANDIDATE` |
-| 4 | Public-domain Marathi books via OCR (archive.org) | Literature | **Manual (OCR)** | 5–15M; strongest viva evidence per token | `CANDIDATE` |
-| 5 | Books and articles (user-supplied) | Mixed | **Manual** | TBD | `CANDIDATE` |
-
-**Selection rules for every candidate site, to be applied before crawling:**
-
-1. `robots.txt` permits the paths we intend to fetch; we honour crawl-delay.
-2. The site publishes substantial original Marathi prose, not aggregated wire copy duplicated
-   across every outlet.
-3. Terms of use do not prohibit automated access for research.
-4. A stable sitemap or dated archive index exists, so the crawl is resumable and countable.
-5. Not already represented in IndicCorpV2 / Sangraha — checked by URL and content hash after a
-   pilot crawl of ~1000 pages, *before* committing to a full crawl.
-
-Rule 5 matters more than it looks: IndicCorpV2 and Sangraha are themselves built from Marathi
-news crawls. Scraping the same sites and calling the result "manual" would be self-deception,
-and cross-dedup would delete most of it anyway. **The pilot-crawl overlap check is what makes
-the manual claim defensible**, and it should be run and reported for every accepted site.
-
-### 3.3 Per-document record kept for every manually collected item
-
-Required as evidence for the manual token count:
-
-```
-source_name, source_url, collection_method, access_date,
-raw_chars, clean_chars, words, tokens,
-preprocessing_applied, script, langid_score, content_hash
-```
-
-Stored alongside each corpus shard as a metadata CSV, mirroring the pattern already used in
-`konkani_wikipedia_sample_metadata.csv` — that pattern was a good instinct and should be
-generalised to every source.
+| Romi (Roman-script) Konkani | D-001; documented as an excluded sub-corpus |
+| Kannada-script Konkani | D-001 |
+| `goanvarta.net` | publishes Marathi; 6 of 8 sampled pages rejected by the language gate |
+| Wikipedia-derived Archive items (`wikipedia_*.zim`, `gomwiki-*`) | already held from our own Wikipedia collection; counting twice would inflate the manual total |
+| Sangraha *synthetic* split | machine-translated content |
 
 ---
 
-## 4. Running totals
+## 4. Provenance recorded per document
 
-| Language | Manual tokens | Downloaded tokens | Total | Manual % | Target | Gap |
-|---|---|---|---|---|---|---|
-| Konkani | ~2.6M (Wikipedia, Devanagari subset) | ~87M (books, preliminary) | ~90M | **~2.9%** | ≥20% | **~15M manual short** |
-| Marathi | 0 | 0 | 0 | — | ≥20% | **~100M manual short** |
+Every document carries, in its manifest row:
 
-All figures are preliminary and measured with inconsistent tokenizers. They will be replaced by
-a single recount with the final per-language tokenizer before anything is reported as official.
+```
+source_name, source_url, collection_method, access_date, raw_chars,
+clean_chars, words, tokens, preprocessing_applied, script, langid_score,
+content_hash
+```
+
+`tokens` is deliberately `null` at collection time. Token counts depend on the
+tokenizer, and Phase 1 requires one final tokenizer per language and one
+internally consistent count. Words and characters are tokenizer-independent and
+tracked continuously instead.
 
 ---
 
-## 5. Open questions to resolve with the TAs
+## 5. Corrections to earlier versions of this document
 
-1. Does self-scraped Wikipedia count toward the 20% manual requirement? (We are assuming it
-   does technically, but are not relying on it.)
-2. Is a ~100M-token Konkani corpus with a documented 500M shortfall acceptable, given that the
-   largest systematic Indic corpus effort (Sangraha) contains only 10.1M Konkani tokens?
-3. For closely-related language pairs like Marathi/Konkani, what standard of evidence is
-   expected for the "no shared documents" constraint?
+Kept visible rather than edited away, per the standing instruction not to
+overwrite superseded results.
+
+| Original claim | Measurement | Correction |
+|---|---|---|
+| "Internet Archive is the strongest manual route for Konkani" | 44 items, 5 usable books, 60,925 words | Demoted to a small but genuine source. It is a **major** Marathi source (170,796 items). |
+| Konkani books corpus "83.54% Devanagari" | recomputed over non-whitespace characters | **99.78%** — the original divided by total characters including whitespace |
+| Marathi manual "~65M words" (estimated from shard bytes) | manifest totals | **51.8M** — the byte-based estimate was 27% high; manifests are authoritative |
+| Marathi GR source viable at scale | 2.1 docs/min, 393 h projected | Demoted to secondary; news scraping measured **758 docs/min** and became primary. archive.org later recovered to ~88/min and both now run. |

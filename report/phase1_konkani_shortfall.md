@@ -151,6 +151,35 @@ uncollected, measured:
 | web sites not yet probed | 0 (all 18 probed) |
 | **total available** | **10,100,000** |
 
+### 6.1 Two further Hugging Face datasets, ingested and measured (19 Aug)
+
+A final systematic search of the Hugging Face dataset index - by language filter
+rather than by card text, which is how the earlier search missed them - found two
+Konkani datasets of substantial file size. Both were ingested through the full
+pipeline rather than judged from their cards:
+
+| dataset | size on HF | rows / files read | **unique words yielded** |
+|---|---:|---:|---:|
+| `cfilt/RoundTripOCR-konkani` (IIT Bombay) | 1.44 GB | 1,950,874 rows | **87,497** |
+| `praveenkumar99/Konkani_Raw` | 1.37 GB | 370 segments | **11,689** |
+| **total** | **2.81 GB** | | **99,186** |
+
+**2.81 GB of published "Konkani" data yielded 99,186 usable words - 0.09% of our
+corpus.** The reasons are measured, not inferred:
+
+* RoundTripOCR is an OCR error-correction dataset that renders each source
+  sentence in **hundreds of different fonts**. Of 1,950,874 rows, **1,880,882
+  were exact duplicates** of text already seen. Its file size measures font
+  coverage, not text.
+* `Konkani_Raw` rejected **245 of 370** segments as non-Devanagari - much of what
+  is published as "Konkani" is Roman-script (Romi) or English. Its
+  `translated_konkani_*` files were excluded outright as machine translation.
+
+This is the clearest available evidence for the shortfall. We did not estimate
+the scarcity of Konkani text from dataset cards or search-result counts; we
+ingested the largest published datasets in full and counted what survived
+deduplication, script filtering and language identification.
+
 Ingesting Sangraha in full would move Konkani from 33.2% to **35.2%** of target.
 The remaining ~324M tokens do not exist in public digital Konkani. This is not a
 statement about our search budget; it is the result of having exhausted the

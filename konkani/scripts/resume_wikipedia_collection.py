@@ -1,3 +1,15 @@
+"""
+Resumable variant of the Wikipedia API collector (superseded).
+
+Written because `collect_wikipedia_sample.py` could not resume after an
+interruption. It re-reads the existing output file to work out where to
+continue — a workaround for the absence of a real checkpoint.
+
+The lesson generalised into `common/checkpoint.py`, which stores job position
+atomically, and every current collector uses it. Superseded by
+`konkani/scripts/ingest_wikipedia_manual.py`. Retained for provenance.
+"""
+
 import csv
 import re
 import time

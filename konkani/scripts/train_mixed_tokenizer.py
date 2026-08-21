@@ -1,3 +1,14 @@
+"""
+Preliminary "mixed" Konkani tokenizer experiment (superseded).
+
+Variant of `train_preliminary_tokenizer.py` trained over a sample mixing books
+text with Wikipedia text, to see whether domain mixing changed subword
+segmentation. Same unjustified vocab_size=32000.
+
+Superseded by `tools/build_tokenizer.py`. Retained for provenance; its output
+is not used by any Phase 1 artifact.
+"""
+
 import sentencepiece as spm
 
 

@@ -1,3 +1,12 @@
+"""
+Preliminary tokenizer statistics over the Wikipedia sample (superseded).
+
+Applied the mixed preliminary tokenizer to the raw Wikipedia sample. Same
+train-on/measure-on flaw as `tokenizer_stats.py`.
+
+Superseded by `tools/build_tokenizer.py`. Retained for provenance.
+"""
+
 import sentencepiece as spm
 
 

@@ -1,3 +1,17 @@
+"""
+Konkani Wikipedia collection via the MediaWiki API (superseded).
+
+Walked `gom.wikipedia.org`'s allpages generator and wrote article text plus a
+metadata CSV. Worked, but had no checkpointing: an interrupted run lost its
+position, which is why `resume_wikipedia_collection.py` was written alongside
+it rather than as a replacement.
+
+Superseded by `konkani/scripts/ingest_wikipedia_manual.py`, which reads the
+official dump instead of paging the live API, is checkpointed through
+`common/checkpoint.py`, and writes provenance manifests. Retained for
+provenance; its output is not used by any Phase 1 artifact.
+"""
+
 import csv
 import re
 from pathlib import Path

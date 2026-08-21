@@ -1,8 +1,14 @@
 """
-Basic corpus audit for Konkani Phase 1.
+Early plain-text corpus audit (superseded).
 
-This script performs preliminary statistics on a plain-text corpus.
-Tokenizer-level statistics will be added later.
+Reported basic statistics — document counts, word counts, Devanagari and Latin
+character shares — for a flat text file. Its own docstring noted that
+"tokenizer-level statistics will be added later"; they were, elsewhere.
+
+Superseded by `tools/corpus_stats.py`, which reads the manifests rather than a
+flat file, so it can separate manual, downloaded and synthetic text, and by
+`tools/pipeline_accounting.py`, which reconciles every stage. Retained for
+provenance.
 """
 
 import argparse

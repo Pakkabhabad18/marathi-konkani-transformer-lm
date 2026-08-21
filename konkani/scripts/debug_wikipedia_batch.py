@@ -1,3 +1,12 @@
+"""
+One-off probe of Wikipedia API batching (superseded).
+
+As `debug_wikipedia_api.py`, but checking how the API paginates a multi-article
+request and where continuation tokens appear. Diagnostic only.
+
+Retained for provenance.
+"""
+
 import json
 import requests
 

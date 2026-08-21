@@ -1,3 +1,12 @@
+"""
+Metadata analysis for the early Wikipedia sample (superseded).
+
+Summarised the metadata CSV written by `collect_wikipedia_sample.py` — article
+length distribution, namespace counts — to decide filter thresholds.
+
+Superseded along with the collector it analysed. Retained for provenance.
+"""
+
 import csv
 from collections import Counter
 

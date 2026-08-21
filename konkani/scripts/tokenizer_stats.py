@@ -1,3 +1,18 @@
+"""
+Statistics for the preliminary tokenizer (superseded).
+
+Reports token counts for `preliminary_konkani_bpe.model` over the early
+sample file.
+
+Superseded by `tools/build_tokenizer.py`, which reports the same statistics
+plus vocabulary utilisation and hapax count, and — importantly — measures them
+on HELD-OUT text rather than on the training file. Measuring fertility on the
+data the tokenizer was fitted to understates it, which is the flaw this script
+has and the reason it was replaced.
+
+Retained for provenance.
+"""
+
 import sentencepiece as spm
 
 

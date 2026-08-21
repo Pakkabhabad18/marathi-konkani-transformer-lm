@@ -1,3 +1,13 @@
+"""
+One-off probe of the Konkani Wikipedia API (superseded).
+
+Issued a single `allpages` query against `gom.wikipedia.org` and printed the raw
+JSON, to work out the response shape before writing the collector. Diagnostic
+only — it collects nothing.
+
+Retained for provenance.
+"""
+
 import json
 import requests
 

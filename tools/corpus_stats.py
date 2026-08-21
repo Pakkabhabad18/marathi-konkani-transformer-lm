@@ -45,10 +45,23 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from common.manifest import atomic_write_json, read_manifest           # noqa: E402
+from common.manifest import (atomic_write_json, read_manifest,        # noqa: E402
+                             CollectionType)
 
 MANUAL_FLOOR = 0.20
 TOKEN_TARGET = 500_000_000
+
+
+def source_tag(entry: dict) -> str:
+    """Provenance label for one source, in the same precedence as the totals.
+
+    Synthetic wins over manual/downloaded because a machine-translated source is
+    neither: it is model output, and reporting it as "downloaded" would make the
+    real-data share of the corpus look larger than it is.
+    """
+    if entry.get("is_synthetic"):
+        return "synthetic"
+    return "manual" if entry.get("is_manual") else "downloaded"
 
 
 def load_manifest_rows(language: str) -> list[dict]:
@@ -129,14 +142,19 @@ def main() -> int:
     # ---- provenance and accounting ---------------------------------------
     by_source: dict = defaultdict(lambda: {
         "documents": 0, "words": 0, "characters": 0, "raw_characters": 0,
-        "is_manual": False, "collection_method": "", "urls": set(),
+        "is_manual": False, "is_synthetic": False,
+        "collection_method": "", "urls": set(),
         "langid_scores": [], "doc_words": []})
     scripts: Counter = Counter()
     langid_labels: Counter = Counter()
     preprocessing: Counter = Counter()
 
-    manual_words = downloaded_words = 0
-    manual_docs = downloaded_docs = 0
+    # Three provenance buckets, not two. `machine_translated` is a distinct
+    # CollectionType (D-036) precisely so it can never be folded into the
+    # downloaded figure, so the accounting here has to keep it separate too:
+    # "downloaded" below means downloaded AND human-written.
+    manual_words = downloaded_words = synthetic_words = 0
+    manual_docs = downloaded_docs = synthetic_docs = 0
 
     for row in rows:
         source = row.get("source_name", "unknown")
@@ -147,6 +165,10 @@ def main() -> int:
         entry["characters"] += int(row.get("clean_chars") or 0)
         entry["raw_characters"] += int(row.get("raw_chars") or 0)
         entry["is_manual"] = bool(row.get("is_manual"))
+        # The manifest records collection_type verbatim; comparing against the
+        # enum's value keeps this in step with common/manifest.py.
+        entry["is_synthetic"] = (
+            row.get("collection_type") == CollectionType.MACHINE_TRANSLATED.value)
         entry["collection_method"] = row.get("collection_method", "")
         entry["doc_words"].append(words)
         score = row.get("langid_score")
@@ -158,21 +180,36 @@ def main() -> int:
         for step in row.get("preprocessing_applied", []) or []:
             preprocessing[step] += 1
 
-        if row.get("is_manual"):
+        # Order matters: synthetic is tested first because a machine-translated
+        # row is never manual, and testing is_manual first would silently drop
+        # it into the downloaded bucket.
+        if entry["is_synthetic"]:
+            synthetic_words += words
+            synthetic_docs += 1
+        elif row.get("is_manual"):
             manual_words += words
             manual_docs += 1
         else:
             downloaded_words += words
             downloaded_docs += 1
 
-    total_words = manual_words + downloaded_words
-    total_docs = manual_docs + downloaded_docs
+    total_words = manual_words + downloaded_words + synthetic_words
+    total_docs = manual_docs + downloaded_docs + synthetic_docs
     manual_share = manual_words / total_words if total_words else 0.0
+    synthetic_share = synthetic_words / total_words if total_words else 0.0
+    # "Real" = written or translated by a human, i.e. everything not generated
+    # by a model. This is the figure to quote when asked how much of the corpus
+    # is genuine language data.
+    real_words = manual_words + downloaded_words
 
     print(f"\nDocuments      {total_docs:>15,}")
     print(f"Words          {total_words:>15,}")
     print(f"  manual       {manual_words:>15,}  ({manual_share:.1%})")
-    print(f"  downloaded   {downloaded_words:>15,}  ({1 - manual_share:.1%})")
+    print(f"  downloaded   {downloaded_words:>15,}  "
+          f"({downloaded_words / total_words if total_words else 0:.1%})")
+    print(f"  synthetic    {synthetic_words:>15,}  ({synthetic_share:.1%})")
+    print(f"  real (man+dl){real_words:>15,}  "
+          f"({real_words / total_words if total_words else 0:.1%})")
 
     # ---- sources ----------------------------------------------------------
     print("\n" + "-" * 74)
@@ -182,7 +219,7 @@ def main() -> int:
     print("-" * 74)
     for source, e in sorted(by_source.items(), key=lambda kv: -kv[1]["words"]):
         per_doc = e["words"] / e["documents"] if e["documents"] else 0
-        tag = "manual" if e["is_manual"] else "downloaded"
+        tag = source_tag(e)
         print(f"{source[:33]:<34}{e['documents']:>9,}{e['words']:>14,}"
               f"{per_doc:>8,.0f}{tag:>12}")
 
@@ -280,7 +317,11 @@ def main() -> int:
         "language": lang,
         "documents": total_docs,
         "words": {"total": total_words, "manual": manual_words,
-                  "downloaded": downloaded_words, "manual_share": manual_share},
+                  "downloaded": downloaded_words,
+                  "synthetic": synthetic_words, "real": real_words,
+                  "manual_share": manual_share,
+                  "synthetic_share": synthetic_share,
+                  "real_share": real_words / total_words if total_words else 0.0},
         "sources": {
             s: {k: (v if k not in ("urls", "langid_scores", "doc_words") else None)
                 for k, v in e.items() if k not in ("urls", "langid_scores", "doc_words")}
@@ -303,13 +344,20 @@ def main() -> int:
               f"- Documents: **{total_docs:,}**",
               f"- Words: **{total_words:,}**",
               f"- Manual: **{manual_words:,}** ({manual_share:.1%})",
-              f"- Downloaded: **{downloaded_words:,}**", "",
+              f"- Downloaded (real): **{downloaded_words:,}** "
+              f"({downloaded_words / total_words if total_words else 0:.1%})",
+              f"- Synthetic (MT / LLM-generated): **{synthetic_words:,}** "
+              f"({synthetic_share:.1%})",
+              f"- Real text (manual + downloaded): **{real_words:,}** "
+              f"({real_words / total_words if total_words else 0:.1%})", "",
+              "`synthetic` is reported as its own bucket and is never counted "
+              "toward the 20% manual floor.", "",
               "## Sources", "",
               "| Source | Documents | Words | Words/doc | Type |",
               "|---|---:|---:|---:|---|"]
         for source, e in sorted(by_source.items(), key=lambda kv: -kv[1]["words"]):
             per_doc = e["words"] / e["documents"] if e["documents"] else 0
-            tag = "manual" if e["is_manual"] else "downloaded"
+            tag = source_tag(e)
             md.append(f"| {source} | {e['documents']:,} | {e['words']:,} | "
                       f"{per_doc:,.0f} | {tag} |")
         if splits:

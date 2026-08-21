@@ -2,7 +2,7 @@
 
 Every entry: the decision, why, and what would change our mind. Newest first
 within each section. This is the short document; the long reasoning lives in
-`phase1_viva_log.md`.
+`phase1_work_log.md`.
 
 ---
 
@@ -1174,31 +1174,16 @@ measured, not because it was material.
 
 ---
 
-## D-032 (revised) — Vocabulary 2,500, and what it costs
+## D-032 (revised) — superseded by D-043
 
-The vocabulary was re-swept over 2,000 / 2,500 / 3,000 / 4,000 / 5,000 with
-fertility measured on held-out text:
+This entry recorded the move to vocabulary 2,500 and quoted a fertility table
+from a sweep whose record was later overwritten when the final tokenizer was
+rebuilt. Those figures could not be reproduced, so they have been removed rather
+than left standing unverifiable.
 
-| vocab | fertility | embed+unembed (d=512) | % of 25M budget |
-|---:|---:|---:|---:|
-| 2,000 | 2.6714 | 2.05M | 8% |
-| **2,500** | **2.5333** | **2.56M** | **10%** |
-| 3,000 | 2.4262 | 3.07M | 12% |
-| 4,000 | 2.2832 | 4.10M | 16% |
-| 5,000 | 2.1836 | 5.12M | 20% |
-| 10,000 | 1.9506 | 10.24M | **41%** |
-
-**Chosen: 2,500 for both languages.** The governing argument is the parameter
-budget — at 10,000 the embedding and unembedding matrices alone consume 41% of a
-25M-parameter model, versus 10% at 2,500, returning ~7.7M parameters to depth
-and width.
-
-**The cost, stated plainly.** Fertility rises from 2.1836 to 2.5279, whole-word
-token coverage falls from 39.4% to 31.0%, and every training sequence is ~16%
-longer for the same text. And because tokens are what the target is measured in,
-**the same corpus reads 430M tokens at vocabulary 5,000 and 506M at 2,500**.
-That is a property of the metric. It is recorded here, in the README, and in the
-coverage report so that no reader has to discover it for themselves.
+The decision itself is unchanged. It is restated in **D-043** with a measured
+six-candidate sweep behind it, artifact at
+`report/phase1_tokenizer_sweep_konkani.json`.
 
 ---
 

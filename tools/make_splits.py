@@ -296,7 +296,14 @@ def main() -> int:
             return 0
 
         groups = cleaned
-        print(f"  {deduper.stats.to_dict()}")
+        # Print the MinHash deduper's counters ONLY when the near-duplicate
+        # pass actually ran. Under --exact-only that object is never used, so
+        # printing it emitted an all-zero dict directly beneath a line
+        # reporting thousands of exact duplicates dropped - which reads as a
+        # contradiction to anyone auditing the log. The exact-hash count above
+        # is the authoritative figure in that mode.
+        if not args.exact_only:
+            print(f"  minhash near-duplicate stats: {deduper.stats.to_dict()}")
         if removed_by_source:
             print("  removed per source:")
             for source, count in sorted(removed_by_source.items(),

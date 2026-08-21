@@ -60,6 +60,8 @@ USAGE
     python3 konkani/scripts/ingest_hf_konkani.py --source roundtripocr --pilot 50000
     python3 konkani/scripts/ingest_hf_konkani.py --source roundtripocr
     python3 konkani/scripts/ingest_hf_konkani.py --source konkani_raw
+    python3 konkani/scripts/ingest_hf_konkani.py --source sangraha_gom --pilot 500
+    python3 konkani/scripts/ingest_hf_konkani.py --source sangraha_gom
 """
 
 from __future__ import annotations
@@ -107,6 +109,165 @@ SOURCES = {
         "exclude_prefixes": ("translated_konkani_", "konkani_wikipedia"),
         "note": "Selective: MT-translated and Wikipedia files excluded.",
     },
+    # ------------------------------------------------------------------
+    # AI4Bharat Sangraha - the VERIFIED subset only.
+    #
+    # Sangraha ships three subsets. Only `verified` is ingested:
+    #
+    #   verified     web + PDF text that passed AI4Bharat's own language
+    #                and quality verification.               -> INGESTED
+    #   unverified   has no `gom` split at all (checked 19 Aug 2026: the
+    #                unverified tree contains asm ben guj hin kan mal mar
+    #                nep ori pan san tam tel urd - no Konkani).
+    #   synthetic    machine-translated from English. The TAs were explicit
+    #                that MT text is not accepted, and our own language gate
+    #                exists to keep translationese out.      -> EXCLUDED
+    #
+    # `gom` is Goan Konkani. Sangraha has no `kok` split, so `gom` is the
+    # whole of the Konkani available here: 14,491 rows / 76.7 MB of text
+    # (dataset-server `info`, 19 Aug 2026), one parquet file of 32.5 MB.
+    #
+    # We pass data_files explicitly rather than naming the config, because
+    # `load_dataset("ai4bharat/sangraha", "verified", split="gom")` resolves
+    # the whole 100 GB+ config listing before it can stream one split. The
+    # glob below touches one 32.5 MB file.
+    "sangraha_gom": {
+        "dataset": "ai4bharat/sangraha",
+        "source_name": "hf_sangraha_verified_gom",
+        "text_column": "text",
+        "data_files": "verified/gom/*.parquet",
+        "note": "AI4Bharat Sangraha, VERIFIED subset, gom (Goan Konkani) "
+                "split only. Synthetic/MT subset deliberately excluded.",
+    },
+    # ------------------------------------------------------------------
+    # MADLAD-400 (Google/AllenAI), `gom`. A 419-language document-level
+    # CommonCrawl derivative. Two tiers ship per language:
+    #
+    #   gom_clean_0000.jsonl.gz    5,255,127 bytes   -> INGESTED
+    #   gom_noisy_0000.jsonl.gz   11,055,944 bytes   -> INGESTED
+    #
+    # The `noisy` tier is included deliberately. MADLAD's "noisy" label means
+    # it failed *their* heuristics (short documents, high symbol ratio,
+    # possible language misidentification) - not that it is not Konkani. Our
+    # own gates are stricter on the axis we care about: the Devanagari floor
+    # and the Marathi discriminator both run over every document regardless of
+    # tier. Rejecting the noisy tier unmeasured would discard text on the
+    # strength of someone else's filter; running it through our gates and
+    # reporting the rejection rate is the defensible choice. The per-tier
+    # source names keep the two separable in the manifests, so if the noisy
+    # tier turns out to be junk it can be dropped without re-running anything.
+    "madlad_clean": {
+        "dataset": "allenai/MADLAD-400",
+        "source_name": "hf_madlad400_gom_clean",
+        "text_column": "text",
+        "data_files": "data/gom/gom_clean_0000.jsonl.gz",
+        "note": "MADLAD-400 gom, clean tier.",
+    },
+    "madlad_noisy": {
+        "dataset": "allenai/MADLAD-400",
+        "source_name": "hf_madlad400_gom_noisy",
+        "text_column": "text",
+        "data_files": "data/gom/gom_noisy_0000.jsonl.gz",
+        "note": "MADLAD-400 gom, noisy tier - kept only where it passes our "
+                "own Devanagari and Marathi gates.",
+    },
+    # ------------------------------------------------------------------
+    # GlotCC-V1 (CIS-LMU), `gom-Deva`. One 4,180,618-byte parquet.
+    # Text lives in `content`, not `text` (verified against the dataset
+    # server's first-rows response, 19 Aug 2026 - guessing this would have
+    # produced an empty ingest that still exited 0).
+    #
+    # `gom-Latn` exists and is NOT ingested: it is Romi Konkani, genuinely
+    # Konkani but not this corpus's script. `kok-Deva` does not exist in
+    # v1.0 - only gom-Deva and gom-Latn.
+    # ------------------------------------------------------------------
+    # SYNTHETIC / MACHINE-TRANSLATED (D-038).
+    #
+    # The SAME repository as `konkani_raw` above, but the files that entry
+    # deliberately excluded. When that entry was written, MT data was banned
+    # outright, so `translated_konkani_*.txt` was filtered out on principle.
+    # The TAs authorised MT as a last resort on 18 Aug 2026, which makes these
+    # files usable - and they are not a rounding error:
+    #
+    #     files ingested as `konkani_raw`        4,397,019 bytes
+    #     translated_konkani_* (excluded then) 870,725,308 bytes
+    #
+    # 870 MB, roughly 6.8x the entire real Konkani corpus. It is already in
+    # the local HuggingFace cache, because `snapshot_download` fetches the
+    # whole repository regardless of which files an entry reads.
+    #
+    # CLASSIFIED MACHINE_TRANSLATED. It is somebody else's MT output, which
+    # makes it synthetic exactly as if we had generated it: `is_manual` is
+    # False, and it is reported separately from downloaded text so the
+    # synthetic share of the corpus is always visible.
+    #
+    # The Devanagari floor and the Marathi discriminator still run over every
+    # segment. A file labelled "translated Konkani" is not evidence that its
+    # contents are Konkani - that has to be measured, and the rejection counts
+    # in the run summary are that measurement.
+    "konkani_raw_translated": {
+        "dataset": "praveenkumar99/Konkani_Raw",
+        "source_name": "hf_konkani_raw_machine_translated",
+        "text_column": None,
+        "include_prefixes": ("translated_konkani",),
+        "exclude_prefixes": (),
+        "collection_type": CollectionType.MACHINE_TRANSLATED,
+        "note": "SYNTHETIC: pre-existing machine-translated Konkani, 870 MB. "
+                "Authorised by TAs 18 Aug 2026 as a last resort.",
+    },
+    # ------------------------------------------------------------------
+    # omdeep22/Konkani_books_corpus - the V1 of the books corpus. We already
+    # hold v2 (`hf_konkani_books_corpus_v2`, 47M words). v1 is a separate
+    # repository, 184,095,970 bytes across train/valid/test .txt files.
+    #
+    # v1 is very probably largely contained in v2, and that is fine: the
+    # split-time exact-hash pass compares every document against the whole
+    # corpus, so anything already present is dropped and the "removed per
+    # source" line reports exactly how much was redundant. Ingesting it and
+    # letting dedup MEASURE the overlap is better than assuming v1 adds
+    # nothing and skipping a real source - assuming is how gom.txt hid.
+    "books_corpus_v1": {
+        "dataset": "omdeep22/Konkani_books_corpus",
+        "source_name": "hf_konkani_books_corpus_v1",
+        "text_column": None,
+        "include_prefixes": ("train", "valid", "test"),
+        "exclude_prefixes": (),
+        "note": "Books corpus v1. Overlap with v2 is resolved by the "
+                "split-time exact-hash pass and reported, not assumed.",
+    },
+    # ------------------------------------------------------------------
+    # SYNTHETIC, LLM-GENERATED (D-039). Both of these are model output, not
+    # collected text, and both are classified MACHINE_TRANSLATED.
+    #
+    #   konkani/konkani-instruct-100k    445,965,908 bytes
+    #       Dataset card: "Generated using a highly controlled synthetic
+    #       distillation pipeline (Gemini 3)". Fields are `instruction`,
+    #       `response`, `system`. We take ONLY `response`, because
+    #       `instruction` and `system` are largely English prompt scaffolding.
+    #
+    # EXPECT A LOW YIELD, AND EXPECT THAT TO BE CORRECT. The responses embed
+    # grammar tables, English glosses and script annotations. Anything below
+    # the 0.70 Devanagari floor is rejected, which is the behaviour we want:
+    # a markdown table with English column headers is not Konkani prose and
+    # has no business in a language-model corpus. The rejection count in the
+    # run summary is the measurement of how much of this was usable text
+    # rather than instruction-tuning scaffolding.
+    "instruct_100k": {
+        "dataset": "konkani/konkani-instruct-100k",
+        "source_name": "hf_konkani_instruct_100k_synthetic",
+        "text_column": "response",
+        "data_files": "konkani_Train.jsonl",
+        "collection_type": CollectionType.MACHINE_TRANSLATED,
+        "note": "SYNTHETIC: Gemini-3 distillation output. Only the `response` "
+                "field is used; English scaffolding fails the Devanagari gate.",
+    },
+    "glotcc": {
+        "dataset": "cis-lmu/GlotCC-V1",
+        "source_name": "hf_glotcc_v1_gom_deva",
+        "text_column": "content",
+        "data_files": "v1.0/gom-Deva/*.parquet",
+        "note": "GlotCC-V1 gom-Deva. Roman-script gom-Latn excluded by script.",
+    },
 }
 
 
@@ -147,7 +308,14 @@ def iter_rows(cfg: dict, limit: int):
     col = cfg["text_column"]
 
     if col:
-        ds = load_dataset(name, split="train", streaming=True)
+        data_files = cfg.get("data_files")
+        if data_files:
+            # Explicit file glob: streams one shard instead of resolving the
+            # entire multi-language config (see the sangraha_gom note above).
+            ds = load_dataset(name, data_files=data_files, split="train",
+                              streaming=True)
+        else:
+            ds = load_dataset(name, split="train", streaming=True)
         for i, row in enumerate(ds):
             if limit and i >= limit:
                 return
@@ -193,6 +361,12 @@ def main() -> int:
 
     cfg = SOURCES[args.source]
     source_name = cfg["source_name"]
+    # Per-source, defaulting to DOWNLOADED. Only the deliberately
+    # machine-translated source overrides it, and it does so in the config
+    # table rather than at the call site, so the classification travels with
+    # the source definition and cannot drift.
+    collection_type = cfg.get("collection_type",
+                              CollectionType.DOWNLOADED_DATASET)
     out_dir = DATA_DIR / "processed" / source_name
     manifest_path = DATA_DIR / "manifests" / f"{source_name}.jsonl"
     checkpoint_path = DATA_DIR / "checkpoints" / f"{source_name}.json"
@@ -254,7 +428,7 @@ def main() -> int:
                     text=text, raw_text=raw,
                     source_name=source_name,
                     source_url=f"https://huggingface.co/datasets/{cfg['dataset']}",
-                    collection_type=CollectionType.DOWNLOADED_DATASET,
+                    collection_type=collection_type,
                     language=LANGUAGE,
                     preprocessing_applied=NORMALIZATION_STEPS + [
                         "hf_ingest", "devanagari_only_D001", "exact_dedup"],

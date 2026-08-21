@@ -44,6 +44,7 @@ USAGE
 from __future__ import annotations
 
 import argparse
+import time as _time
 import sys
 from pathlib import Path
 
@@ -67,14 +68,41 @@ def load_documents(language: str, sample: int = 0) -> list[str]:
         return []
 
     docs: list[str] = []
+    skipped = 0
     for shard in shards:
-        with open(shard, "r", encoding="utf-8") as fh:
-            for line in fh:
-                line = line.strip()
-                if line:
-                    docs.append(line)
-                    if sample and len(docs) >= sample:
-                        return docs
+        # ICLOUD PLACEHOLDER RETRY (same cause as the fix in common/manifest.py)
+        # This repository lives under an iCloud-synced Desktop. iCloud evicts
+        # file CONTENTS and leaves a dataless placeholder; the first read blocks
+        # while macOS re-downloads, and a slow download surfaces as OSError
+        # errno 60 (ETIMEDOUT). Streaming line-by-line turned that transient
+        # stall into a crash part-way through a multi-GB scan. Read whole, with
+        # backoff, then split.
+        blob = None
+        for attempt in range(1, 4):
+            try:
+                blob = shard.read_text(encoding="utf-8", errors="replace")
+                break
+            except OSError as exc:
+                if attempt == 3:
+                    print(f"  [skip] {shard.name}: {exc.__class__.__name__} "
+                          f"after 3 attempts")
+                    skipped += 1
+                    break
+                _time.sleep(2 ** (attempt - 1))
+        if blob is None:
+            continue
+
+        for line in blob.splitlines():
+            line = line.strip()
+            if line:
+                docs.append(line)
+                if sample and len(docs) >= sample:
+                    return docs
+    if skipped:
+        # A sampled check tolerates a few unreadable shards; say so rather than
+        # letting the sample silently come from a different population.
+        print(f"  NOTE: {skipped} shard(s) unreadable and skipped for "
+              f"{language}; {len(docs):,} documents sampled from the rest.")
     return docs
 
 

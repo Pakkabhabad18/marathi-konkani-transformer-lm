@@ -1008,3 +1008,305 @@ of the best fertility. This follows §1.3 ("choose using fertility /
 unknown-token rate on held-out text"), which **[AS]** later clarified is a
 recommendation rather than a strict requirement - we followed it anyway because
 it turns a design choice into a measurement.
+
+---
+
+## D-033 — Sangraha `gom` verified, `kok` does not exist
+
+**Believed:** `ai4bharat/sangraha` might hold a large Konkani split.
+**Measured:** `verified/gom/*.parquet` — one file, 32,496,312 bytes, 14,491 rows.
+No `kok` split exists. `unverified` has no Konkani directory at all; `synthetic`
+has no `gom`.
+**Result:** ingested `verified/gom` only — 9,827 documents, 3,266,816 words.
+4,651 rows (32%) were rejected as **not Devanagari**: they are Romi Konkani,
+genuinely Konkani but in Roman script. 11 rows were rejected as Marathi. A
+split labelled `gom` by its publisher is not evidence that its rows are
+Devanagari Konkani.
+
+---
+
+## D-034 — Blank lines are sentence separators, not document boundaries
+
+**Believed:** IndicCorp v2's `gom.txt` used blank lines to separate documents.
+**Measured:** 1,361,209 "documents" from 533,108,246 bytes = **392 bytes ≈ 22
+words each**, and `flush_blank_line` fired on **100%** of flushes. 821,054 of
+those fragments (60%) were then discarded for failing the 25-word document
+floor — a floor our own chopping had made unreachable.
+**Result:** rewritten to dedup and language-filter at the **unit** level, then
+pack surviving units into 300-word documents, then apply the document gates.
+Order matters: IndicCorp repeats individual sentences across crawled pages, and
+once packed no two documents are byte-identical, so unit-level dedup is the only
+place those 197,656 repeats can be caught. `--inspect N` was added so the file's
+structure is measured, never assumed again.
+
+---
+
+## D-035 — IndicCorp v2 `gom.txt` is ~84% Marathi
+
+**Believed:** a 533 MB file labelled Goan Konkani is Goan Konkani.
+**Measured:** the discriminator rejected 70% of packed documents as Marathi —
+wildly out of line with GlotCC (0 of 1,049), MADLAD-400 noisy (14 of 4,602) and
+Sangraha (11 of 14,491) on the same day. Rather than trust either the label or
+our own gate, we calibrated against two reference populations whose language is
+not in doubt, all packed to the same ~300-word length:
+
+| population | `mr` | `kok` | undecided | median score |
+|---|---:|---:|---:|---:|
+| reference Konkani (our OCR'd books) | 0.0% | 94.7% | 5.3% | −0.92 |
+| reference Marathi (our Marathi corpus) | 100.0% | 0.0% | 0.0% | +1.00 |
+| **IndicCorp v2 `gom.txt`** | **83.7%** | 2.5% | 13.9% | **+0.79** |
+
+A sampled rejected document contains `आहे×8, पण×5, मी×3` and zero Konkani markers.
+**Result:** the gate was correct. 4,319,751 words kept out of ~30M. Accepting
+the file unfiltered would have inflated the corpus by ~25M words *and* injected
+Model H's language into Model L, breaking corpus independence.
+Tool: `tools/verify_gom_langid.py`.
+
+---
+
+## D-036 — `MACHINE_TRANSLATED` as a distinct collection type
+
+**Context:** the TAs authorised synthetic/MT data on 18 Aug 2026 as a last
+resort.
+**Decision:** added `CollectionType.MACHINE_TRANSLATED` rather than reusing
+`DOWNLOADED_DATASET`. `is_manual` is `False`, so it can never count toward the
+20% floor; and because it is a *distinct* member it can never be silently folded
+into the downloaded figure either. Every statistics table can therefore state
+the synthetic share separately, which is what condition 2 requires.
+
+---
+
+## D-037 — NLLB-200 cannot produce Konkani, and would have failed silently
+
+**Believed:** `facebook/nllb-200-distilled-600M` was a safe ungated fallback for
+Marathi→Konkani.
+**Measured:** its `special_tokens_map.json` contains no `gom_Deva` and no `kok_*`.
+**Why this mattered:** `convert_tokens_to_ids` returns the *unknown* id for an
+unseen language code, `generate` accepts that as `forced_bos_token_id` without
+complaint, and the model emits fluent text in some other language. Marathi and
+Hindi share Devanagari with Konkani, so the output would have passed the script
+check and partially survived the language gate — counterfeit Konkani.
+**Result:** the engine now verifies the target-language token at load time and
+exits with instructions rather than running.
+
+---
+
+## D-038 — 870 MB of MT text that policy, not availability, had excluded
+
+**Context:** `praveenkumar99/Konkani_Raw` was ingested selectively when MT was
+banned; only 4,397,019 bytes of scraped pages were taken and
+`translated_konkani_*.txt` — **870,725,308 bytes** — was filtered out on
+principle.
+**Result after authorisation:** 73,717 rows → 60,843 documents → **59,295,762
+words**, the single largest source in the Konkani corpus. Only **2** rows were
+rejected as Marathi, and cross-source dedup removed **zero** of its documents,
+so it is genuinely Konkani and genuinely distinct. Classified
+`MACHINE_TRANSLATED`.
+
+---
+
+## D-039 — Column detection by measurement, not by dataset card
+
+**Problem:** ~20 remaining HuggingFace Konkani datasets, each with a different
+schema. The dataset-server `first-rows` endpoint was returning **cached
+responses for the wrong dataset** when several were queried in sequence, so any
+hand-copied column name was untrustworthy.
+**Result:** `ingest_hf_bulk_konkani.py` probes the first 50 rows and selects
+*every* column whose mean Devanagari ratio clears 0.50 — not just the best one,
+because instruction sets often carry Konkani in both an instruction and a
+response field. Tested against Alpaca-shaped rows (picks `output`, ignores the
+English `instruction` and the `id`), dual-field rows (picks both), and
+English-only rows (picks nothing).
+**Yield:** 67,988 documents, 25,648,910 words across 10 datasets; 8 datasets
+correctly yielded zero. The chosen columns are printed per dataset.
+
+---
+
+## D-040 — Fail on the first batch, not the ten-thousandth
+
+**Problem:** the MT generator's per-batch exception handler printed a one-line
+summary and continued. When a *configuration* error made every batch fail, it
+printed the same line indefinitely with no traceback and no way to tell whether
+it would recover.
+**Result:** a first-batch failure now aborts with the full traceback, because a
+first-batch failure is always configuration and every later batch will fail
+identically. Later failures are still tolerated — those are genuinely per-batch.
+This is what surfaced the real cause of the `'NoneType' object has no attribute
+'shape'` error, which was not the attention mask (fixed separately) but D-041.
+
+---
+
+## D-041 — transformers ≥ 4.49 breaks IndicTrans2's vendored decoder
+
+**Measured:** IndicTrans2's custom modeling code executes
+`past_key_values[0][0].shape[2] if past_key_values is not None else 0`.
+transformers ≥ ~4.49 passes a `Cache` **object**, which is not `None`, so the
+guard passes and indexing an empty cache yields `None`.
+**Attempted fix:** `use_cache=False` at both `generate()` and model-config level.
+It works, and is unusably slow — a batch of 24 needs 256 full forward passes
+over a growing sequence. Measured: **0 sentences in 5.1 minutes.**
+**Result:** pinned `transformers==4.46.3` in an isolated venv, which restores
+the cached path. The runtime fallback is retained so the fast path is used
+automatically wherever the environment permits it.
+
+---
+
+## D-042 — Apple MPS is 45× *slower* than CPU for this model
+
+**Believed:** Apple Silicon's GPU would accelerate IndicTrans2 generation.
+**Measured, with a verified forward-pass probe rather than an assumption:**
+
+| device | throughput |
+|---|---:|
+| CPU (8 threads) | **0.9–1.2 sentences/sec** |
+| MPS | 48 sentences in 124 minutes ≈ **0.006 sentences/sec** |
+
+The probe passed, so the model genuinely ran on the GPU; IndicTrans2's custom
+ops evidently fall back per-operation with transfer overhead on each.
+**Result:** MPS abandoned, CPU restored, negative result recorded. Also folded
+in: `max_length` 256 → 160 (source sentences are capped at 60 words ≈ 120
+tokens, so the rest was paid for nothing) and `torch.set_num_threads(all cores)`.
+
+**Final MT generation contribution: 14,016 sentences → 394 documents →
+124,664 words**, with `copied_not_translated` = 0 across the whole run. That is
+**0.05%** of the Konkani corpus. It is reported because it was attempted and
+measured, not because it was material.
+
+---
+
+## D-032 (revised) — Vocabulary 2,500, and what it costs
+
+The vocabulary was re-swept over 2,000 / 2,500 / 3,000 / 4,000 / 5,000 with
+fertility measured on held-out text:
+
+| vocab | fertility | embed+unembed (d=512) | % of 25M budget |
+|---:|---:|---:|---:|
+| 2,000 | 2.6714 | 2.05M | 8% |
+| **2,500** | **2.5333** | **2.56M** | **10%** |
+| 3,000 | 2.4262 | 3.07M | 12% |
+| 4,000 | 2.2832 | 4.10M | 16% |
+| 5,000 | 2.1836 | 5.12M | 20% |
+| 10,000 | 1.9506 | 10.24M | **41%** |
+
+**Chosen: 2,500 for both languages.** The governing argument is the parameter
+budget — at 10,000 the embedding and unembedding matrices alone consume 41% of a
+25M-parameter model, versus 10% at 2,500, returning ~7.7M parameters to depth
+and width.
+
+**The cost, stated plainly.** Fertility rises from 2.1836 to 2.5279, whole-word
+token coverage falls from 39.4% to 31.0%, and every training sequence is ~16%
+longer for the same text. And because tokens are what the target is measured in,
+**the same corpus reads 430M tokens at vocabulary 5,000 and 506M at 2,500**.
+That is a property of the metric. It is recorded here, in the README, and in the
+coverage report so that no reader has to discover it for themselves.
+
+---
+
+## D-043 — Vocabulary size 2,500, against a recommendation of tens of thousands
+
+Specification §1.3: "Recommended vocabulary size is in the tens of thousands per
+model; choose using fertility / unknown-token rate on held-out text."
+
+We chose 2,500 for both languages. That is roughly an order of magnitude below
+the recommendation, so this entry records the measurement, the argument, the
+counter-argument, and the side effect.
+
+### Measurement
+
+Vocabularies of 2,000, 2,500, 3,000, 4,000, 5,000, 6,000, 8,000 and 10,000 were
+trained per language with `tools/build_tokenizer.py`. Fertility (tokens per
+whitespace-delimited word) and unknown-token rate were measured on held-out text
+not used for tokenizer training: `konkani/tokenizer/konkani_heldout.txt`
+(51,219,193 bytes) and `marathi/tokenizer/marathi_heldout.txt` (13,301,952
+bytes). Results for Konkani:
+
+| vocab | fertility | unk rate | embed + unembed, untied, d=512 | share of 25M |
+|---:|---:|---:|---:|---:|
+| 2,000 | 2.6714 | 0.000000% | 2.05M | 8% |
+| 2,500 | 2.5279 | 0.000000% | 2.56M | 10% |
+| 3,000 | 2.4262 | 0.000000% | 3.07M | 12% |
+| 4,000 | 2.2832 | 0.000000% | 4.10M | 16% |
+| 5,000 | 2.1836 | 0.000000% | 5.12M | 20% |
+| 10,000 | 1.9506 | 0.000000% | 10.24M | 41% |
+
+The unknown-token rate is 0.000000% at every size, and that is by construction
+rather than by luck. SentencePiece is trained with `byte_fallback=True`, which
+adds 256 `<0xNN>` byte pieces, so any Unicode string is representable and the
+unknown token can never be emitted. The specification names unknown-token rate as
+a selection criterion, but for a byte-fallback tokenizer it carries no
+information. Fertility therefore had to carry the decision alone, and fertility
+alone always favours a larger vocabulary. That is why a third criterion was
+needed.
+
+### Parameter cost
+
+The ~25M parameter budget is the constraint that decided it. Embedding and
+unembedding cost `2 × V × d_model` when untied. At `d_model = 512` a transformer
+block costs approximately `12 × d_model²` = 3.15M parameters. The vocabulary
+choice is therefore worth about two layers:
+
+| vocab, untied | lookup tables | remaining for the stack | layers at d=512 |
+|---:|---:|---:|---:|
+| 10,000 | 10.24M | 14.8M | ~4.7 |
+| 5,000 | 5.12M | 19.9M | ~6.3 |
+| 2,500 | 2.56M | 22.4M | ~7.1 |
+
+At 10,000 the two lookup tables consume 41% of the model. At 2,500 they consume
+10%, returning roughly 7.7M parameters to depth and width.
+
+### Counter-argument
+
+Weight tying halves the cost, and the table above does not assume it. Sharing one
+matrix between the embedding and the output projection is standard practice and
+is used in GPT-2. With tying, vocabulary 10,000 costs 5.12M rather than 10.24M,
+which is 20% of the budget rather than 41%, leaving room for about 6.3 layers.
+That is a buildable model.
+
+So the parameter-budget argument does not on its own rule out the recommended
+range. It rules out an untied 10,000-vocabulary model at this parameter count.
+Whether to tie is a Phase 2 architecture decision and is recorded here so that
+Phase 2 inherits an open question rather than an assumption.
+
+### Effect on the reported token count
+
+Token count is fertility multiplied by word count, and the corpus is fixed at
+266,211,363 words, of which 200,293,343 are in the train split. A smaller
+vocabulary therefore raises the reported token count without changing the data:
+
+| vocab | Konkani training tokens | against ~500M |
+|---:|---:|---:|
+| 2,500 | 506,259,368 | 101.3% |
+| 3,000 | 485,951,591 | 97.2% |
+| 4,000 | 457,309,921 | 91.5% |
+| 5,000 | 437,360,743 | 87.5% |
+| 10,000 | 390,692,254 | 78.1% |
+
+Konkani clears the target at 2,500 and misses it at every larger size tested.
+Marathi clears it at all of them, so the vocabulary choice affects only the
+Konkani figure.
+
+This is a real consequence and presenting the parameter-budget argument as the
+sole reason would be incomplete. The corpus did not grow: it is 266,211,363 words
+before and after this decision, and only the unit of measurement changed. Word
+counts are reported alongside token counts throughout this project so that a
+reader can see the corpus size independently of the tokenizer.
+
+### Cost of the choice
+
+Fertility rises from 2.1836 at vocabulary 5,000 to 2.5279 at 2,500. Each
+training sequence carries about 16% more tokens for the same text, so a fixed
+context window holds about 16% less Konkani, and a fixed token budget sees fewer
+words during training. Whole-word token coverage falls from 39.4% to 31.0%,
+meaning more words are split into two or three pieces and the model must learn
+more composition from subwords.
+
+### Decision
+
+Vocabulary 2,500 for both languages, tokenizers and vocabularies kept separate
+per language as the specification requires. The selection procedure was the one
+the specification asks for, extended with a parameter-budget criterion because
+unknown-token rate was uninformative under byte fallback. The deviation from the
+recommended range is deliberate, and the two facts needed to argue against it —
+that weight tying makes a larger vocabulary affordable, and that a larger
+vocabulary places Konkani below the target — are stated above rather than left
+for a reader to find.

@@ -111,30 +111,30 @@
     },
     "stage6_tokens": {
       "tokenizer": "marathi/tokenizer/marathi_bpe.model",
-      "vocab_size": 10000,
+      "vocab_size": 2500,
       "byte_pieces": 256,
       "splits": {
         "train": {
-          "tokens": 647434614,
+          "tokens": 872024099,
           "unk_tokens": 0
         },
         "val": {
-          "tokens": 6455588,
+          "tokens": 8702258,
           "unk_tokens": 0
         },
         "test": {
-          "tokens": 6447160,
+          "tokens": 8707185,
           "unk_tokens": 0
         }
       }
     },
-    "final_train_tokens": 647434614,
-    "final_manual_tokens": 353009984
+    "final_train_tokens": 872024099,
+    "final_manual_tokens": 475466104
   },
   "konkani": {
     "language": "konkani",
     "stage1_raw": {
-      "documents_fetched": 256068,
+      "documents_fetched": 372836,
       "documents_rejected": 236567,
       "by_job": {
         "hf_cfilt_roundtripocr_konkani": {
@@ -147,6 +147,39 @@
             "near_duplicate": 1
           }
         },
+        "hf_glotcc_v1_gom_deva": {
+          "accepted": 1010,
+          "rejected": 0,
+          "rejection_reasons": {
+            "exact_duplicate": 39
+          }
+        },
+        "hf_konkani_books_corpus_v1": {
+          "accepted": 10441,
+          "rejected": 0,
+          "rejection_reasons": {}
+        },
+        "hf_konkani_instruct_100k_synthetic": {
+          "accepted": 5439,
+          "rejected": 0,
+          "rejection_reasons": {
+            "not_devanagari_excluded_by_D001": 83879,
+            "too_short": 2717,
+            "exact_duplicate": 200,
+            "langid_marathi_rejected": 2
+          }
+        },
+        "hf_konkani_raw_machine_translated": {
+          "accepted": 60843,
+          "rejected": 0,
+          "rejection_reasons": {
+            "not_devanagari_excluded_by_D001": 6484,
+            "exact_duplicate": 6347,
+            "near_duplicate": 40,
+            "too_short": 1,
+            "langid_marathi_rejected": 2
+          }
+        },
         "hf_konkani_raw_scrape": {
           "accepted": 13,
           "rejected": 0,
@@ -154,6 +187,34 @@
             "too_short": 98,
             "not_devanagari_excluded_by_D001": 245,
             "exact_duplicate": 14
+          }
+        },
+        "hf_madlad400_gom_clean": {
+          "accepted": 2094,
+          "rejected": 0,
+          "rejection_reasons": {
+            "not_devanagari_excluded_by_D001": 7,
+            "langid_marathi_rejected": 1
+          }
+        },
+        "hf_madlad400_gom_noisy": {
+          "accepted": 3611,
+          "rejected": 0,
+          "rejection_reasons": {
+            "too_short": 83,
+            "not_devanagari_excluded_by_D001": 873,
+            "langid_marathi_rejected": 14,
+            "near_duplicate": 17,
+            "exact_duplicate": 4
+          }
+        },
+        "hf_sangraha_verified_gom": {
+          "accepted": 9827,
+          "rejected": 0,
+          "rejection_reasons": {
+            "not_devanagari_excluded_by_D001": 4651,
+            "langid_marathi_rejected": 11,
+            "too_short": 2
           }
         },
         "konkani_archive_books": {
@@ -177,6 +238,27 @@
             "langid_marathi_rejected": 1197
           }
         },
+        "konkani_bpcc": {
+          "accepted": 10807,
+          "rejected": 0,
+          "rejection_reasons": {
+            "no_devanagari_column": 183365,
+            "unit_too_short": 208,
+            "unit_langid_marathi": 8,
+            "unit_exact_duplicate": 29937
+          }
+        },
+        "konkani_indiccorp": {
+          "accepted": 12696,
+          "rejected": 0,
+          "rejection_reasons": {
+            "unit_too_short": 51474,
+            "unit_langid_marathi": 170761,
+            "not_devanagari_excluded_by_D001": 1956,
+            "unit_exact_duplicate": 197656,
+            "langid_marathi_rejected": 33976
+          }
+        },
         "konkani_news": {
           "accepted": 33,
           "rejected": 236567,
@@ -184,25 +266,115 @@
             "fetch_failed": 798,
             "too_short": 2
           }
+        },
+        "mt_marathi_to_konkani_indictrans2_state": {
+          "accepted": 0,
+          "rejected": 0,
+          "rejection_reasons": {}
         }
       }
     },
     "stage2_accepted": {
-      "documents": 99911,
-      "words": 111550610,
-      "raw_chars": 709945988,
-      "clean_chars": 695208709,
+      "documents": 323112,
+      "words": 266211363,
+      "raw_chars": 1740809155,
+      "clean_chars": 1724484591,
       "manual_words": 64435242,
-      "downloaded_words": 47115368,
+      "downloaded_words": 201776121,
       "by_source": {
+        "hf_bulk_anag007_alpaca": {
+          "documents": 13150,
+          "words": 5038553,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_instruct": {
+          "documents": 19154,
+          "words": 7016222,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_wiki": {
+          "documents": 1221,
+          "words": 1013811,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v1": {
+          "documents": 767,
+          "words": 296198,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v2": {
+          "documents": 7716,
+          "words": 2470036,
+          "is_manual": false
+        },
+        "hf_bulk_gpteacher": {
+          "documents": 2563,
+          "words": 867359,
+          "is_manual": false
+        },
+        "hf_bulk_predictionguard": {
+          "documents": 149,
+          "words": 46583,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_cleaned": {
+          "documents": 11235,
+          "words": 4311915,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_taco": {
+          "documents": 1344,
+          "words": 409166,
+          "is_manual": false
+        },
+        "hf_bulk_telugu_labs_alpaca": {
+          "documents": 10689,
+          "words": 4179067,
+          "is_manual": false
+        },
         "hf_cfilt_roundtripocr_konkani": {
           "documents": 2966,
           "words": 87497,
           "is_manual": false
         },
+        "hf_glotcc_v1_gom_deva": {
+          "documents": 2020,
+          "words": 1325434,
+          "is_manual": false
+        },
+        "hf_konkani_books_corpus_v1": {
+          "documents": 41764,
+          "words": 49682672,
+          "is_manual": false
+        },
+        "hf_konkani_instruct_100k_synthetic": {
+          "documents": 5439,
+          "words": 631270,
+          "is_manual": false
+        },
+        "hf_konkani_raw_machine_translated": {
+          "documents": 60843,
+          "words": 59295762,
+          "is_manual": false
+        },
         "hf_konkani_raw_scrape": {
           "documents": 13,
           "words": 11689,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_clean": {
+          "documents": 4188,
+          "words": 2787400,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_noisy": {
+          "documents": 7222,
+          "words": 4254586,
+          "is_manual": false
+        },
+        "hf_sangraha_verified_gom": {
+          "documents": 9827,
+          "words": 3266816,
           "is_manual": false
         },
         "archive_org_konkani_books": {
@@ -213,6 +385,16 @@
         "hf_konkani_books_corpus_v2": {
           "documents": 40597,
           "words": 47016182,
+          "is_manual": false
+        },
+        "bpcc_gom_deva": {
+          "documents": 10807,
+          "words": 3319633,
+          "is_manual": false
+        },
+        "ai4bharat_indiccorp_v2_gom": {
+          "documents": 12696,
+          "words": 4319751,
           "is_manual": false
         },
         "news_vishwakonkani": {
@@ -229,6 +411,11 @@
           "documents": 2459,
           "words": 1395235,
           "is_manual": true
+        },
+        "mt_marathi_to_konkani_indictrans2": {
+          "documents": 407,
+          "words": 128519,
+          "is_manual": false
         }
       }
     },
@@ -237,48 +424,48 @@
       "ratio_cap_applied": false,
       "ratio_cap_dropped": {},
       "leaked_documents": 0,
-      "train_manual_share": 0.6953231016645774,
+      "train_manual_share": 0.31518225246257936,
       "splits": {
         "train": {
-          "documents": 81894,
-          "words": 90769944,
-          "manual_words": 63114439,
-          "downloaded_words": 27655505
+          "documents": 261186,
+          "words": 200293343,
+          "manual_words": 63128907,
+          "downloaded_words": 137164436
         },
         "val": {
-          "documents": 835,
-          "words": 923742,
-          "manual_words": 644632,
-          "downloaded_words": 279110
+          "documents": 2655,
+          "words": 2042816,
+          "manual_words": 643390,
+          "downloaded_words": 1399426
         },
         "test": {
-          "documents": 835,
-          "words": 932060,
-          "manual_words": 648846,
-          "downloaded_words": 283214
+          "documents": 2655,
+          "words": 2031644,
+          "manual_words": 635620,
+          "downloaded_words": 1396024
         }
       }
     },
     "stage6_tokens": {
       "tokenizer": "konkani/tokenizer/konkani_bpe.model",
-      "vocab_size": 10000,
+      "vocab_size": 2500,
       "byte_pieces": 256,
       "splits": {
         "train": {
-          "tokens": 167166865,
+          "tokens": 506259368,
           "unk_tokens": 0
         },
         "val": {
-          "tokens": 1717629,
+          "tokens": 5183545,
           "unk_tokens": 0
         },
         "test": {
-          "tokens": 1722104,
+          "tokens": 5135529,
           "unk_tokens": 0
         }
       }
     },
-    "final_train_tokens": 167166865,
-    "final_manual_tokens": 116234983
+    "final_train_tokens": 506259368,
+    "final_manual_tokens": 159563967
   }
 }

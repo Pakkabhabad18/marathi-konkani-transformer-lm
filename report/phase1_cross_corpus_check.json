@@ -1,28 +1,28 @@
 {
-  "sampled": false,
-  "sample_size": null,
+  "sampled": true,
+  "sample_size": 50000,
   "documents": {
-    "marathi": 11265,
-    "konkani": 27638
+    "marathi": 50000,
+    "konkani": 50000
   },
   "exact_shared_documents": 0,
   "near_duplicate_threshold": 0.8,
   "near_duplicate_pairs": 0,
   "language_purity": {
     "marathi": {
-      "own": 11265,
+      "own": 50000,
       "other": 0,
       "undecided": 0,
-      "total": 11265,
+      "total": 50000,
       "own_rate": 1.0,
       "contamination_rate": 0.0
     },
     "konkani": {
-      "own": 26652,
+      "own": 47495,
       "other": 0,
-      "undecided": 986,
-      "total": 27638,
-      "own_rate": 0.9643244807873218,
+      "undecided": 2505,
+      "total": 50000,
+      "own_rate": 0.9499,
       "contamination_rate": 0.0
     }
   },

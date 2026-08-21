@@ -4,29 +4,95 @@
     "tokenizer": "/Users/prakash/Desktop/individual-project-Pakkabhabad18/konkani/tokenizer/konkani_bpe.model",
     "tokenizer_found": true,
     "sampling_diagnostics": {
-      "shards_available": 46,
-      "lines_scanned": 96383,
-      "attributed_by_directory": 96350,
+      "shards_available": 60,
+      "lines_scanned": 135863,
+      "attributed_by_directory": 135830,
       "attributed_by_hash": 0,
       "unattributed": 33,
-      "attribution_rate": 0.9996576159696212,
+      "attribution_rate": 0.9997571082634713,
       "scan_capped": false
     },
     "unmeasured_sources": [
       "news_vishwakonkani",
       "news_goanews"
     ],
-    "unmeasured_word_share": 0.00038125285293284,
+    "unmeasured_word_share": 0.0003313449161366315,
     "per_source": {
+      "hf_cfilt_roundtripocr_konkani": {
+        "documents": 2966,
+        "words": 87497,
+        "raw_chars": 585605,
+        "clean_chars": 585619,
+        "manual": false,
+        "clean_ratio": 1.000023906899702,
+        "words_per_doc": 29.5,
+        "fertility": 1.786118363794604,
+        "fertility_sample_docs": 300
+      },
+      "hf_glotcc_v1_gom_deva": {
+        "documents": 2020,
+        "words": 1325434,
+        "raw_chars": 9194792,
+        "clean_chars": 9194304,
+        "manual": false,
+        "clean_ratio": 0.9999469264775103,
+        "words_per_doc": 656.1554455445545,
+        "fertility": 1.8692837235651456,
+        "fertility_sample_docs": 300
+      },
+      "hf_konkani_raw_scrape": {
+        "documents": 13,
+        "words": 11689,
+        "raw_chars": 77979,
+        "clean_chars": 77909,
+        "manual": false,
+        "clean_ratio": 0.9991023224201387,
+        "words_per_doc": 899.1538461538462,
+        "fertility": 1.775344340833262,
+        "fertility_sample_docs": 13
+      },
+      "hf_madlad400_gom_clean": {
+        "documents": 4188,
+        "words": 2787400,
+        "raw_chars": 19927568,
+        "clean_chars": 19924788,
+        "manual": false,
+        "clean_ratio": 0.9998604947678512,
+        "words_per_doc": 665.5682903533907,
+        "fertility": 2.0799946141647467,
+        "fertility_sample_docs": 300
+      },
+      "hf_madlad400_gom_noisy": {
+        "documents": 7222,
+        "words": 4254586,
+        "raw_chars": 30800912,
+        "clean_chars": 30798258,
+        "manual": false,
+        "clean_ratio": 0.9999138337202483,
+        "words_per_doc": 589.1146496815287,
+        "fertility": 2.1812549088053057,
+        "fertility_sample_docs": 300
+      },
+      "hf_sangraha_verified_gom": {
+        "documents": 9827,
+        "words": 3266816,
+        "raw_chars": 22235915,
+        "clean_chars": 22170827,
+        "manual": false,
+        "clean_ratio": 0.9970728436405698,
+        "words_per_doc": 332.43268545843085,
+        "fertility": 1.6151894988268618,
+        "fertility_sample_docs": 300
+      },
       "archive_org_konkani_books": {
-        "documents": 53296,
-        "words": 62359932,
-        "raw_chars": 393930857,
-        "clean_chars": 384730501,
+        "documents": 53843,
+        "words": 62997759,
+        "raw_chars": 397978994,
+        "clean_chars": 388689125,
         "manual": true,
-        "clean_ratio": 0.9766447440292803,
-        "words_per_doc": 1170.0677724407085,
-        "fertility": 1.5895580209282327,
+        "clean_ratio": 0.9766573886057915,
+        "words_per_doc": 1170.0269115762494,
+        "fertility": 1.8866629076535784,
         "fertility_sample_docs": 300
       },
       "hf_konkani_books_corpus_v2": {
@@ -37,7 +103,18 @@
         "manual": false,
         "clean_ratio": 0.9994248677915072,
         "words_per_doc": 1158.1196147498583,
-        "fertility": 1.5183850077699403,
+        "fertility": 1.810414700812537,
+        "fertility_sample_docs": 300
+      },
+      "ai4bharat_indiccorp_v2_gom": {
+        "documents": 12696,
+        "words": 4319751,
+        "raw_chars": 28208224,
+        "clean_chars": 28140517,
+        "manual": false,
+        "clean_ratio": 0.9975997425431675,
+        "words_per_doc": 340.24503780718334,
+        "fertility": 2.1851881780166056,
         "fertility_sample_docs": 300
       },
       "news_vishwakonkani": {
@@ -70,30 +147,30 @@
         "manual": true,
         "clean_ratio": 0.9986882515204051,
         "words_per_doc": 567.3993493289955,
-        "fertility": 1.6481998837003515,
+        "fertility": 2.023800526598079,
         "fertility_sample_docs": 300
       }
     },
-    "mean_measured_fertility": 1.5853809707995081,
-    "manual_words": 63797415,
-    "downloaded_words": 47016182,
-    "manual_tokens": 101491335,
-    "downloaded_tokens": 71388665,
-    "total_tokens": 172880001,
-    "manual_share_tokens": 0.5870623245495415
+    "mean_measured_fertility": 1.9213251763070727,
+    "manual_words": 64435242,
+    "downloaded_words": 63069355,
+    "manual_tokens": 121760384,
+    "downloaded_tokens": 117567540,
+    "total_tokens": 239327925,
+    "manual_share_tokens": 0.5087596214910381
   },
   "plan": {
-    "manual_fertility": 1.590837739038928,
-    "downloaded_fertility": 1.5183850077699401,
+    "manual_fertility": 1.8896551151988548,
+    "downloaded_fertility": 1.8640993010019955,
     "manual_target_tokens": 100000000,
     "manual_gap_tokens": 0,
     "manual_gap_words": 0,
-    "downloaded_target_tokens": 398508665,
-    "downloaded_gap_tokens": 327120000,
-    "downloaded_gap_words": 215439429,
-    "max_downloaded_tokens_at_20pct": 405965340,
-    "downloaded_admissible_tokens": 327120000,
-    "downloaded_admissible_words": 215439429,
+    "downloaded_target_tokens": 378239616,
+    "downloaded_gap_tokens": 260672076,
+    "downloaded_gap_words": 139838084,
+    "max_downloaded_tokens_at_20pct": 487041536,
+    "downloaded_admissible_tokens": 260672076,
+    "downloaded_admissible_words": 139838084,
     "projected_total_tokens": 500000000
   }
 }

@@ -119,19 +119,19 @@
   },
   "tokens": {
     "tokenizer": "marathi/tokenizer/marathi_bpe.model",
-    "vocab_size": 10000,
+    "vocab_size": 2500,
     "byte_pieces": 256,
     "splits": {
       "train": {
-        "tokens": 647434614,
+        "tokens": 872024099,
         "unk_tokens": 0
       },
       "val": {
-        "tokens": 6455588,
+        "tokens": 8702258,
         "unk_tokens": 0
       },
       "test": {
-        "tokens": 6447160,
+        "tokens": 8707185,
         "unk_tokens": 0
       }
     }

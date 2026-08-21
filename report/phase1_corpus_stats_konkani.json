@@ -1,13 +1,93 @@
 {
   "language": "konkani",
-  "documents": 99911,
+  "documents": 323112,
   "words": {
-    "total": 111550610,
+    "total": 266211363,
     "manual": 64435242,
-    "downloaded": 47115368,
-    "manual_share": 0.5776323589803767
+    "downloaded": 201776121,
+    "manual_share": 0.24204542313244531
   },
   "sources": {
+    "hf_bulk_anag007_alpaca": {
+      "documents": 13150,
+      "words": 5038553,
+      "characters": 33701772,
+      "raw_characters": 33750353,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_anag007_instruct": {
+      "documents": 19154,
+      "words": 7016222,
+      "characters": 50617628,
+      "raw_characters": 50635781,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_anag007_wiki": {
+      "documents": 1221,
+      "words": 1013811,
+      "characters": 7019897,
+      "raw_characters": 7023159,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_devarshee_v1": {
+      "documents": 767,
+      "words": 296198,
+      "characters": 1947985,
+      "raw_characters": 1956522,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_devarshee_v2": {
+      "documents": 7716,
+      "words": 2470036,
+      "characters": 16459290,
+      "raw_characters": 16459363,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_gpteacher": {
+      "documents": 2563,
+      "words": 867359,
+      "characters": 5850536,
+      "raw_characters": 5852075,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_predictionguard": {
+      "documents": 149,
+      "words": 46583,
+      "characters": 303375,
+      "raw_characters": 303370,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_saillab_cleaned": {
+      "documents": 11235,
+      "words": 4311915,
+      "characters": 28658135,
+      "raw_characters": 28706800,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_saillab_taco": {
+      "documents": 1344,
+      "words": 409166,
+      "characters": 2739911,
+      "raw_characters": 2765699,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_bulk_telugu_labs_alpaca": {
+      "documents": 10689,
+      "words": 4179067,
+      "characters": 27905099,
+      "raw_characters": 28042254,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
     "hf_cfilt_roundtripocr_konkani": {
       "documents": 2966,
       "words": 87497,
@@ -16,11 +96,67 @@
       "is_manual": false,
       "collection_method": "downloaded_dataset"
     },
+    "hf_glotcc_v1_gom_deva": {
+      "documents": 2020,
+      "words": 1325434,
+      "characters": 9194304,
+      "raw_characters": 9194792,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "hf_konkani_books_corpus_v1": {
+      "documents": 41764,
+      "words": 49682672,
+      "characters": 298001280,
+      "raw_characters": 298258184,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "hf_konkani_instruct_100k_synthetic": {
+      "documents": 5439,
+      "words": 631270,
+      "characters": 4354649,
+      "raw_characters": 4386107,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
+    "hf_konkani_raw_machine_translated": {
+      "documents": 60843,
+      "words": 59295762,
+      "characters": 418425932,
+      "raw_characters": 419264179,
+      "is_manual": false,
+      "collection_method": "machine_translated"
+    },
     "hf_konkani_raw_scrape": {
       "documents": 13,
       "words": 11689,
       "characters": 77909,
       "raw_characters": 77979,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "hf_madlad400_gom_clean": {
+      "documents": 4188,
+      "words": 2787400,
+      "characters": 19924788,
+      "raw_characters": 19927568,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "hf_madlad400_gom_noisy": {
+      "documents": 7222,
+      "words": 4254586,
+      "characters": 30798258,
+      "raw_characters": 30800912,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "hf_sangraha_verified_gom": {
+      "documents": 9827,
+      "words": 3266816,
+      "characters": 22170827,
+      "raw_characters": 22235915,
       "is_manual": false,
       "collection_method": "downloaded_dataset"
     },
@@ -37,6 +173,22 @@
       "words": 47016182,
       "characters": 295942481,
       "raw_characters": 296112785,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "bpcc_gom_deva": {
+      "documents": 10807,
+      "words": 3319633,
+      "characters": 22193996,
+      "raw_characters": 22224582,
+      "is_manual": false,
+      "collection_method": "downloaded_dataset"
+    },
+    "ai4bharat_indiccorp_v2_gom": {
+      "documents": 12696,
+      "words": 4319751,
+      "characters": 28140517,
+      "raw_characters": 28208224,
       "is_manual": false,
       "collection_method": "downloaded_dataset"
     },
@@ -63,68 +215,86 @@
       "raw_characters": 9639043,
       "is_manual": true,
       "collection_method": "manual_scrape"
+    },
+    "mt_marathi_to_konkani_indictrans2": {
+      "documents": 407,
+      "words": 128519,
+      "characters": 867703,
+      "raw_characters": 867328,
+      "is_manual": false,
+      "collection_method": "machine_translated"
     }
   },
   "scripts": {
-    "Devanagari": 99750,
-    "Mixed": 161
+    "Devanagari": 321911,
+    "Mixed": 1201
   },
   "langid_labels": {
-    "undecided": 6673,
-    "kok": 93238
+    "kok": 303396,
+    "undecided": 19716
   },
   "cleaning_steps": {
-    "unicode_nfc": 99911,
-    "strip_zero_width": 99911,
-    "strip_control_chars": 99911,
-    "normalize_danda_spacing": 99911,
-    "normalize_whitespace": 99911,
-    "hf_ingest": 2979,
-    "devanagari_only_D001": 59281,
-    "exact_dedup": 2979,
+    "unicode_nfc": 323112,
+    "strip_zero_width": 323112,
+    "strip_control_chars": 323112,
+    "normalize_danda_spacing": 323112,
+    "normalize_whitespace": 323112,
+    "auto_column_detection": 67988,
+    "packing": 78795,
+    "devanagari_only_D001": 282075,
+    "exact_dedup": 215373,
+    "near_dedup": 91898,
+    "hf_ingest": 134282,
     "ocr_text_layer": 53843,
     "segment_split": 94440,
     "reassemble_lines": 40597,
+    "tsv_devanagari_column_detection": 10807,
+    "sentence_dedup": 10807,
+    "line_grouping": 12696,
+    "marathi_rejected": 12696,
     "html_boilerplate_strip": 33,
     "paragraph_extract": 33,
     "wikitext_clean": 2459,
     "residual_wikitext_strip": 2459,
-    "length_filter": 2459
+    "length_filter": 2459,
+    "mt_indictrans2_mar_to_gom": 407,
+    "copy_detection": 407,
+    "langid_marathi_rejected": 407
   },
-  "raw_characters": 709945988,
-  "clean_characters": 695208709,
+  "raw_characters": 1740809155,
+  "clean_characters": 1724484591,
   "splits": {
     "train": {
-      "documents": 81894,
-      "words": 90769944,
-      "characters": 564425057
+      "documents": 261186,
+      "words": 200293343,
+      "characters": 1314549947
     },
     "val": {
-      "documents": 835,
-      "words": 923742,
-      "characters": 5762644
+      "documents": 2655,
+      "words": 2042816,
+      "characters": 13404428
     },
     "test": {
-      "documents": 835,
-      "words": 932060,
-      "characters": 5799883
+      "documents": 2655,
+      "words": 2031644,
+      "characters": 13316886
     }
   },
   "tokens": {
     "tokenizer": "konkani/tokenizer/konkani_bpe.model",
-    "vocab_size": 10000,
+    "vocab_size": 2500,
     "byte_pieces": 256,
     "splits": {
       "train": {
-        "tokens": 167166865,
+        "tokens": 506259368,
         "unk_tokens": 0
       },
       "val": {
-        "tokens": 1717629,
+        "tokens": 5183545,
         "unk_tokens": 0
       },
       "test": {
-        "tokens": 1722104,
+        "tokens": 5135529,
         "unk_tokens": 0
       }
     }

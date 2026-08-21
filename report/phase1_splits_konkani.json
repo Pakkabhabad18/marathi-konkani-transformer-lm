@@ -14,126 +14,426 @@
   "leaked_documents": 0,
   "splits": {
     "train": {
-      "docs": 81894,
-      "words": 90769944,
+      "docs": 261186,
+      "words": 200293343,
       "manual_docs": 55185,
-      "manual_words": 63114439,
-      "downloaded_docs": 26709,
-      "downloaded_words": 27655505,
+      "manual_words": 63128907,
+      "downloaded_docs": 206001,
+      "downloaded_words": 137164436,
       "by_source": {
+        "ai4bharat_indiccorp_v2_gom": {
+          "docs": 12444,
+          "words": 4236447,
+          "is_manual": false
+        },
         "archive_org_konkani_books": {
           "docs": 52743,
-          "words": 61711353,
+          "words": 61722140,
           "is_manual": true
+        },
+        "bpcc_gom_deva": {
+          "docs": 10591,
+          "words": 3253252,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_alpaca": {
+          "docs": 12888,
+          "words": 4938788,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_instruct": {
+          "docs": 18772,
+          "words": 6875641,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_wiki": {
+          "docs": 1197,
+          "words": 996732,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v1": {
+          "docs": 753,
+          "words": 291231,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v2": {
+          "docs": 7562,
+          "words": 2420339,
+          "is_manual": false
+        },
+        "hf_bulk_gpteacher": {
+          "docs": 2513,
+          "words": 850520,
+          "is_manual": false
+        },
+        "hf_bulk_predictionguard": {
+          "docs": 147,
+          "words": 45961,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_cleaned": {
+          "docs": 11010,
+          "words": 4226090,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_taco": {
+          "docs": 1318,
+          "words": 401268,
+          "is_manual": false
+        },
+        "hf_bulk_telugu_labs_alpaca": {
+          "docs": 10477,
+          "words": 4095241,
+          "is_manual": false
         },
         "hf_cfilt_roundtripocr_konkani": {
           "docs": 2908,
-          "words": 85752,
+          "words": 85782,
+          "is_manual": false
+        },
+        "hf_glotcc_v1_gom_deva": {
+          "docs": 990,
+          "words": 643829,
+          "is_manual": false
+        },
+        "hf_konkani_books_corpus_v1": {
+          "docs": 10233,
+          "words": 12173143,
           "is_manual": false
         },
         "hf_konkani_books_corpus_v2": {
           "docs": 23790,
-          "words": 27559053,
+          "words": 27558010,
+          "is_manual": false
+        },
+        "hf_konkani_instruct_100k_synthetic": {
+          "docs": 5331,
+          "words": 618025,
+          "is_manual": false
+        },
+        "hf_konkani_raw_machine_translated": {
+          "docs": 59627,
+          "words": 58109325,
           "is_manual": false
         },
         "hf_konkani_raw_scrape": {
           "docs": 11,
-          "words": 10700,
+          "words": 10523,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_clean": {
+          "docs": 2054,
+          "words": 1367274,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_noisy": {
+          "docs": 1487,
+          "words": 720317,
+          "is_manual": false
+        },
+        "hf_sangraha_verified_gom": {
+          "docs": 9499,
+          "words": 3120747,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
           "docs": 2411,
-          "words": 1367400,
+          "words": 1366405,
           "is_manual": true
+        },
+        "mt_marathi_to_konkani_indictrans2": {
+          "docs": 399,
+          "words": 125951,
+          "is_manual": false
         },
         "news": {
           "docs": 31,
-          "words": 35686,
+          "words": 40362,
           "is_manual": true
         }
       }
     },
     "val": {
-      "docs": 835,
-      "words": 923742,
+      "docs": 2655,
+      "words": 2042816,
       "manual_docs": 563,
-      "manual_words": 644632,
-      "downloaded_docs": 272,
-      "downloaded_words": 279110,
+      "manual_words": 643390,
+      "downloaded_docs": 2092,
+      "downloaded_words": 1399426,
       "by_source": {
+        "ai4bharat_indiccorp_v2_gom": {
+          "docs": 126,
+          "words": 41272,
+          "is_manual": false
+        },
         "archive_org_konkani_books": {
           "docs": 538,
-          "words": 629918,
+          "words": 625391,
           "is_manual": true
+        },
+        "bpcc_gom_deva": {
+          "docs": 108,
+          "words": 33122,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_alpaca": {
+          "docs": 131,
+          "words": 50648,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_instruct": {
+          "docs": 191,
+          "words": 69337,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_wiki": {
+          "docs": 12,
+          "words": 7426,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v1": {
+          "docs": 7,
+          "words": 2554,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v2": {
+          "docs": 77,
+          "words": 24869,
+          "is_manual": false
+        },
+        "hf_bulk_gpteacher": {
+          "docs": 25,
+          "words": 8482,
+          "is_manual": false
+        },
+        "hf_bulk_predictionguard": {
+          "docs": 1,
+          "words": 303,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_cleaned": {
+          "docs": 112,
+          "words": 42900,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_taco": {
+          "docs": 13,
+          "words": 3952,
+          "is_manual": false
+        },
+        "hf_bulk_telugu_labs_alpaca": {
+          "docs": 106,
+          "words": 42034,
+          "is_manual": false
         },
         "hf_cfilt_roundtripocr_konkani": {
           "docs": 29,
-          "words": 843,
+          "words": 879,
+          "is_manual": false
+        },
+        "hf_glotcc_v1_gom_deva": {
+          "docs": 10,
+          "words": 9492,
+          "is_manual": false
+        },
+        "hf_konkani_books_corpus_v1": {
+          "docs": 104,
+          "words": 123743,
           "is_manual": false
         },
         "hf_konkani_books_corpus_v2": {
           "docs": 242,
-          "words": 278198,
+          "words": 279556,
+          "is_manual": false
+        },
+        "hf_konkani_instruct_100k_synthetic": {
+          "docs": 54,
+          "words": 7006,
+          "is_manual": false
+        },
+        "hf_konkani_raw_machine_translated": {
+          "docs": 608,
+          "words": 596432,
           "is_manual": false
         },
         "hf_konkani_raw_scrape": {
           "docs": 1,
-          "words": 69,
+          "words": 605,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_clean": {
+          "docs": 20,
+          "words": 13670,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_noisy": {
+          "docs": 15,
+          "words": 7518,
+          "is_manual": false
+        },
+        "hf_sangraha_verified_gom": {
+          "docs": 96,
+          "words": 32357,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
           "docs": 24,
-          "words": 12737,
+          "words": 17809,
           "is_manual": true
+        },
+        "mt_marathi_to_konkani_indictrans2": {
+          "docs": 4,
+          "words": 1269,
+          "is_manual": false
         },
         "news": {
           "docs": 1,
-          "words": 1977,
+          "words": 190,
           "is_manual": true
         }
       }
     },
     "test": {
-      "docs": 835,
-      "words": 932060,
+      "docs": 2655,
+      "words": 2031644,
       "manual_docs": 563,
-      "manual_words": 648846,
-      "downloaded_docs": 272,
-      "downloaded_words": 283214,
+      "manual_words": 635620,
+      "downloaded_docs": 2092,
+      "downloaded_words": 1396024,
       "by_source": {
+        "ai4bharat_indiccorp_v2_gom": {
+          "docs": 126,
+          "words": 42032,
+          "is_manual": false
+        },
         "archive_org_konkani_books": {
           "docs": 538,
-          "words": 629163,
+          "words": 622903,
           "is_manual": true
+        },
+        "bpcc_gom_deva": {
+          "docs": 108,
+          "words": 33259,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_alpaca": {
+          "docs": 131,
+          "words": 49117,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_instruct": {
+          "docs": 191,
+          "words": 71244,
+          "is_manual": false
+        },
+        "hf_bulk_anag007_wiki": {
+          "docs": 12,
+          "words": 9653,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v1": {
+          "docs": 7,
+          "words": 2413,
+          "is_manual": false
+        },
+        "hf_bulk_devarshee_v2": {
+          "docs": 77,
+          "words": 24828,
+          "is_manual": false
+        },
+        "hf_bulk_gpteacher": {
+          "docs": 25,
+          "words": 8357,
+          "is_manual": false
+        },
+        "hf_bulk_predictionguard": {
+          "docs": 1,
+          "words": 319,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_cleaned": {
+          "docs": 112,
+          "words": 42583,
+          "is_manual": false
+        },
+        "hf_bulk_saillab_taco": {
+          "docs": 13,
+          "words": 3946,
+          "is_manual": false
+        },
+        "hf_bulk_telugu_labs_alpaca": {
+          "docs": 106,
+          "words": 41792,
+          "is_manual": false
         },
         "hf_cfilt_roundtripocr_konkani": {
           "docs": 29,
-          "words": 902,
+          "words": 836,
+          "is_manual": false
+        },
+        "hf_glotcc_v1_gom_deva": {
+          "docs": 10,
+          "words": 9396,
+          "is_manual": false
+        },
+        "hf_konkani_books_corpus_v1": {
+          "docs": 104,
+          "words": 123782,
           "is_manual": false
         },
         "hf_konkani_books_corpus_v2": {
           "docs": 242,
-          "words": 281392,
+          "words": 281077,
+          "is_manual": false
+        },
+        "hf_konkani_instruct_100k_synthetic": {
+          "docs": 54,
+          "words": 6239,
+          "is_manual": false
+        },
+        "hf_konkani_raw_machine_translated": {
+          "docs": 608,
+          "words": 590005,
           "is_manual": false
         },
         "hf_konkani_raw_scrape": {
           "docs": 1,
-          "words": 920,
+          "words": 561,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_clean": {
+          "docs": 20,
+          "words": 12756,
+          "is_manual": false
+        },
+        "hf_madlad400_gom_noisy": {
+          "docs": 15,
+          "words": 5758,
+          "is_manual": false
+        },
+        "hf_sangraha_verified_gom": {
+          "docs": 96,
+          "words": 34772,
           "is_manual": false
         },
         "konkani_wikipedia_selfcollected": {
           "docs": 24,
-          "words": 15098,
+          "words": 11021,
           "is_manual": true
+        },
+        "mt_marathi_to_konkani_indictrans2": {
+          "docs": 4,
+          "words": 1299,
+          "is_manual": false
         },
         "news": {
           "docs": 1,
-          "words": 4585,
+          "words": 1696,
           "is_manual": true
         }
       }
     }
   },
-  "train_manual_share": 0.6953231016645774,
+  "train_manual_share": 0.31518225246257936,
   "meets_manual_requirement": true
 }

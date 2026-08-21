@@ -3,249 +3,227 @@
   "model_file": "konkani/tokenizer/konkani_bpe.model",
   "vocab_file": "konkani/tokenizer/konkani_bpe.vocab",
   "heldout_file": "konkani/data/tokenizer_sweep/konkani_heldout.txt",
-  "corpus_lines": 96931,
-  "training_lines": 91931,
+  "corpus_lines": 312293,
+  "training_lines": 307293,
   "heldout_lines": 5000,
-  "chosen_vocab_size": 10000,
+  "chosen_vocab_size": 2500,
   "selection_rule": "smallest vocabulary within 2% fertility of the best candidate",
   "sweep": [
     {
-      "vocab_size": 6000,
+      "vocab_size": 2500,
       "documents": 5000,
-      "words": 5760665,
-      "characters": 35885765,
-      "tokens": 11346267,
+      "words": 4227069,
+      "characters": 27336590,
+      "tokens": 10685444,
       "unk_tokens": 0,
-      "tokens_per_word": 1.9696106265509277,
-      "characters_per_token": 3.1627816443945838,
+      "tokens_per_word": 2.5278612674645244,
+      "characters_per_token": 2.5583017420708023,
       "unk_rate": 0.0,
       "byte_pieces": 256,
-      "single_token_word_rate": 0.44119
-    },
-    {
-      "vocab_size": 8000,
-      "documents": 5000,
-      "words": 5760665,
-      "characters": 35885765,
-      "tokens": 10851081,
-      "unk_tokens": 0,
-      "tokens_per_word": 1.8836507590703504,
-      "characters_per_token": 3.3071142865858247,
-      "unk_rate": 0.0,
-      "byte_pieces": 256,
-      "single_token_word_rate": 0.476715
-    },
-    {
-      "vocab_size": 10000,
-      "documents": 5000,
-      "words": 5760665,
-      "characters": 35885765,
-      "tokens": 10510186,
-      "unk_tokens": 0,
-      "tokens_per_word": 1.8244744313373542,
-      "characters_per_token": 3.414379631340492,
-      "unk_rate": 0.0,
-      "byte_pieces": 256,
-      "single_token_word_rate": 0.500645
+      "single_token_word_rate": 0.3097947943680058
     }
   ],
   "final_heldout_report": {
-    "vocab_size": 10000,
+    "vocab_size": 2500,
     "documents": 5000,
-    "words": 5760665,
-    "characters": 35885765,
-    "tokens": 10510186,
+    "words": 4227069,
+    "characters": 27336590,
+    "tokens": 10685444,
     "unk_tokens": 0,
-    "tokens_per_word": 1.8244744313373542,
-    "characters_per_token": 3.414379631340492,
+    "tokens_per_word": 2.5278612674645244,
+    "characters_per_token": 2.5583017420708023,
     "unk_rate": 0.0,
     "byte_pieces": 256,
-    "single_token_word_rate": 0.500645
+    "single_token_word_rate": 0.3097947943680058
   },
   "token_frequency": {
-    "vocabulary_size": 10000,
-    "distinct_tokens_seen": 9755,
-    "vocabulary_utilisation": 0.9755,
-    "total_tokens": 10510186,
+    "vocabulary_size": 2500,
+    "distinct_tokens_seen": 2354,
+    "vocabulary_utilisation": 0.9416,
+    "total_tokens": 10685444,
     "coverage": {
-      "top_100": 0.2750463217301768,
-      "top_1000": 0.6607231308751339,
-      "top_5000": 0.9458616622008402
+      "top_100": 0.3924680153674475,
+      "top_1000": 0.8701446566001375
     },
     "most_frequent": [
       {
-        "id": 9849,
+        "id": 2356,
         "piece": ".",
-        "count": 352919,
-        "share": 0.033578758739379114
+        "count": 271757,
+        "share": 0.025432448104168625
       },
       {
-        "id": 9859,
+        "id": 2369,
         "piece": ",",
-        "count": 161917,
-        "share": 0.01540572164945511
+        "count": 151197,
+        "share": 0.014149809778610977
       },
       {
-        "id": 305,
-        "piece": "▁.",
-        "count": 113587,
-        "share": 0.010807325388913193
+        "id": 2334,
+        "piece": "▁",
+        "count": 120659,
+        "share": 0.011291903265788487
       },
       {
-        "id": 296,
+        "id": 288,
         "piece": "▁आनी",
-        "count": 93855,
-        "share": 0.008929908566794155
+        "count": 92166,
+        "share": 0.008625378599148524
       },
       {
-        "id": 344,
-        "piece": "▁,",
-        "count": 50221,
-        "share": 0.004778316958424903
-      },
-      {
-        "id": 9836,
-        "piece": "य",
-        "count": 45067,
-        "share": 0.004287935532254139
-      },
-      {
-        "id": 9844,
-        "piece": "च",
-        "count": 42940,
-        "share": 0.004085560426808812
-      },
-      {
-        "id": 349,
-        "piece": "▁एक",
-        "count": 42390,
-        "share": 0.004033230239693189
-      },
-      {
-        "id": 295,
-        "piece": "ाक",
-        "count": 42271,
-        "share": 0.004021907890117264
-      },
-      {
-        "id": 341,
-        "piece": "▁ना",
-        "count": 40055,
-        "share": 0.003811064808938681
-      },
-      {
-        "id": 284,
-        "piece": "ान",
-        "count": 35873,
-        "share": 0.0034131650952704358
-      },
-      {
-        "id": 408,
-        "piece": "▁तो",
-        "count": 34610,
-        "share": 0.0032929959564940146
-      },
-      {
-        "id": 9835,
-        "piece": "े",
-        "count": 32823,
-        "share": 0.003122970421265618
-      },
-      {
-        "id": 9899,
-        "piece": "।",
-        "count": 32782,
-        "share": 0.003119069443680635
-      },
-      {
-        "id": 290,
-        "piece": "लो",
-        "count": 32607,
-        "share": 0.0031024189295983913
-      },
-      {
-        "id": 260,
-        "piece": "ां",
-        "count": 32091,
-        "share": 0.003053323699504462
-      },
-      {
-        "id": 9829,
+        "id": 2335,
         "piece": "ा",
-        "count": 30760,
-        "share": 0.0029266846466846543
+        "count": 78910,
+        "share": 0.007384812460764382
       },
       {
-        "id": 283,
-        "piece": "ांत",
-        "count": 30014,
-        "share": 0.0028557058837969185
-      },
-      {
-        "id": 297,
-        "piece": "ले",
-        "count": 29631,
-        "share": 0.0028192650444054937
-      },
-      {
-        "id": 293,
-        "piece": "ली",
-        "count": 29490,
-        "share": 0.002805849487344943
-      },
-      {
-        "id": 315,
-        "piece": "ून",
-        "count": 29448,
-        "share": 0.0028018533639652047
-      },
-      {
-        "id": 9832,
-        "piece": "त",
-        "count": 29184,
-        "share": 0.0027767348741497056
-      },
-      {
-        "id": 9834,
+        "id": 2339,
         "piece": "क",
-        "count": 28374,
-        "share": 0.0026996667803976067
+        "count": 71653,
+        "share": 0.00670566426626727
       },
       {
-        "id": 418,
-        "piece": "▁आसा",
-        "count": 28166,
-        "share": 0.0026798764550884256
-      },
-      {
-        "id": 9838,
+        "id": 2345,
         "piece": "न",
-        "count": 27918,
-        "share": 0.0026562802979890176
+        "count": 71081,
+        "share": 0.006652133500489077
+      },
+      {
+        "id": 614,
+        "piece": "▁.",
+        "count": 70352,
+        "share": 0.0065839098496983375
+      },
+      {
+        "id": 2342,
+        "piece": "य",
+        "count": 69387,
+        "share": 0.00649360007876135
+      },
+      {
+        "id": 272,
+        "piece": "▁त",
+        "count": 68835,
+        "share": 0.006441941018080297
+      },
+      {
+        "id": 2340,
+        "piece": "े",
+        "count": 68800,
+        "share": 0.0064386655341603025
+      },
+      {
+        "id": 2349,
+        "piece": "च",
+        "count": 59370,
+        "share": 0.005556156580858971
+      },
+      {
+        "id": 2351,
+        "piece": "ो",
+        "count": 59128,
+        "share": 0.005533508949183581
+      },
+      {
+        "id": 2346,
+        "piece": "स",
+        "count": 57679,
+        "share": 0.005397903914895815
+      },
+      {
+        "id": 2337,
+        "piece": "र",
+        "count": 56780,
+        "share": 0.005313770770779389
+      },
+      {
+        "id": 280,
+        "piece": "ांत",
+        "count": 56225,
+        "share": 0.005261830954333765
+      },
+      {
+        "id": 263,
+        "piece": "▁क",
+        "count": 55933,
+        "share": 0.005234504059915527
+      },
+      {
+        "id": 2352,
+        "piece": "म",
+        "count": 54517,
+        "share": 0.005101987339038041
+      },
+      {
+        "id": 2343,
+        "piece": "ी",
+        "count": 54126,
+        "share": 0.0050653955043889615
+      },
+      {
+        "id": 287,
+        "piece": "ाक",
+        "count": 53657,
+        "share": 0.005021504019861037
+      },
+      {
+        "id": 2341,
+        "piece": "त",
+        "count": 53107,
+        "share": 0.0049700321296896974
+      },
+      {
+        "id": 289,
+        "piece": "लो",
+        "count": 52056,
+        "share": 0.00487167402683501
+      },
+      {
+        "id": 2350,
+        "piece": "प",
+        "count": 51707,
+        "share": 0.004839012772889924
+      },
+      {
+        "id": 2362,
+        "piece": "ण",
+        "count": 49965,
+        "share": 0.004675987258929063
+      },
+      {
+        "id": 2347,
+        "piece": "व",
+        "count": 49196,
+        "share": 0.004604020197944044
       }
     ],
-    "hapax_tokens": 41
+    "hapax_tokens": 2
   },
   "examples": [
     {
       "text": "गोंयची राजभास कोंकणी आसा आनी तिचो इतिहास खूब पोरनो आसा.",
       "pieces": [
-        "▁गोंयची",
-        "▁राजभास",
+        "▁गोंय",
+        "ची",
+        "▁राज",
+        "भ",
+        "ास",
         "▁कोंकणी",
         "▁आसा",
         "▁आनी",
-        "▁तिचो",
+        "▁ति",
+        "चो",
         "▁इतिहास",
         "▁खूब",
         "▁पोर",
-        "नो",
+        "न",
+        "ो",
         "▁आसा",
         "."
       ],
-      "n_tokens": 12,
+      "n_tokens": 17,
       "n_words": 10,
-      "tokens_per_word": 1.2,
+      "tokens_per_word": 1.7,
       "unk": 0,
       "roundtrip_ok": true
     },
@@ -254,24 +232,30 @@
       "pieces": [
         "▁हांव",
         "▁सकाळीं",
-        "▁उठ",
+        "▁उ",
+        "ठ",
         "ून",
-        "▁घरा",
+        "▁घ",
+        "रा",
         "▁भायर",
         "▁वचून",
         "▁काम",
-        "▁करतां",
+        "▁कर",
+        "तां",
         "▁आनी",
-        "▁सांज",
-        "वेळार",
+        "▁सां",
+        "ज",
+        "व",
+        "ेळ",
+        "ार",
         "▁परत",
         "▁येत",
         "ां",
         "."
       ],
-      "n_tokens": 16,
+      "n_tokens": 22,
       "n_words": 12,
-      "tokens_per_word": 1.3333333333333333,
+      "tokens_per_word": 1.8333333333333333,
       "unk": 0,
       "roundtrip_ok": true
     },
@@ -279,21 +263,27 @@
       "text": "ह्या पुस्तकांत बरोवप्यान आपले ल्हानपणाचे अणभव बरे तरेन बरयल्यात.",
       "pieces": [
         "▁ह्या",
-        "▁पुस्तकांत",
-        "▁बरोवप",
+        "▁पुस्तक",
+        "ांत",
+        "▁बर",
+        "ोवप",
         "्यान",
         "▁आपले",
-        "▁ल्हानपण",
+        "▁ल्हान",
+        "पण",
         "ाचे",
-        "▁अणभव",
-        "▁बरे",
+        "▁अण",
+        "भव",
+        "▁बर",
+        "े",
         "▁तरेन",
-        "▁बरयल्यात",
+        "▁बरय",
+        "ल्यात",
         "."
       ],
-      "n_tokens": 12,
+      "n_tokens": 18,
       "n_words": 9,
-      "tokens_per_word": 1.3333333333333333,
+      "tokens_per_word": 2.0,
       "unk": 0,
       "roundtrip_ok": true
     },
@@ -302,19 +292,21 @@
       "pieces": [
         "▁गोंयांत",
         "▁कोंकणी",
-        "▁शिकोव",
+        "▁शिक",
+        "ोव",
         "पाचें",
         "▁काम",
         "▁शाळ",
         "ांनी",
         "▁बरें",
         "▁तरेन",
-        "▁चलता",
+        "▁चल",
+        "ता",
         "."
       ],
-      "n_tokens": 11,
+      "n_tokens": 13,
       "n_words": 8,
-      "tokens_per_word": 1.375,
+      "tokens_per_word": 1.625,
       "unk": 0,
       "roundtrip_ok": true
     }

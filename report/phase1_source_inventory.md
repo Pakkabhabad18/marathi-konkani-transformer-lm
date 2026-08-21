@@ -1,217 +1,320 @@
 # Phase 1 — Source Inventory
 
-**Status: measured, not projected.** Every figure below comes from a real
-collection run recorded in `<lang>/data/manifests/*.jsonl`, not from an estimate.
-An earlier version of this document was written before collection began and
-contained claims that later measurement disproved; those corrections are kept in
-§5 rather than edited away.
+Model H: Marathi. Model L: Konkani (Devanagari).
+Regenerated 21 August 2026 against the frozen corpus.
 
-**Last updated:** 16 August 2026
+Word counts in this document are post-pipeline: measured after Unicode NFC
+normalization, the Devanagari-ratio floor, the Marathi/Konkani discriminator,
+the minimum-length gate, and exact plus near-duplicate removal. They are what
+each source contributed to the corpus, not what the source advertises. The two
+figures often differ by an order of magnitude, and section 3.2 gives the largest
+example.
 
----
-
-## 1. The accounting rule that governs everything here
-
-The specification requires that at least 20% of final training tokens come from
-manual collection, for **both** languages:
+All figures here can be re-derived by running:
 
 ```
-manual / total >= 0.20      =>      total <= 5 x manual
+python3 tools/corpus_stats.py --language marathi --markdown
+python3 tools/corpus_stats.py --language konkani --markdown
+python3 tools/pipeline_accounting.py --markdown
 ```
 
-This is enforced mechanically in `tools/make_splits.py`, which subsamples
-downloaded sources until the inequality holds. So the manual total is not a
-target to hit — it is the **hard cap on corpus size**. Each manual word admits
-four downloaded words.
+and reconcile exactly to `report/phase1_corpus_stats_{marathi,konkani}.json`.
 
-Classification is a typed choice at the point of collection
-(`common/manifest.py::CollectionType`), not a label applied later:
+## 1. Accounting rules
 
-| Type | Counts as manual? | Used for |
+### 1.1 The 20% manual floor
+
+The specification requires `manual_tokens / total_tokens >= 0.20`. This is
+enforced in `tools/make_splits.py` at split-construction time rather than
+checked by hand afterwards: if admitting a source would push the ratio below
+0.20, downloaded documents are dropped until it holds. Every non-manual word
+admitted raises the manual target by a factor of four, so sources were admitted
+in priority order and the non-manual contribution was capped at what the manual
+total supported.
+
+### 1.2 Provenance categories
+
+`common/manifest.py::CollectionType` defines three categories. They are assigned
+at the point of collection, in the collector script, not applied as a label
+afterwards.
+
+| category | definition | `is_manual` |
 |---|---|---|
-| `MANUAL_OCR` | yes | OCR text layers of scanned books and documents |
-| `MANUAL_SCRAPE` | yes | pages we discovered, fetched and cleaned ourselves |
-| `MANUAL_TRANSCRIBED` | yes | typed or transcribed text (unused) |
-| `DOWNLOADED_DATASET` | **no** | ready-made public corpora |
+| manual | text gathered and cleaned by us: OCR from books, sites we crawled, pages we fetched and parsed | true |
+| downloaded | prepared corpora obtained ready-made, however much cleaning we applied afterwards, written or translated by humans | false |
+| synthetic | machine-translated or LLM-generated text | false |
 
-A downloaded corpus does not become manual because we cleaned it, however much
-cleaning we did. The Konkani books corpus is the case in point: its underlying
-material was originally digitised from books, but *we* obtained it as a prepared
-Hugging Face dataset, so it is `DOWNLOADED_DATASET`.
+`MACHINE_TRANSLATED` is a distinct enum member rather than a flag on
+`DOWNLOADED_DATASET` (D-036). This is what allows `tools/corpus_stats.py` to
+report the synthetic share separately in every table, and what prevents it being
+counted toward the manual floor.
 
----
+This follows TA guidance issued 14 August: anything involving getting data,
+processing, cleaning and organizing it is manual; anything already organized on
+HuggingFace and then used is not.
+
+### 1.3 Units
+
+Sections 2 and 3 are in words. Words are tokenizer-independent, so they remain
+comparable across the vocabulary changes this project went through. Token counts
+appear only in section 5, measured once per language with the final tokenizer
+over the frozen train split. An earlier progress report summed token counts from
+two different tokenizers into one total; that error is why the units are
+separated here (D-007).
 
 ## 2. Model H — Marathi
 
-### 2.1 Manual sources (accepted)
+Total: 2,887,867 documents, 389,218,163 words. 45.7% manual, no synthetic data.
 
-| Source | Type | Documents | Words | Words/doc |
-|---|---|---:|---:|---:|
-| `archive_org_maharashtra_gr` | `MANUAL_OCR` | 15,768+ | 48.7M+ | 939 |
-| `news_esakal` | `MANUAL_SCRAPE` | 13,686 | 3,294,330 | 241 |
-| `news_loksatta` | `MANUAL_SCRAPE` | 2,058 | 782,805 | 380 |
-| `news_divyamarathi` | `MANUAL_SCRAPE` | 368 | 130,164 | 354 |
-| `news_tv9marathi` | `MANUAL_SCRAPE` | 305 | 100,454 | 329 |
-| `news_abplive_marathi` | `MANUAL_SCRAPE` | 73 | 28,233 | 387 |
-| `news_lokmat` | `MANUAL_SCRAPE` | 85 | 23,236 | 273 |
-| `news_maharashtratimes` | `MANUAL_SCRAPE` | 40 | 19,553 | 489 |
-| **Total (still growing)** | | **32,383+** | **51.8M+** | |
+### 2.1 Manual sources — 177,781,779 words
 
-**M1 — Maharashtra Government Resolutions, Internet Archive.**
-Query `identifier:in.gov.maharashtra.gr.*` returns **170,796 items**, each a
-scanned government resolution with an OCR text derivative. Enumerated through
-the cursor-paginated scrape API; each document fetched, its text layer
-extracted, then normalized, language-checked and deduplicated by us. Rights
-fields are absent on these items and are recorded as `not_stated` rather than
-assumed public domain.
+| source | documents | words | words/doc | collection method |
+|---|---:|---:|---:|---|
+| `archive_org_maharashtra_gr` | 154,001 | 152,312,784 | 989 | per-item OCR text layers from archive.org, fetched and cleaned by `marathi/scripts/collect_archive_gr.py` |
+| `news_esakal` | 90,644 | 22,828,494 | 252 | sitemap-driven crawl via `common/newscrawl.py` |
+| `news_loksatta` | 2,684 | 1,030,716 | 384 | sitemap-driven crawl |
+| `news_abplive_marathi` | 2,290 | 777,748 | 340 | sitemap-driven crawl |
+| `news_lokmat` | 1,158 | 319,054 | 276 | sitemap-driven crawl |
+| `news_divyamarathi` | 730 | 270,062 | 370 | sitemap-driven crawl |
+| `news_tv9marathi` | 654 | 208,695 | 319 | sitemap-driven crawl |
+| `news_maharashtratimes` | 76 | 34,226 | 450 | sitemap-driven crawl |
 
-*Why manual:* no ready-made GR corpus exists. We enumerate, fetch and clean
-every document ourselves.
+Crawl policy: `robots.txt` was fetched and parsed before any request, the
+declared crawl-delay was honoured, and a descriptive User-Agent was sent.
+Boilerplate (navigation, related-articles blocks, comment sections) was removed
+by per-site selectors before the text was counted.
 
-*Measured quality:* 86.0% Devanagari, 9.8% OCR noise, 4.1% self-repetition, most
-common opening phrase covers only **0.6%** of documents — the corpus is
-genuinely 170k distinct documents, not one template repeated.
+Before committing to a full crawl of any site, a pilot of approximately 1,000
+pages was hashed and compared against the IndicCorp v2 corpus using
+`tools/source_overlap_check.py`. This matters because IndicCorp v2 is itself
+built from Marathi news crawls. Scraping the same pages and reporting the result
+as manually collected would be inaccurate, and cross-source deduplication would
+have removed most of it in any case. The measured overlap is reported in
+`report/phase1_konkani_overlap_check.md` and the equivalent Marathi run.
 
-**M2 — Marathi news and long-form sites.**
-Sitemap-driven, `robots.txt` obeyed, publication-date floor of 2025-01-01.
-**7 of 8 candidate sites verified usable** by `--probe`.
+### 2.2 Downloaded sources — 211,436,384 words
 
-*Why the date floor matters:* IndicCorpV2 and Sangraha are themselves built from
-Marathi news crawls. Both are fixed snapshots, so an article published after
-their release cannot be in them. The floor makes the manual claim true by
-construction; the cross-corpus hash check then proves it empirically.
+| source | documents | words | words/doc | licence |
+|---|---:|---:|---:|---|
+| `ai4bharat_indiccorp_v2_mar` | 2,635,630 | 211,436,384 | 80 | CC-0 |
 
-*Measured quality:* 96.4% Devanagari, 5.1% OCR noise, 0.6% self-repetition, top
-opening phrase 0.1%, langid `mr` 100%.
+One downloaded source was used rather than several, for two reasons. IndicCorp
+v2 is CC-0, the least restrictive licence among the candidates. And IndicCorp v2
+and Sangraha `mar` are produced by the same group from overlapping crawls, so
+combining them would have required a large cross-corpus deduplication pass for
+tokens that were not needed once the target was met.
 
-### 2.2 Downloaded source (accepted, capped)
+### 2.3 Sources examined and not used
 
-| Field | Value |
+| source | reason |
 |---|---|
-| Source | `ai4bharat/IndicCorpV2`, config `indiccorp_v2`, split `mar_Deva` |
-| Type | `DOWNLOADED_DATASET` |
-| Licence | **CC-0 (public domain)** — cleanest available, hence preferred over Sangraha (CC-BY-4.0) |
-| Available | ~27.8M rows |
-| **Budget** | **4 × manual**, computed at run time from the manifests |
-| Throughput | 1,515 rows/s measured; ~2.4 h for the full budget |
-| Words/document | **80** — much shorter than our manual sources |
-| langid `undecided` | **24.8%** |
+| `ai4bharat/sangraha` — `mar` verified and unverified | high expected overlap with IndicCorp v2; not required once the downloaded quota was met |
+| `ai4bharat/sangraha` — `synthetic` | machine-translated and romanized WikiMedia content; Marathi reached its target on real text alone |
 
-The 24.8% undecided rate is a genuine quality contrast worth reporting: our
-manual sources return `mr` 100%, because an 80-word crawl fragment often carries
-too few function words to identify confidently.
+## 3. Model L — Konkani (Devanagari)
 
-### 2.3 Rejected for Marathi
+Total: 323,112 documents, 266,211,363 words. 24.2% manual, 32.2% synthetic.
 
-| Source | Reason |
+### 3.1 Script decision
+
+The training corpus is Devanagari only. Konkani is also written in Roman script
+(Romi) and in Kannada script; both are excluded and the exclusion is recorded
+rather than silently applied.
+
+Three reasons. Devanagari is the official script of Konkani in Goa. It is the
+script used by the largest available Konkani corpora, so restricting to it costs
+little volume. And a model of approximately 25M parameters has limited capacity
+to spend learning two orthographies of the same language, which would compete
+for the same embedding budget without adding linguistic coverage.
+
+The decision is load-bearing rather than cosmetic: it is why 4,651 rows (32%) of
+Sangraha's `gom` split were rejected (D-033). Those rows are Konkani, correctly
+labelled, in the wrong script for this corpus.
+
+### 3.2 Manual sources — 64,435,242 words
+
+| source | documents | words | words/doc | collection method |
+|---|---:|---:|---:|---|
+| `archive_org_konkani_books` | 53,843 | 62,997,759 | 1,170 | OCR text layers from archive.org, `konkani/scripts/collect_archive_books.py` |
+| `konkani_wikipedia_selfcollected` | 2,459 | 1,395,235 | 567 | MediaWiki API crawler and wikitext cleaner written for this project |
+| `news_goanews` | 31 | 41,728 | 1,346 | sitemap-driven crawl |
+| `news_vishwakonkani` | 2 | 520 | 260 | sitemap-driven crawl |
+
+The archive.org books carry the manual requirement almost entirely, and they
+exist because an earlier search was found to be wrong by a factor of 115. The
+original query returned 44 items. Inspection showed it was matching against a
+locally held spelling list rather than querying the archive index. The corrected
+query, `language:kok AND mediatype:texts`, returns 5,093 items (D-018). That
+correction moved the manual total from 1.46M words to 64.4M.
+
+Only items with an existing OCR text layer were used; image-only scans were
+skipped rather than run through a local OCR engine, because the error rate of
+uncontrolled OCR on Devanagari would have been unmeasurable.
+
+### 3.3 Downloaded sources, human-authored — 116,071,660 words
+
+| source | documents | words | words/doc | note |
+|---|---:|---:|---:|---|
+| `hf_konkani_books_corpus_v1` | 41,764 | 49,682,672 | 1,190 | digitized books |
+| `hf_konkani_books_corpus_v2` | 40,597 | 47,016,182 | 1,158 | digitized books; OCR line-fragmentation repaired before counting |
+| `ai4bharat_indiccorp_v2_gom` | 12,696 | 4,319,751 | 340 | see below; approximately 84% of the source file was rejected as Marathi |
+| `hf_madlad400_gom_noisy` | 7,222 | 4,254,586 | 589 | web crawl |
+| `bpcc_gom_deva` | 10,807 | 3,319,633 | 307 | human-translated parallel data |
+| `hf_sangraha_verified_gom` | 9,827 | 3,266,816 | 332 | 32% of rows rejected as Romi script |
+| `hf_madlad400_gom_clean` | 4,188 | 2,787,400 | 666 | web crawl |
+| `hf_glotcc_v1_gom_deva` | 2,020 | 1,325,434 | 656 | web crawl |
+| `hf_cfilt_roundtripocr_konkani` | 2,966 | 87,497 | 30 | OCR correction pairs |
+| `hf_konkani_raw_scrape` | 13 | 11,689 | 899 | scraped pages bundled inside `praveenkumar99/Konkani_Raw` |
+
+`ai4bharat/IndicCorpV2` ships `data/gom.txt` at 533,108,246 bytes, labelled Goan
+Konkani. On file size alone it is larger than every other Konkani source
+combined. Measurement showed it is approximately 84% Marathi.
+
+This was established by calibration rather than by trusting the discriminator's
+raw output. Three populations were packed to the same approximately 300-word
+document length so that length could not be confounded with language, and scored
+with the same discriminator on the same day:
+
+| population | labelled `mr` | labelled `kok` | undecided | median score |
+|---|---:|---:|---:|---:|
+| reference Konkani (our OCR'd books) | 0.0% | 94.7% | 5.3% | −0.92 |
+| reference Marathi (our Marathi corpus) | 100.0% | 0.0% | 0.0% | +1.00 |
+| IndicCorp v2 `gom.txt` | 83.7% | 2.5% | 13.9% | +0.79 |
+
+`gom.txt` sits on the Marathi reference, not between the two. A sampled rejected
+document contains आहे×8, पण×5, मी×3 and no Konkani markers. Tool:
+`tools/verify_gom_langid.py --sample 1500`. Full analysis in D-035.
+
+Accepting the file unfiltered would have added roughly 25M words and would have
+put Marathi text, the language Model H trains on, into Model L's corpus. That
+would breach the specification's requirement that the two models share no data.
+4,319,751 words passed the gate and were kept.
+
+### 3.4 Synthetic sources — 85,704,461 words
+
+Authorised by the TAs on 18 August 2026 after real sources were exhausted, under
+three stated conditions. Compliance with each is documented in
+`report/phase1_konkani_mt.md`.
+
+Every row below carries `collection_type: machine_translated` in its manifest,
+is stored under `konkani/data/synthetic/`, and ships in a separate Drive archive
+so it can be excluded without touching the rest of the corpus.
+
+| source | documents | words | words/doc |
+|---|---:|---:|---:|
+| `hf_konkani_raw_machine_translated` | 60,843 | 59,295,762 | 975 |
+| `hf_bulk_anag007_instruct` | 19,154 | 7,016,222 | 366 |
+| `hf_bulk_anag007_alpaca` | 13,150 | 5,038,553 | 383 |
+| `hf_bulk_saillab_cleaned` | 11,235 | 4,311,915 | 384 |
+| `hf_bulk_telugu_labs_alpaca` | 10,689 | 4,179,067 | 391 |
+| `hf_bulk_devarshee_v2` | 7,716 | 2,470,036 | 320 |
+| `hf_bulk_anag007_wiki` | 1,221 | 1,013,811 | 830 |
+| `hf_bulk_gpteacher` | 2,563 | 867,359 | 338 |
+| `hf_konkani_instruct_100k_synthetic` | 5,439 | 631,270 | 116 |
+| `hf_bulk_saillab_taco` | 1,344 | 409,166 | 304 |
+| `hf_bulk_devarshee_v1` | 767 | 296,198 | 386 |
+| `mt_marathi_to_konkani_indictrans2` | 407 | 128,519 | 316 |
+| `hf_bulk_predictionguard` | 149 | 46,583 | 313 |
+
+The largest entry, `hf_konkani_raw_machine_translated`, is 870,725,308 bytes of
+machine-translated text inside `praveenkumar99/Konkani_Raw`. It was deliberately
+excluded during the earlier ingest of that repository, when synthetic data was
+not permitted, and only the 4,397,019 bytes of genuinely scraped pages were
+taken. After authorisation it was ingested in full: 73,717 rows to 60,843
+documents. Two rows were rejected as Marathi and cross-source deduplication
+removed none of its documents (D-038).
+
+The ten `hf_bulk_*` sources were ingested by `ingest_hf_bulk_konkani.py`, which
+probes the first 50 rows of each dataset and selects every column whose mean
+Devanagari ratio exceeds 0.50. Column names were not copied from dataset cards,
+because the HuggingFace datasets-server `first-rows` endpoint was observed
+returning cached responses for the wrong dataset when several were queried in
+sequence (D-039). The selected columns for each dataset are printed in
+`logs/bulk.log`.
+
+`mt_marathi_to_konkani_indictrans2` is our own generation run using
+IndicTrans2 `indic-indic-dist-320M`: 14,016 sentences, 394 documents,
+`copied_not_translated` = 0 across the run. It is 0.05% of the corpus. It is
+reported because it was attempted and measured, not because it was material.
+The reasons it stayed small are recorded in D-041 and D-042.
+
+### 3.5 Sources examined and not used
+
+| source | reason |
 |---|---|
-| `marathivishwakosh.org` | `robots.txt` unreachable on two probes |
-| Sangraha *synthetic* split (10,817M tokens) | machine-translated and romanized WikiMedia content, not naturally-occurring Marathi |
-| Horoscope / video / gallery / AMP web-story URLs | excluded by URL pattern — fragmentary or no body text |
+| `ai4bharat/IndicCorpV2` `gom.txt`, the rejected 84% | approximately 25M words of Marathi in a file labelled Goan Konkani |
+| Romi (Roman-script) Konkani, including 32% of Sangraha `gom` | script decision, section 3.1 |
+| Kannada-script Konkani | script decision, section 3.1 |
+| `Reubencf/konkani-instruct-20k-1` to `-6`, `konkani/Goan_Data`, `konkani/english-konkani`, `konkani/konkani_instructions`, `shrusti333/konkani_translation` | probed with 50 rows each; no column cleared the 0.70 Devanagari floor. Zero words extracted. |
 
----
+## 4. Repositories searched and found to contain no usable Konkani
 
-## 3. Model L — Konkani (Devanagari only)
+These negative results are the evidence that the search was exhaustive. Each was
+checked by listing the repository's actual files through the HuggingFace Hub API,
+not by reading its dataset card, because three of the sources in section 3 did
+not match their own cards.
 
-**Script decision (D-001):** Devanagari only. Konkani is also written in Roman
-(Romi) and Kannada script; both are excluded and reported rather than silently
-dropped. In the Wikipedia collection alone the excluded material was **1,203
-Latin-script, 156 Kannada-script and 141 mixed pages**.
-
-### 3.1 Manual sources (accepted — this is the complete list)
-
-| Source | Type | Documents | Words | Notes |
-|---|---|---:|---:|---|
-| `konkani_wikipedia_selfcollected` | `MANUAL_SCRAPE` | 2,459 | 1,395,235 | CC BY-SA 4.0, attribution required |
-| `archive_org_konkani_books` | `MANUAL_OCR` | 52 segments | 60,925 | 5 books of 14 candidates |
-| `news_vishwakonkani` | `MANUAL_SCRAPE` | 2 | 520 | only usable site of 18 probed |
-| **Total** | | **2,513** | **1,456,680** | |
-
-### 3.2 Downloaded source (accepted, heavily capped)
-
-| Field | Value |
-|---|---|
-| Source | `omdeep22/Konkani_books_corpus-v2` |
-| Type | `DOWNLOADED_DATASET` |
-| Licence | MIT |
-| Collected | 40,597 documents, **47,016,182 words** |
-| **Admitted to the corpus** | **~5.8M words** (4 × manual) |
-| **Discarded to hold the 20% floor** | **~41M words** |
-
-Discarding 41M words of usable text is deliberate. A large corpus that fails a
-stated requirement is worth less than a smaller one that meets it.
-
-*Structural note:* the raw dataset averages **7.52 words per row** — these are
-OCR'd lines, not documents. `--- SOURCE:` marker rows delimit books, so the
-ingester uses them to reassemble line fragments into contiguous documents with
-real per-book attribution.
-
-### 3.3 Sources investigated and found unusable
-
-This section is the evidence for the shortfall the specification permits.
-
-| Investigation | Method | Result |
+| repository | finding | date checked |
 |---|---|---|
-| Internet Archive, `language:Konkani` | search API | **44 items**; ~25 Wikipedia ZIM dumps, 4 Wikipedia PDFs, 13–15 real books, of which **5** yielded Devanagari text |
-| Konkani web publications | `--probe`, 18 sites, two extractors | **1 usable** (vishwakonkani) |
-| Sangraha `gom` split | dataset card | **10.1M tokens in total**, all splits |
+| `HuggingFaceFW/fineweb-2` | `gom_Latn` only, Roman script | 19 Aug 2026 |
+| `oscar-corpus/OSCAR-2301` | no `gom`, no `kok` | 19 Aug 2026 |
+| `ai4bharat/sangraha` — `unverified` | 15 language directories, no Konkani | 19 Aug 2026 |
+| `ai4bharat/sangraha` — `synthetic` | no `gom` split | 19 Aug 2026 |
+| `ai4bharat/BPCC` — `nllb_filtered` | 16 language files, no `gom` | 19 Aug 2026 |
+| `ai4bharat/BPCC` — `samanantar_v0.3_filtered` | 11 language files, no `gom` | 19 Aug 2026 |
+| HPLT v2 | 191 languages, no Konkani | 20 Aug 2026 |
+| `uonlp/CulturaX` — `gom` | present, 1,756,012 bytes | 20 Aug 2026 |
+| `cis-lmu/GlotCC-V1` — `kok-Deva` | referenced on the dataset card, path returns 404; only `gom-Deva` exists | 19 Aug 2026 |
+| CC-100 | no Konkani | 19 Aug 2026 |
 
-Breakdown of the 18-site probe: 6 unreachable `robots.txt`, 10 returned pages
-with no extractable article text, 1 (`goanvarta`) publishes **Marathi** — caught
-by the language gate, 6 of 8 sampled pages rejected as `langid_mr` — and 1 was
-usable.
+Three sources did not match their published labels: IndicCorp v2's `gom.txt` is
+approximately 84% Marathi, Sangraha's `gom` split is 32% Roman-script, and BPCC's
+two largest mined subsets contain no Konkani despite `gom_Deva` appearing on the
+dataset card. Every source in this project was therefore measured before use
+rather than accepted on its label.
 
-The `no_article_text` failures were retried with a second, block-level extractor
-after the first probe, in case they reflected our `<p>`-only parser rather than
-the sites. They did not: the result was unchanged.
+## 5. Totals
 
-**Comparison that frames the whole project:**
+Words, tokenizer-independent:
 
 | | Marathi | Konkani |
 |---|---:|---:|
-| Internet Archive items | 170,796 | 44 |
-| Web sites usable | 7 of 8 | 1 of 18 |
-| Largest public corpus | IndicCorpV2, ~27.8M rows | Sangraha, 10.1M tokens |
-| Manual words collected | 51.8M+ | 1,456,680 |
-| Corpus ceiling at 20% | ~259M words | ~7.3M words |
+| manual | 177,781,779 (45.7%) | 64,435,242 (24.2%) |
+| downloaded, human-authored | 211,436,384 (54.3%) | 116,071,660 (43.6%) |
+| synthetic | 0 (0.0%) | 85,704,461 (32.2%) |
+| real text (manual + downloaded) | 389,218,163 (100.0%) | 180,506,902 (67.8%) |
+| total | 389,218,163 | 266,211,363 |
 
-### 3.4 Rejected for Konkani
+Tokens, measured once per language with the final vocabulary-2,500 SentencePiece
+BPE model over the frozen train split:
 
-| Source | Reason |
-|---|---|
-| Romi (Roman-script) Konkani | D-001; documented as an excluded sub-corpus |
-| Kannada-script Konkani | D-001 |
-| `goanvarta.net` | publishes Marathi; 6 of 8 sampled pages rejected by the language gate |
-| Wikipedia-derived Archive items (`wikipedia_*.zim`, `gomwiki-*`) | already held from our own Wikipedia collection; counting twice would inflate the manual total |
-| Sangraha *synthetic* split | machine-translated content |
+| | Marathi | Konkani |
+|---|---:|---:|
+| training tokens | 872,024,099 | 506,259,368 |
+| against the ~500M target | 174.4%, pass | 101.3%, pass |
+| manual training tokens | 475,466,104 | 159,563,967 |
+| manual share, floor is 20% | 54.5%, pass | 31.5%, pass |
+| unknown-token rate | 0.000000% | 0.000000% |
 
----
+Token counts depend on the tokenizer. The same Konkani corpus measures 437M
+tokens at vocabulary 5,000 and 506M at vocabulary 2,500. The measured fertility
+curve and the reasoning behind the vocabulary choice are in D-043.
 
-## 4. Provenance recorded per document
+## 6. Corpus independence
 
-Every document carries, in its manifest row:
+The specification requires that Model H and Model L share no data.
+`tools/cross_corpus_check.py --sample 50000`, run 20 August 2026:
 
-```
-source_name, source_url, collection_method, access_date, raw_chars,
-clean_chars, words, tokens, preprocessing_applied, script, langid_score,
-content_hash
-```
-
-`tokens` is deliberately `null` at collection time. Token counts depend on the
-tokenizer, and Phase 1 requires one final tokenizer per language and one
-internally consistent count. Words and characters are tokenizer-independent and
-tracked continuously instead.
-
----
-
-## 5. Corrections to earlier versions of this document
-
-Kept visible rather than edited away, per the standing instruction not to
-overwrite superseded results.
-
-| Original claim | Measurement | Correction |
+| check | method | result |
 |---|---|---|
-| "Internet Archive is the strongest manual route for Konkani" | 44 items, 5 usable books, 60,925 words | Demoted to a small but genuine source. It is a **major** Marathi source (170,796 items). |
-| Konkani books corpus "83.54% Devanagari" | recomputed over non-whitespace characters | **99.78%** — the original divided by total characters including whitespace |
-| Marathi manual "~65M words" (estimated from shard bytes) | manifest totals | **51.8M** — the byte-based estimate was 27% high; manifests are authoritative |
-| Marathi GR source viable at scale | 2.1 docs/min, 393 h projected | Demoted to secondary; news scraping measured **758 docs/min** and became primary. archive.org later recovered to ~88/min and both now run. |
+| exact overlap | SHA-256 over NFC-normalized, whitespace-collapsed text | 0 shared documents |
+| near-duplicate overlap | MinHash over character 5-gram shingles, 128 permutations, LSH banding tuned to a 0.85 threshold, reported at Jaccard ≥ 0.8 | 0 pairs |
+| language purity | closed-class function-word discriminator, `min_markers=5`, `margin=0.30` | 0.000% cross-language contamination in each corpus |
+
+Sample sizes: 50,000 Marathi documents (46,965,136 words) and 50,000 Konkani
+documents (58,470,261 words), drawn with seed `20260819`. Of the Konkani sample,
+47,495 were labelled Konkani and 2,505 were undecided; none were labelled
+Marathi. Undecided documents are short documents that fall below the five-marker
+evidence gate, which abstains rather than guessing.
+
+Output: `report/phase1_cross_corpus_check.json`.

@@ -1,0 +1,3 @@
+Model and training configuration files. Populated in Phase 2, when the
+architecture and training hyperparameters are defined; kept here so the
+directory layout is complete from Phase 1 onward.

@@ -36,6 +36,7 @@ and a single later pass fills it in for the whole corpus at once.
 from __future__ import annotations
 
 import json
+import time as _time
 import hashlib
 import os
 import tempfile
@@ -53,10 +54,22 @@ class CollectionType(str, Enum):
     MANUAL_SCRAPE = "manual_scrape"
     MANUAL_TRANSCRIBED = "manual_transcribed"
     DOWNLOADED_DATASET = "downloaded_dataset"
+    # Machine-translated / synthetic. Permitted by the TAs on 18 Aug 2026 ONLY
+    # as a last resort after real sources are exhausted, and only with written
+    # justification. It is a separate member rather than a reuse of
+    # DOWNLOADED_DATASET so that MT text can never be silently folded into the
+    # downloaded figure: `is_manual` is False for it (it does not start with
+    # "manual_"), so it cannot count toward the 20% floor, while the distinct
+    # value keeps it separable in every per-source report.
+    MACHINE_TRANSLATED = "machine_translated"
 
     @property
     def is_manual(self) -> bool:
         return self.value.startswith("manual_")
+
+    @property
+    def is_synthetic(self) -> bool:
+        return self.value == "machine_translated"
 
 
 def content_hash(text: str) -> str:
@@ -165,20 +178,55 @@ class ManifestWriter:
         self.close()
 
 
-def read_manifest(path: str | Path) -> Iterator[dict]:
-    """Stream manifest rows. Tolerates a truncated final line from a hard kill."""
+def read_manifest(path: str | Path, attempts: int = 5) -> Iterator[dict]:
+    """Stream manifest rows. Tolerates a truncated final line from a hard kill.
+
+    RETRIES ON ETIMEDOUT (errno 60)
+    -------------------------------
+    This repository lives under an iCloud-synced Desktop. iCloud evicts file
+    contents to free space and leaves a "dataless" placeholder behind; the
+    first read of such a file blocks while macOS re-downloads it, and if that
+    takes too long the read fails with OSError errno 60 (ETIMEDOUT).
+
+    That is a TRANSIENT condition - the download continues in the background
+    and the next attempt usually succeeds - but streaming line-by-line turns it
+    into a crash halfway through a 149 MB manifest, which killed a full stats
+    run. So the file is read whole, with retries and backoff, and only then
+    parsed. Reading whole costs memory proportional to one manifest, which is
+    bounded and small next to the corpus itself.
+
+    A persistent failure still raises: silently skipping a manifest would make
+    every downstream total quietly wrong, which is far worse than stopping.
+    """
     p = Path(path)
     if not p.exists():
         return
-    with open(p, "r", encoding="utf-8") as fh:
-        for line in fh:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                yield json.loads(line)
-            except json.JSONDecodeError:
-                continue
+
+    blob = None
+    for attempt in range(1, attempts + 1):
+        try:
+            blob = p.read_text(encoding="utf-8", errors="replace")
+            break
+        except OSError as exc:
+            if attempt == attempts:
+                raise OSError(
+                    f"{p}: unreadable after {attempts} attempts ({exc}). "
+                    f"If this is an iCloud placeholder, force the download "
+                    f"with:  brctl download '{p}'") from exc
+            wait = 2 ** (attempt - 1)
+            print(f"  [retry {attempt}/{attempts}] {p.name}: {exc.__class__.__name__} "
+                  f"- waiting {wait}s for iCloud to materialise the file",
+                  flush=True)
+            _time.sleep(wait)
+
+    for line in blob.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            yield json.loads(line)
+        except json.JSONDecodeError:
+            continue
 
 
 @dataclass

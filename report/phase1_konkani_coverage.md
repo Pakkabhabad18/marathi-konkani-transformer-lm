@@ -138,12 +138,14 @@ corpus crosses the target on 67.8% real data.
 
 ## 6. Honest caveats
 
-**Token counts are tokenizer-dependent.** The identical corpus reads 430M tokens
-at vocabulary 5,000 and 506M at 2,500. The vocabulary was chosen on the ~25M
-parameter budget (embeddings fall from 41% to 10% of the budget), and the full
-measured fertility curve is recorded in D-032. Anyone re-tokenising this corpus
-at a different vocabulary will get a different token count, and that is a
-property of the metric, not of the data.
+**Token counts are tokenizer-dependent.** The train split measures 506,259,368
+tokens at vocabulary 2,500 and projects to 435M at 5,000 and 387M at 10,000 from
+measured fertilities. The vocabulary was chosen on the ~25M parameter budget —
+embeddings fall from 41% of the budget at 10,000 to 10% at 2,500 — and the full
+six-candidate sweep is recorded in D-043 with its artifact at
+`report/phase1_tokenizer_sweep_konkani.json`. Anyone re-tokenising this corpus at
+a different vocabulary will get a different token count, and that is a property
+of the metric, not of the data. The word count, 266,211,363, does not change.
 
 **Synthetic share is 32.2%.** It is labelled throughout, kept in its own Drive
 archive, and can be excluded. Excluding it leaves 180,506,902 real words.

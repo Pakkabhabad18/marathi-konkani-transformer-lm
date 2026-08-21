@@ -5,7 +5,11 @@
     "total": 389218163,
     "manual": 177781779,
     "downloaded": 211436384,
-    "manual_share": 0.45676639967081906
+    "synthetic": 0,
+    "real": 389218163,
+    "manual_share": 0.45676639967081906,
+    "synthetic_share": 0.0,
+    "real_share": 1.0
   },
   "sources": {
     "archive_org_maharashtra_gr": {
@@ -14,6 +18,7 @@
       "characters": 1096847675,
       "raw_characters": 1125780272,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_ocr"
     },
     "ai4bharat_indiccorp_v2_mar": {
@@ -22,6 +27,7 @@
       "characters": 1452838285,
       "raw_characters": 1453512807,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "news_loksatta": {
@@ -30,6 +36,7 @@
       "characters": 7316695,
       "raw_characters": 1165750456,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_maharashtratimes": {
@@ -38,6 +45,7 @@
       "characters": 246341,
       "raw_characters": 32119088,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_lokmat": {
@@ -46,6 +54,7 @@
       "characters": 2214981,
       "raw_characters": 104363855,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_esakal": {
@@ -54,6 +63,7 @@
       "characters": 161822801,
       "raw_characters": 124577969027,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_abplive_marathi": {
@@ -62,6 +72,7 @@
       "characters": 5471096,
       "raw_characters": 647202591,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_tv9marathi": {
@@ -70,6 +81,7 @@
       "characters": 1428576,
       "raw_characters": 263043836,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_divyamarathi": {
@@ -78,6 +90,7 @@
       "characters": 1912477,
       "raw_characters": 262921899,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     }
   },

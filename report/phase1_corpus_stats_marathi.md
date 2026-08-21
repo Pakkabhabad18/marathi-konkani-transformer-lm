@@ -3,7 +3,11 @@
 - Documents: **2,887,867**
 - Words: **389,218,163**
 - Manual: **177,781,779** (45.7%)
-- Downloaded: **211,436,384**
+- Downloaded (real): **211,436,384** (54.3%)
+- Synthetic (MT / LLM-generated): **0** (0.0%)
+- Real text (manual + downloaded): **389,218,163** (100.0%)
+
+`synthetic` is reported as its own bucket and is never counted toward the 20% manual floor.
 
 ## Sources
 

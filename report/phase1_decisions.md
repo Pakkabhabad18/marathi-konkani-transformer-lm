@@ -1209,41 +1209,66 @@ model; choose using fertility / unknown-token rate on held-out text."
 
 We chose 2,500 for both languages. That is roughly an order of magnitude below
 the recommendation, so this entry records the measurement, the argument, the
-counter-argument, and the side effect.
+counter-argument and the side effect.
 
 ### Measurement
 
-Vocabularies of 2,000, 2,500, 3,000, 4,000, 5,000, 6,000, 8,000 and 10,000 were
-trained per language with `tools/build_tokenizer.py`. Fertility (tokens per
-whitespace-delimited word) and unknown-token rate were measured on held-out text
-not used for tokenizer training: `konkani/tokenizer/konkani_heldout.txt`
-(51,219,193 bytes) and `marathi/tokenizer/marathi_heldout.txt` (13,301,952
-bytes). Results for Konkani:
+Six candidate vocabularies were trained on the Konkani train split and evaluated
+on 5,000 held-out documents that no candidate saw during training. Command:
 
-| vocab | fertility | unk rate | embed + unembed, untied, d=512 | share of 25M |
-|---:|---:|---:|---:|---:|
-| 2,000 | 2.6714 | 0.000000% | 2.05M | 8% |
-| 2,500 | 2.5279 | 0.000000% | 2.56M | 10% |
-| 3,000 | 2.4262 | 0.000000% | 3.07M | 12% |
-| 4,000 | 2.2832 | 0.000000% | 4.10M | 16% |
-| 5,000 | 2.1836 | 0.000000% | 5.12M | 20% |
-| 10,000 | 1.9506 | 0.000000% | 10.24M | 41% |
+```
+python3 tools/build_tokenizer.py --language konkani \
+  --vocab-sizes 2000,2500,3000,4000,5000,10000 --sweep-only
+```
+
+Artifact: `report/phase1_tokenizer_sweep_konkani.json`. Corpus 323,111 lines,
+318,111 training, 5,000 held out.
+
+| vocab | fertility (tok/word) | chars/token | whole-word rate | unk rate | embed+unembed untied, d=512 | share of 25M | tied | share |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2,000 | 2.6531 | 2.4389 | 27.2% | 0.000000% | 2.05M | 8% | 1.02M | 4% |
+| 2,500 | 2.5148 | 2.5730 | 30.6% | 0.000000% | 2.56M | 10% | 1.28M | 5% |
+| 3,000 | 2.4112 | 2.6836 | 33.3% | 0.000000% | 3.07M | 12% | 1.54M | 6% |
+| 4,000 | 2.2632 | 2.8591 | 37.6% | 0.000000% | 4.10M | 16% | 2.05M | 8% |
+| 5,000 | 2.1703 | 2.9814 | 40.6% | 0.000000% | 5.12M | 20% | 2.56M | 10% |
+| 10,000 | 1.9317 | 3.3498 | 48.8% | 0.000000% | 10.24M | 41% | 5.12M | 20% |
+
+Every candidate reports 256 byte-fallback pieces, which is the check that
+`byte_fallback` is actually active.
 
 The unknown-token rate is 0.000000% at every size, and that is by construction
-rather than by luck. SentencePiece is trained with `byte_fallback=True`, which
-adds 256 `<0xNN>` byte pieces, so any Unicode string is representable and the
-unknown token can never be emitted. The specification names unknown-token rate as
-a selection criterion, but for a byte-fallback tokenizer it carries no
-information. Fertility therefore had to carry the decision alone, and fertility
-alone always favours a larger vocabulary. That is why a third criterion was
-needed.
+rather than by luck. With `byte_fallback=True` the 256 `<0xNN>` pieces make any
+Unicode string representable, so the unknown token can never be emitted. The
+specification names unknown-token rate as a selection criterion, but for a
+byte-fallback tokenizer it carries no information. Fertility therefore had to
+carry the decision alone, and fertility alone always favours the largest
+vocabulary tested. That is why a third criterion was needed.
+
+An earlier version of this entry quoted fertility figures that were roughly 0.5%
+higher across the board. They came from a sweep whose record had been overwritten
+when the final tokenizer was rebuilt, and could not be reproduced. The table
+above replaces them with values that have an artifact behind them.
+
+### Why the deliverable tokenizer reports 2.5279 and this sweep reports 2.5148
+
+The deliverable Konkani tokenizer was built on 20 August from a corpus of 312,293
+lines. Approximately 10,800 further documents, chiefly BPCC, were ingested
+afterwards, so the corpus this sweep measures is 323,111 lines. The two held-out
+samples are therefore drawn from slightly different corpora, and the ~0.5%
+difference is that, not a change in the tokenizer.
+
+This also means the deliverable tokenizer was trained on about 97% of the final
+corpus rather than all of it. That is acceptable — a tokenizer's training set is
+a sample by design, and byte fallback guarantees the remaining 3% is
+representable, which the measured 0.000000% unknown rate over the full corpus
+confirms — but it is recorded rather than left to be discovered.
 
 ### Parameter cost
 
-The ~25M parameter budget is the constraint that decided it. Embedding and
-unembedding cost `2 × V × d_model` when untied. At `d_model = 512` a transformer
-block costs approximately `12 × d_model²` = 3.15M parameters. The vocabulary
-choice is therefore worth about two layers:
+The ~25M parameter budget is the criterion that decided it. Embedding and
+unembedding cost `2 × V × d_model` untied. At `d_model = 512` a transformer block
+costs approximately `12 × d_model²` = 3.15M parameters, so the vocabulary choice
+is worth about two layers:
 
 | vocab, untied | lookup tables | remaining for the stack | layers at d=512 |
 |---:|---:|---:|---:|
@@ -1256,36 +1281,42 @@ At 10,000 the two lookup tables consume 41% of the model. At 2,500 they consume
 
 ### Counter-argument
 
-Weight tying halves the cost, and the table above does not assume it. Sharing one
-matrix between the embedding and the output projection is standard practice and
-is used in GPT-2. With tying, vocabulary 10,000 costs 5.12M rather than 10.24M,
-which is 20% of the budget rather than 41%, leaving room for about 6.3 layers.
-That is a buildable model.
+Weight tying halves that cost, and the table above does not assume it. Sharing
+one matrix between the embedding and the output projection is standard and is
+used in GPT-2. With tying, vocabulary 10,000 costs 5.12M rather than 10.24M —
+20% of the budget rather than 41% — leaving room for about 6.3 layers. That is a
+buildable model.
 
 So the parameter-budget argument does not on its own rule out the recommended
 range. It rules out an untied 10,000-vocabulary model at this parameter count.
-Whether to tie is a Phase 2 architecture decision and is recorded here so that
-Phase 2 inherits an open question rather than an assumption.
+Whether to tie is a Phase 2 architecture decision, recorded here so that Phase 2
+inherits an open question rather than an assumption.
 
 ### Effect on the reported token count
 
-Token count is fertility multiplied by word count, and the corpus is fixed at
-266,211,363 words, of which 200,293,343 are in the train split. A smaller
-vocabulary therefore raises the reported token count without changing the data:
+Token count is fertility multiplied by word count, and the train split is fixed
+at 200,293,343 words. A smaller vocabulary therefore raises the reported token
+count without changing the data. Projected from the measured fertilities above:
 
-| vocab | Konkani training tokens | against ~500M |
+| vocab | projected Konkani training tokens | against ~500M |
 |---:|---:|---:|
-| 2,500 | 506,259,368 | 101.3% |
-| 3,000 | 485,951,591 | 97.2% |
-| 4,000 | 457,309,921 | 91.5% |
-| 5,000 | 437,360,743 | 87.5% |
-| 10,000 | 390,692,254 | 78.1% |
+| 2,000 | 531,398,268 | 106.3% |
+| 2,500 | 503,697,699 | 100.7% |
+| 3,000 | 482,947,308 | 96.6% |
+| 4,000 | 453,303,895 | 90.7% |
+| 5,000 | 434,696,642 | 86.9% |
+| 10,000 | 386,906,651 | 77.4% |
+
+The figure actually reported for the corpus, **506,259,368**, is not a projection:
+it is the count produced by encoding the whole train split with the deliverable
+tokenizer, and it is slightly above the 2,500 projection for the corpus-difference
+reason given above.
 
 Konkani clears the target at 2,500 and misses it at every larger size tested.
 Marathi clears it at all of them, so the vocabulary choice affects only the
 Konkani figure.
 
-This is a real consequence and presenting the parameter-budget argument as the
+This is a real consequence, and presenting the parameter-budget argument as the
 sole reason would be incomplete. The corpus did not grow: it is 266,211,363 words
 before and after this decision, and only the unit of measurement changed. Word
 counts are reported alongside token counts throughout this project so that a
@@ -1293,20 +1324,30 @@ reader can see the corpus size independently of the tokenizer.
 
 ### Cost of the choice
 
-Fertility rises from 2.1836 at vocabulary 5,000 to 2.5279 at 2,500. Each
-training sequence carries about 16% more tokens for the same text, so a fixed
+Fertility rises from 2.1703 at vocabulary 5,000 to 2.5148 at 2,500, so each
+training sequence carries about 16% more tokens for the same text: a fixed
 context window holds about 16% less Konkani, and a fixed token budget sees fewer
-words during training. Whole-word token coverage falls from 39.4% to 31.0%,
-meaning more words are split into two or three pieces and the model must learn
-more composition from subwords.
+words. Whole-word coverage falls from 40.6% to 30.6%, meaning more words are
+split into two or three pieces and the model must learn more composition from
+subwords. Average characters per token falls from 2.9814 to 2.5730.
+
+### Marathi
+
+The recorded sweep is Konkani only. Marathi's vocabulary was set to 2,500 to
+match, because the parameter budget is identical for both models and because
+Konkani is the language where the token target is tight — Marathi clears it at
+every vocabulary tested. The two vocabularies remain separately trained and
+share no pieces, which is what the specification requires. Re-running the
+Marathi sweep was not attempted: it requires reading approximately 2 GB of OCR
+shards that are currently iCloud placeholders, and the result would not change
+the decision.
 
 ### Decision
 
-Vocabulary 2,500 for both languages, tokenizers and vocabularies kept separate
-per language as the specification requires. The selection procedure was the one
-the specification asks for, extended with a parameter-budget criterion because
-unknown-token rate was uninformative under byte fallback. The deviation from the
-recommended range is deliberate, and the two facts needed to argue against it —
-that weight tying makes a larger vocabulary affordable, and that a larger
-vocabulary places Konkani below the target — are stated above rather than left
-for a reader to find.
+Vocabulary 2,500 for both languages, tokenizers and vocabularies trained
+separately per language. The selection procedure was the one the specification
+asks for, extended with a parameter-budget criterion because unknown-token rate
+is uninformative under byte fallback. The deviation from the recommended range is
+deliberate, and the two facts needed to argue against it — that weight tying makes
+a larger vocabulary affordable, and that a larger vocabulary places Konkani below
+the target — are stated above rather than left for a reader to find.

@@ -34,51 +34,61 @@
       "clean_chars": 2730098927,
       "manual_words": 177781779,
       "downloaded_words": 211436384,
+      "synthetic_words": 0,
       "by_source": {
         "archive_org_maharashtra_gr": {
           "documents": 154001,
           "words": 152312784,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "ai4bharat_indiccorp_v2_mar": {
           "documents": 2635630,
           "words": 211436384,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "news_loksatta": {
           "documents": 2684,
           "words": 1030716,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_maharashtratimes": {
           "documents": 76,
           "words": 34226,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_lokmat": {
           "documents": 1158,
           "words": 319054,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_esakal": {
           "documents": 90644,
           "words": 22828494,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_abplive_marathi": {
           "documents": 2290,
           "words": 777748,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_tv9marathi": {
           "documents": 654,
           "words": 208695,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_divyamarathi": {
           "documents": 730,
           "words": 270062,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         }
       }
     },
@@ -280,142 +290,170 @@
       "raw_chars": 1740809155,
       "clean_chars": 1724484591,
       "manual_words": 64435242,
-      "downloaded_words": 201776121,
+      "downloaded_words": 116071660,
+      "synthetic_words": 85704461,
       "by_source": {
         "hf_bulk_anag007_alpaca": {
           "documents": 13150,
           "words": 5038553,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_anag007_instruct": {
           "documents": 19154,
           "words": 7016222,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_anag007_wiki": {
           "documents": 1221,
           "words": 1013811,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_devarshee_v1": {
           "documents": 767,
           "words": 296198,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_devarshee_v2": {
           "documents": 7716,
           "words": 2470036,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_gpteacher": {
           "documents": 2563,
           "words": 867359,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_predictionguard": {
           "documents": 149,
           "words": 46583,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_saillab_cleaned": {
           "documents": 11235,
           "words": 4311915,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_saillab_taco": {
           "documents": 1344,
           "words": 409166,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_bulk_telugu_labs_alpaca": {
           "documents": 10689,
           "words": 4179067,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_cfilt_roundtripocr_konkani": {
           "documents": 2966,
           "words": 87497,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "hf_glotcc_v1_gom_deva": {
           "documents": 2020,
           "words": 1325434,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "hf_konkani_books_corpus_v1": {
           "documents": 41764,
           "words": 49682672,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "hf_konkani_instruct_100k_synthetic": {
           "documents": 5439,
           "words": 631270,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_konkani_raw_machine_translated": {
           "documents": 60843,
           "words": 59295762,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         },
         "hf_konkani_raw_scrape": {
           "documents": 13,
           "words": 11689,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "hf_madlad400_gom_clean": {
           "documents": 4188,
           "words": 2787400,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "hf_madlad400_gom_noisy": {
           "documents": 7222,
           "words": 4254586,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "hf_sangraha_verified_gom": {
           "documents": 9827,
           "words": 3266816,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "archive_org_konkani_books": {
           "documents": 53843,
           "words": 62997759,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "hf_konkani_books_corpus_v2": {
           "documents": 40597,
           "words": 47016182,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "bpcc_gom_deva": {
           "documents": 10807,
           "words": 3319633,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "ai4bharat_indiccorp_v2_gom": {
           "documents": 12696,
           "words": 4319751,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": false
         },
         "news_vishwakonkani": {
           "documents": 2,
           "words": 520,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "news_goanews": {
           "documents": 31,
           "words": 41728,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "konkani_wikipedia_selfcollected": {
           "documents": 2459,
           "words": 1395235,
-          "is_manual": true
+          "is_manual": true,
+          "is_synthetic": false
         },
         "mt_marathi_to_konkani_indictrans2": {
           "documents": 407,
           "words": 128519,
-          "is_manual": false
+          "is_manual": false,
+          "is_synthetic": true
         }
       }
     },

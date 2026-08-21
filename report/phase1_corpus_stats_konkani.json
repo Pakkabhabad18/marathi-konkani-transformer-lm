@@ -4,8 +4,12 @@
   "words": {
     "total": 266211363,
     "manual": 64435242,
-    "downloaded": 201776121,
-    "manual_share": 0.24204542313244531
+    "downloaded": 116071660,
+    "synthetic": 85704461,
+    "real": 180506902,
+    "manual_share": 0.24204542313244531,
+    "synthetic_share": 0.3219414078879871,
+    "real_share": 0.6780585921120129
   },
   "sources": {
     "hf_bulk_anag007_alpaca": {
@@ -14,6 +18,7 @@
       "characters": 33701772,
       "raw_characters": 33750353,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_anag007_instruct": {
@@ -22,6 +27,7 @@
       "characters": 50617628,
       "raw_characters": 50635781,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_anag007_wiki": {
@@ -30,6 +36,7 @@
       "characters": 7019897,
       "raw_characters": 7023159,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_devarshee_v1": {
@@ -38,6 +45,7 @@
       "characters": 1947985,
       "raw_characters": 1956522,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_devarshee_v2": {
@@ -46,6 +54,7 @@
       "characters": 16459290,
       "raw_characters": 16459363,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_gpteacher": {
@@ -54,6 +63,7 @@
       "characters": 5850536,
       "raw_characters": 5852075,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_predictionguard": {
@@ -62,6 +72,7 @@
       "characters": 303375,
       "raw_characters": 303370,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_saillab_cleaned": {
@@ -70,6 +81,7 @@
       "characters": 28658135,
       "raw_characters": 28706800,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_saillab_taco": {
@@ -78,6 +90,7 @@
       "characters": 2739911,
       "raw_characters": 2765699,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_bulk_telugu_labs_alpaca": {
@@ -86,6 +99,7 @@
       "characters": 27905099,
       "raw_characters": 28042254,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_cfilt_roundtripocr_konkani": {
@@ -94,6 +108,7 @@
       "characters": 585619,
       "raw_characters": 585605,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "hf_glotcc_v1_gom_deva": {
@@ -102,6 +117,7 @@
       "characters": 9194304,
       "raw_characters": 9194792,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "hf_konkani_books_corpus_v1": {
@@ -110,6 +126,7 @@
       "characters": 298001280,
       "raw_characters": 298258184,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "hf_konkani_instruct_100k_synthetic": {
@@ -118,6 +135,7 @@
       "characters": 4354649,
       "raw_characters": 4386107,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_konkani_raw_machine_translated": {
@@ -126,6 +144,7 @@
       "characters": 418425932,
       "raw_characters": 419264179,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     },
     "hf_konkani_raw_scrape": {
@@ -134,6 +153,7 @@
       "characters": 77909,
       "raw_characters": 77979,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "hf_madlad400_gom_clean": {
@@ -142,6 +162,7 @@
       "characters": 19924788,
       "raw_characters": 19927568,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "hf_madlad400_gom_noisy": {
@@ -150,6 +171,7 @@
       "characters": 30798258,
       "raw_characters": 30800912,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "hf_sangraha_verified_gom": {
@@ -158,6 +180,7 @@
       "characters": 22170827,
       "raw_characters": 22235915,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "archive_org_konkani_books": {
@@ -166,6 +189,7 @@
       "characters": 388689125,
       "raw_characters": 397978994,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_ocr"
     },
     "hf_konkani_books_corpus_v2": {
@@ -174,6 +198,7 @@
       "characters": 295942481,
       "raw_characters": 296112785,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "bpcc_gom_deva": {
@@ -182,6 +207,7 @@
       "characters": 22193996,
       "raw_characters": 22224582,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "ai4bharat_indiccorp_v2_gom": {
@@ -190,6 +216,7 @@
       "characters": 28140517,
       "raw_characters": 28208224,
       "is_manual": false,
+      "is_synthetic": false,
       "collection_method": "downloaded_dataset"
     },
     "news_vishwakonkani": {
@@ -198,6 +225,7 @@
       "characters": 3518,
       "raw_characters": 240781,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "news_goanews": {
@@ -206,6 +234,7 @@
       "characters": 283658,
       "raw_characters": 5310801,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "konkani_wikipedia_selfcollected": {
@@ -214,6 +243,7 @@
       "characters": 9626399,
       "raw_characters": 9639043,
       "is_manual": true,
+      "is_synthetic": false,
       "collection_method": "manual_scrape"
     },
     "mt_marathi_to_konkani_indictrans2": {
@@ -222,6 +252,7 @@
       "characters": 867703,
       "raw_characters": 867328,
       "is_manual": false,
+      "is_synthetic": true,
       "collection_method": "machine_translated"
     }
   },

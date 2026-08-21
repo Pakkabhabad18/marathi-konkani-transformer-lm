@@ -1,3 +1,15 @@
+"""
+Quality filter for the early Wikipedia sample (superseded).
+
+Filtered the raw API-collected Wikipedia text using its metadata CSV — dropping
+stubs, disambiguation pages and articles below a length threshold.
+
+Superseded by the shared gate stack (`common/textnorm.py`,
+`common/scriptid.py`, `common/dedup.py`) which every source now passes through
+identically, so filtering is no longer per-source bespoke code. Retained for
+provenance.
+"""
+
 import csv
 import re
 from pathlib import Path

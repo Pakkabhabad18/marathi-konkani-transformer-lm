@@ -1,3 +1,19 @@
+"""
+Preliminary Konkani tokenizer experiment (superseded).
+
+First tokenizer trained during early exploration, at vocab_size=32000 over a
+500k-record sample of the books corpus. Used to get an initial feel for
+Devanagari subword behaviour before any real corpus existed.
+
+Superseded by `tools/build_tokenizer.py`, which sweeps candidate vocabulary
+sizes, measures fertility, unknown-token rate, vocabulary utilisation and hapax
+count on held-out text, and selects by a stated rule. The 32000 vocabulary here
+was never justified against the parameter budget; the final tokenizers use
+2,500 (see D-032).
+
+Retained for provenance. Its output is not used by any Phase 1 artifact.
+"""
+
 import sentencepiece as spm
 from pathlib import Path
 

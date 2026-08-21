@@ -1,3 +1,13 @@
+"""
+Preliminary tokenizer statistics over the filtered Wikipedia corpus (superseded).
+
+As `wikipedia_tokenizer_stats.py`, but reading the output of
+`filter_wikipedia_corpus.py`. Used to check whether filtering changed
+segmentation behaviour.
+
+Superseded by `tools/build_tokenizer.py`. Retained for provenance.
+"""
+
 import sentencepiece as spm
 
 

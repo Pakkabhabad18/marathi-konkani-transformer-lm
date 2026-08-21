@@ -1,3 +1,13 @@
+"""
+First-look inspection of the books corpus (superseded).
+
+Printed Devanagari percentages for a handful of records from
+`omdeep22/Konkani_books_corpus-v2` before any pipeline existed.
+
+Carries the same total-characters denominator as `analyze_books_corpus.py` —
+see D-001. Retained unmodified for provenance.
+"""
+
 import re
 from datasets import load_dataset
 

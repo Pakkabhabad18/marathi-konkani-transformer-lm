@@ -1,3 +1,15 @@
+"""
+Sample extractor for the preliminary tokenizer experiments (superseded).
+
+Pulled 500,000 records from `omdeep22/Konkani_books_corpus-v2` into a flat text
+file, skipping the dataset's `--- SOURCE:` metadata lines, to give the early
+tokenizer experiments something to train on before a real corpus existed.
+
+Superseded by `konkani/scripts/ingest_books_corpus.py`, which ingests the same
+dataset through the full quality pipeline and writes provenance manifests.
+Retained for provenance.
+"""
+
 from datasets import load_dataset
 
 

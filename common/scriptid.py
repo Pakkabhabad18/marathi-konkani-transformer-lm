@@ -191,23 +191,51 @@ def identify_marathi_konkani(
         `langid_score` column: positive means Marathi-leaning, negative means
         Konkani-leaning, magnitude is confidence.
     """
+    # Split into WHOLE Devanagari words. _WORD_RE is [ऀ-ॿ]+, so punctuation,
+    # Latin text and digits are not words here. Whole-word matching is
+    # essential: "आणि" (Marathi "and") is a substring of longer words, and
+    # substring matching would count those as evidence.
     words = _WORD_RE.findall(text)
     if not words:
+        # No Devanagari at all - there is nothing to discriminate on. Abstain
+        # rather than return a default label, which a caller might trust.
         return LangIdResult("undecided", 0.0, 0, 0, 0, False)
 
+    # Count each distinct word once, then multiply by its frequency below.
+    # Counting frequencies (not just presence) is deliberate: a document that
+    # says आहे twenty times is stronger evidence of Marathi than one that says
+    # it once, and the score should reflect that.
     word_set_counts = {}
     for w in words:
         word_set_counts[w] = word_set_counts.get(w, 0) + 1
 
+    # Total marker OCCURRENCES on each side. MARATHI_MARKERS and
+    # KONKANI_MARKERS have already had their intersection removed at import
+    # time, so a word can contribute to at most one side - no double counting.
     m_hits = sum(c for w, c in word_set_counts.items() if w in MARATHI_MARKERS)
     k_hits = sum(c for w, c in word_set_counts.items() if w in KONKANI_MARKERS)
     total_hits = m_hits + k_hits
 
+    # EVIDENCE GATE. Below min_markers there is not enough signal to decide.
+    # This is why the discriminator abstained on 22-word IndicCorp fragments
+    # (D-034) and only gave verdicts once they were packed into 300-word
+    # documents - the abstention was correct behaviour, not a failure.
     if total_hits < min_markers:
         return LangIdResult("undecided", 0.0, m_hits, k_hits, len(words), False)
 
+    # Signed, normalised score in [-1, +1].
+    #   +1 : every marker found was Marathi
+    #   -1 : every marker found was Konkani
+    #    0 : an even split
+    # Normalising by total_hits makes the score comparable across documents of
+    # very different lengths, which is what let us calibrate gom.txt against
+    # two reference corpora in D-035.
     score = (m_hits - k_hits) / total_hits
 
+    # MARGIN GATE. A verdict needs |score| >= margin. A document with a
+    # near-even split - quoted speech, a Marathi article about Konkani, or a
+    # crawled page mixing both - lands in the dead band and is reported
+    # undecided rather than being forced into one corpus.
     if score >= margin:
         return LangIdResult("mr", round(score, 4), m_hits, k_hits, len(words), True)
     if score <= -margin:

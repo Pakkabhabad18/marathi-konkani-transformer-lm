@@ -1,3 +1,18 @@
+"""
+Early Devanagari-composition analysis of the books corpus (superseded).
+
+Sampled `omdeep22/Konkani_books_corpus-v2` and reported the share of Devanagari
+characters, to decide whether the dataset was usable.
+
+NOTE — this script contains the measurement error later recorded as D-001: the
+Devanagari ratio is computed over TOTAL characters, including whitespace. That
+denominator reported the corpus as 83.54% Devanagari when the true figure over
+non-whitespace characters is 99.78%. `common/scriptid.py::profile_script` uses
+the non-whitespace denominator and is the correct implementation.
+
+Retained unmodified so the original error remains visible in the history.
+"""
+
 from datasets import load_dataset
 import re
 import time

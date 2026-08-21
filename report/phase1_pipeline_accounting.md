@@ -9,6 +9,8 @@ Stages 1–5 in **words** (tokenizer-independent); stage 6 in **tokens**.
 | documents accepted | 2,887,867 | 323,112 |
 | words accepted | 389,218,163 | 266,211,363 |
 | manual words | 177,781,779 | 64,435,242 |
-| downloaded words | 211,436,384 | 201,776,121 |
+| downloaded words (real) | 211,436,384 | 116,071,660 |
+| synthetic words (MT/LLM) | 0 | 85,704,461 |
+| real words (manual+dl) | 389,218,163 | 180,506,902 |
 | final training tokens | 872,024,099 | 506,259,368 |
 | manual tokens | 475,466,104 | 159,563,967 |

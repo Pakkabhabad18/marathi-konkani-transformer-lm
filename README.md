@@ -22,7 +22,9 @@ weights per language — no data, vocabulary or checkpoint is shared between the
 | manual training tokens | 475,466,104 | 159,563,967 |
 | **manual share (≥20% required)** | **54.5%  PASS** | **31.5%  PASS** |
 | tokenizer vocabulary | 2,500 | 2,500 |
-| fertility (tokens/word, held-out) | 2.7278 | 2.5279 |
+| fertility, held-out (tokens/word) | 2.6301 | 2.5279 |
+| fertility, corpus-wide (train tokens / train words) | 2.7278 | 2.5276 |
+| average characters per token (held-out) | 2.6416 | 2.5583 |
 | unknown-token rate | **0.000000%** | **0.000000%** |
 | documents leaked between splits | **0** | **0** |
 
@@ -106,12 +108,13 @@ is `MACHINE_TRANSLATED`.
 
 **Vocabulary size 2,500.** The specification recommends a vocabulary "in the
 tens of thousands per model", so this is a deliberate deviation and it is argued
-in full in D-043. Vocabularies of 2,000 / 2,500 / 3,000 / 4,000 / 5,000 / 6,000 /
-8,000 / 10,000 were trained per language and fertility and unknown-token rate
-measured on held-out text, which is the selection procedure the specification
-asks for. Unknown-token rate turned out to be uninformative: SentencePiece is
-trained with `byte_fallback=True`, so it is 0.000000% at every vocabulary size by
-construction.
+in full in D-043. Six candidate vocabularies (2,000 / 2,500 / 3,000 / 4,000 / 5,000
+/ 10,000) were trained on the Konkani corpus and fertility, characters per token
+and unknown-token rate measured on 5,000 held-out documents, which is the
+selection procedure the specification asks for. The measured table is in
+`report/phase1_tokenizer_sweep_konkani.json`. Unknown-token rate turned out to be
+uninformative: SentencePiece is trained with `byte_fallback=True`, so it is
+0.000000% at every vocabulary size by construction.
 
 The deciding criterion was the ~25M parameter budget. Embedding and unembedding
 cost `2 x vocab x d_model`, so at d_model 512 a 10,000 vocabulary spends 41% of
@@ -122,14 +125,15 @@ Two qualifications, both in D-043. Weight tying would halve that cost and make a
 10,000 vocabulary affordable at 20% of the budget, so the parameter argument
 rules out an untied large vocabulary rather than a large vocabulary as such.
 And because token count is fertility times word count, a smaller vocabulary
-raises the reported token total without changing the data: Konkani measures
-506M tokens at vocabulary 2,500 and 437M at 5,000 on an identical corpus of
-266,211,363 words. Word counts are reported alongside token counts throughout
+raises the reported token total without changing the data: on an identical
+corpus of 266,211,363 words, the Konkani train split measures 506M tokens at
+vocabulary 2,500 and projects to 435M at 5,000 and 387M at 10,000. Word counts are reported alongside token counts throughout
 for that reason.
 
-The measured cost of the choice: fertility rises from 2.1836 at 5,000 to 2.5279
-at 2,500, whole-word token coverage falls from 39.4% to 31.0%, and every training
-sequence is about 16% longer for the same text.
+The measured cost of the choice: fertility rises from 2.1703 at vocabulary 5,000
+to 2.5148 at 2,500, whole-word coverage falls from 40.6% to 30.6%, average
+characters per token falls from 2.9814 to 2.5730, and every training sequence is
+about 16% longer for the same text.
 
 **Deduplication** is SHA-256 exact over every document, plus MinHash/LSH
 near-duplicate detection with banding tuned to the 0.85 decision threshold.
@@ -251,10 +255,18 @@ python3 tools/verify_gom_langid.py --sample 1500
 ### 3. Tokenizers
 
 ```bash
+# 1. Sweep for evidence. --sweep-only does NOT replace the final tokenizer.
 python3 tools/build_tokenizer.py --language marathi \
-  --vocab-sizes 2000,2500,3000,4000,5000 --fertility-tolerance 0.15
+  --vocab-sizes 2000,2500,3000,4000,5000,10000 --sweep-only
 python3 tools/build_tokenizer.py --language konkani \
-  --vocab-sizes 2000,2500,3000,4000,5000 --fertility-tolerance 0.15
+  --vocab-sizes 2000,2500,3000,4000,5000,10000 --sweep-only
+
+# 2. Build the deliverable at the vocabulary chosen in D-043. This is a separate
+# command because the script's fertility-tolerance rule selects a LARGER
+# vocabulary; 2,500 was chosen on the ~25M parameter budget, which the script
+# does not model.
+python3 tools/build_tokenizer.py --language marathi --vocab-sizes 2500
+python3 tools/build_tokenizer.py --language konkani --vocab-sizes 2500
 ```
 
 ### 4. Splits
@@ -280,6 +292,7 @@ python3 tools/make_plots.py
 
 | file | contents |
 |---|---|
+| `report/phase1_report.md` | **the Phase 1 report — start here** |
 | `report/phase1_corpus_stats_marathi.md` | Marathi dataset statistics |
 | `report/phase1_corpus_stats_konkani.md` | Konkani dataset statistics |
 | `report/phase1_pipeline_accounting.md` | stage-by-stage accounting, raw → cleaned → tokens |
@@ -289,5 +302,6 @@ python3 tools/make_plots.py
 | `report/phase1_konkani_mt.md` | synthetic/MT justification against the TAs' three conditions |
 | `report/phase1_konkani_overlap_check.md` | manual vs downloaded source independence |
 | `report/phase1_decisions.md` | every design decision and correction (D-001…D-042) |
-| `report/phase1_viva_log.md` | full pipeline walkthrough |
+| `report/phase1_work_log.md` | chronological record of the build |
+| `report/archive/` | superseded planning documents, kept for history |
 | `report/figures/` | all figures, each with title, axis labels and legend |

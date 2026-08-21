@@ -109,6 +109,13 @@ def main() -> int:
                         help="cap corpus lines read (0 = all)")
     parser.add_argument("--fertility-tolerance", type=float, default=0.02,
                         help="accept the smallest vocab within this fraction of best")
+    # A sweep exists to produce evidence, not to pick the deliverable. Without
+    # this flag every sweep retrains and REPLACES <lang>/tokenizer/<lang>_bpe.*,
+    # which silently invalidates every token count measured with the previous
+    # model. --sweep-only writes the comparison table and stops.
+    parser.add_argument("--sweep-only", action="store_true",
+                        help="measure candidates and write the sweep report; "
+                             "do not train or install a final tokenizer")
     args = parser.parse_args()
 
     lang = args.language
@@ -189,6 +196,37 @@ def main() -> int:
             print(f"\n!! vocab {r.vocab_size}: {r.byte_pieces} byte pieces, expected 256")
             print("   byte_fallback is not active - do not use this tokenizer.")
             return 1
+
+    if args.sweep_only:
+        # Evidence only. The final vocabulary for this project was chosen at
+        # 2,500 on the parameter-budget argument in D-043, which this table
+        # supports but does not by itself produce: `chosen` above is the
+        # fertility-tolerance rule, and it selects a larger vocabulary. Writing
+        # the two to separate files keeps that distinction visible.
+        sweep_payload = {
+            "language": lang,
+            "purpose": ("vocabulary sweep evidence for D-043; the deliverable "
+                        "tokenizer is built separately at --vocab-sizes 2500"),
+            "corpus_lines": len(lines),
+            "training_lines": len(train_lines),
+            "heldout_lines": len(heldout),
+            "heldout_documents": args.heldout,
+            "candidates": [r.to_dict() for r in reports],
+            "lowest_fertility_vocab": best.vocab_size,
+            "fertility_tolerance": args.fertility_tolerance,
+            "vocab_chosen_by_tolerance_rule": chosen.vocab_size,
+            "vocab_used_in_project": 2500,
+            "note": ("The tolerance rule and the project's choice differ. The "
+                     "project weights the ~25M parameter budget, which this "
+                     "script does not model. See D-043."),
+        }
+        sweep_json = REPO_ROOT / "report" / f"phase1_tokenizer_sweep_{lang}.json"
+        sweep_json.parent.mkdir(parents=True, exist_ok=True)
+        sweep_json.write_text(json.dumps(sweep_payload, ensure_ascii=False,
+                                         indent=2), encoding="utf-8")
+        print(f"\n  sweep report written: {sweep_json.relative_to(REPO_ROOT)}")
+        print("  --sweep-only: final tokenizer NOT retrained or replaced.")
+        return 0
 
     # FINAL MODEL at the chosen size, written to the language's tokenizer dir.
     print(f"\n--- Training final tokenizer at vocab_size={chosen.vocab_size:,} ---")

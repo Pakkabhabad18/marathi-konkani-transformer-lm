@@ -1,0 +1,93 @@
+{
+  "language": "konkani",
+  "purpose": "vocabulary sweep evidence for D-043; the deliverable tokenizer is built separately at --vocab-sizes 2500",
+  "corpus_lines": 323111,
+  "training_lines": 318111,
+  "heldout_lines": 5000,
+  "heldout_documents": 5000,
+  "candidates": [
+    {
+      "vocab_size": 2000,
+      "documents": 5000,
+      "words": 4283451,
+      "characters": 27716701,
+      "tokens": 11364274,
+      "unk_tokens": 0,
+      "tokens_per_word": 2.6530650169687946,
+      "characters_per_token": 2.438932834600785,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.2715093658497453
+    },
+    {
+      "vocab_size": 2500,
+      "documents": 5000,
+      "words": 4283451,
+      "characters": 27716701,
+      "tokens": 10771992,
+      "unk_tokens": 0,
+      "tokens_per_word": 2.5147928621104807,
+      "characters_per_token": 2.5730339383839125,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.3059594480766917
+    },
+    {
+      "vocab_size": 3000,
+      "documents": 5000,
+      "words": 4283451,
+      "characters": 27716701,
+      "tokens": 10328300,
+      "unk_tokens": 0,
+      "tokens_per_word": 2.4112100266817573,
+      "characters_per_token": 2.6835685446782143,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.33258292888371904
+    },
+    {
+      "vocab_size": 4000,
+      "documents": 5000,
+      "words": 4283451,
+      "characters": 27716701,
+      "tokens": 9694171,
+      "unk_tokens": 0,
+      "tokens_per_word": 2.2631684125720124,
+      "characters_per_token": 2.859109974437216,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.3756467851269504
+    },
+    {
+      "vocab_size": 5000,
+      "documents": 5000,
+      "words": 4283451,
+      "characters": 27716701,
+      "tokens": 9296549,
+      "unk_tokens": 0,
+      "tokens_per_word": 2.170340923708477,
+      "characters_per_token": 2.981396752708989,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.4057899803457543
+    },
+    {
+      "vocab_size": 10000,
+      "documents": 5000,
+      "words": 4283451,
+      "characters": 27716701,
+      "tokens": 8274208,
+      "unk_tokens": 0,
+      "tokens_per_word": 1.9316686475461025,
+      "characters_per_token": 3.349770878372891,
+      "unk_rate": 0.0,
+      "byte_pieces": 256,
+      "single_token_word_rate": 0.48801692671774094
+    }
+  ],
+  "lowest_fertility_vocab": 10000,
+  "fertility_tolerance": 0.02,
+  "vocab_chosen_by_tolerance_rule": 10000,
+  "vocab_used_in_project": 2500,
+  "note": "The tolerance rule and the project's choice differ. The project weights the ~25M parameter budget, which this script does not model. See D-043."
+}

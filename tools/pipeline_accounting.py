@@ -53,7 +53,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from common.manifest import atomic_write_json, read_manifest          # noqa: E402
+from common.manifest import (atomic_write_json, read_manifest,       # noqa: E402
+                             CollectionType)
 
 LANGUAGES = ("marathi", "konkani")
 MANUAL_FLOOR = 0.20
@@ -94,8 +95,12 @@ def stage1_raw(language: str) -> dict:
 
 def stage2_accepted(language: str) -> dict:
     """What survived the per-source gates, from the manifests."""
+    # Three buckets. `synthetic_words` is tracked separately from
+    # `downloaded_words` so the accounting table can never imply that
+    # machine-generated text is downloaded human text (D-036).
     out = {"documents": 0, "words": 0, "raw_chars": 0, "clean_chars": 0,
-           "manual_words": 0, "downloaded_words": 0, "by_source": {}}
+           "manual_words": 0, "downloaded_words": 0, "synthetic_words": 0,
+           "by_source": {}}
 
     mf_dir = REPO_ROOT / language / "data" / "manifests"
     if not mf_dir.exists():
@@ -105,19 +110,26 @@ def stage2_accepted(language: str) -> dict:
         for row in read_manifest(path):
             words = int(row.get("words") or 0)
             is_manual = bool(row.get("is_manual"))
+            is_synthetic = (row.get("collection_type")
+                            == CollectionType.MACHINE_TRANSLATED.value)
             source = row.get("source_name", "unknown")
 
             out["documents"] += 1
             out["words"] += words
             out["raw_chars"] += int(row.get("raw_chars") or 0)
             out["clean_chars"] += int(row.get("clean_chars") or 0)
-            if is_manual:
+            # Synthetic first: a machine-translated row is never manual, and
+            # falling through to the else branch would hide it as downloaded.
+            if is_synthetic:
+                out["synthetic_words"] += words
+            elif is_manual:
                 out["manual_words"] += words
             else:
                 out["downloaded_words"] += words
 
             entry = out["by_source"].setdefault(
-                source, {"documents": 0, "words": 0, "is_manual": is_manual})
+                source, {"documents": 0, "words": 0, "is_manual": is_manual,
+                         "is_synthetic": is_synthetic})
             entry["documents"] += 1
             entry["words"] += words
     return out
@@ -191,7 +203,10 @@ def report_language(language: str) -> dict:
     print(f"  documents             {accepted['documents']:>14,}")
     print(f"  words                 {accepted['words']:>14,}")
     print(f"    manual              {accepted['manual_words']:>14,}")
-    print(f"    downloaded          {accepted['downloaded_words']:>14,}")
+    print(f"    downloaded (real)   {accepted['downloaded_words']:>14,}")
+    print(f"    synthetic (MT/LLM)  {accepted['synthetic_words']:>14,}")
+    print(f"    real (manual + dl)  "
+          f"{accepted['manual_words'] + accepted['downloaded_words']:>14,}")
     if accepted["raw_chars"]:
         removed = accepted["raw_chars"] - accepted["clean_chars"]
         print(f"\n  characters before cleaning  {accepted['raw_chars']:>14,}")
@@ -299,7 +314,13 @@ def main() -> int:
         ("documents accepted", lambda r: r["stage2_accepted"]["documents"]),
         ("words accepted", lambda r: r["stage2_accepted"]["words"]),
         ("  manual words", lambda r: r["stage2_accepted"]["manual_words"]),
-        ("  downloaded words", lambda r: r["stage2_accepted"]["downloaded_words"]),
+        ("  downloaded words (real)",
+         lambda r: r["stage2_accepted"]["downloaded_words"]),
+        ("  synthetic words (MT/LLM)",
+         lambda r: r["stage2_accepted"]["synthetic_words"]),
+        ("  real words (manual+dl)",
+         lambda r: (r["stage2_accepted"]["manual_words"]
+                    + r["stage2_accepted"]["downloaded_words"])),
         ("final training tokens", lambda r: r["final_train_tokens"]),
         ("  manual tokens", lambda r: r["final_manual_tokens"]),
     ]

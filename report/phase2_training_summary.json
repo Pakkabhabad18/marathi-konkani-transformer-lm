@@ -1,0 +1,22 @@
+{
+  "marathi": {
+    "logged_steps": 382,
+    "evaluations": 16,
+    "tokens_seen": 499384320,
+    "final_train_loss": 2.360542,
+    "final_val_loss": 2.135594,
+    "final_val_ppl": 8.4621,
+    "best_val_loss": 2.135594,
+    "best_val_ppl": 8.462071484757319
+  },
+  "konkani": {
+    "logged_steps": 382,
+    "evaluations": 16,
+    "tokens_seen": 499384320,
+    "final_train_loss": 3.412703,
+    "final_val_loss": 3.298439,
+    "final_val_ppl": 27.0704,
+    "best_val_loss": 3.298439,
+    "best_val_ppl": 27.070349107089605
+  }
+}

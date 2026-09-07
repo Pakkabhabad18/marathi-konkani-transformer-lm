@@ -130,12 +130,12 @@ In the same folder, under `phase2_checkpoints/`:
 
 | file | contents |
 |---|---|
-| `marathi_pretrain_best.pt` | Model H weights, optimizer state, scheduler state, step, config |
+| `marathi_pretrain_best.pt` | Model H weights, optimizer state, GradScaler state, step, best validation loss, model config, training config |
 | `konkani_pretrain_best.pt` | Model L, same format |
 
-Each checkpoint is ~544 MB and carries everything needed to resume training or to
-reload the model for evaluation: `model`, `optimizer`, `scaler`, `step`,
-`best_val`, `model_config` and `train_config`. `tools/evaluate.py` rebuilds the
+Each checkpoint is 298,851,087 bytes (~285 MB) and carries everything needed to
+resume training or to reload the model for evaluation: `model`, `optimizer`,
+`scaler`, `step`, `best_val`, `model_config` and `train_config`. `tools/evaluate.py` rebuilds the
 architecture from the `model_config` stored inside the checkpoint rather than
 from a separate file, so a checkpoint cannot be loaded into a mismatched model.
 
@@ -223,24 +223,40 @@ changed.
 
 ```
 README.md                     this file
-common/                       shared pipeline modules
+common/                       shared pipeline and model code
   textnorm.py                 Unicode NFC normalization (preserves ZWJ/ZWNJ)
   scriptid.py                 script profiling + Marathi/Konkani language ID
   dedup.py                    SHA-256 exact + MinHash/LSH near-duplicate detection
   manifest.py                 per-document provenance; manual/downloaded/synthetic typing
   checkpoint.py               atomic, resumable job state
   newscrawl.py                shared sitemap-driven crawler
-marathi/
+  data.py                     memory-mapped packed-token reader and samplers
+  metrics.py                  BLEU-4, chrF, ROUGE-L, diversity, bits-per-byte
+  model/
+    config.py                 ModelConfig + analytic parameter count
+    attention.py              multi-head causal self-attention
+    lm.py                     feed-forward, transformer block, DecoderLM, generate()
+marathi/                      (konkani/ has the same shape)
   scripts/                    collection + ingest scripts
   tokenizer/                  final SentencePiece model + vocabulary
+  configs/model_config.json   architecture actually trained, written by the run
+  model/                      pointer to common/model — see marathi/model/README.md
+  train/                      how this model was pretrained, and where its logs are
+  eval/                       how it was evaluated, and where its results are
   data/                       corpora (gitignored — see Drive)
-konkani/
-  scripts/
-  tokenizer/
-  data/                       manual/ processed/ synthetic/ splits/ manifests/
-tools/                        pipeline stages and verification
-report/                       all Phase 1 tables, figures and analysis
+tools/                        pipeline, training, evaluation and verification scripts
+report/                       every table, figure and analysis, both phases
+  figures/                    all figures, each with title, axis labels and legend
+  training_logs/              per-step training CSVs for both models
+  archive/                    superseded planning documents, kept for history
 ```
+
+The Transformer is implemented once in `common/model/` rather than duplicated
+under each language. The two models are architecturally identical and differ only
+in vocabulary size and weights; two copies of the file could drift, and a drift
+between them would invalidate the claim that the only difference between Model H
+and Model L is the data. Each language's `model/`, `train/` and `eval/` directory
+carries a README mapping that language's artifacts to where they live.
 
 ---
 
@@ -352,7 +368,7 @@ python3 tools/make_plots.py
 | `report/phase1_konkani_coverage.md` | Konkani source exhaustion: what exists, what was empty |
 | `report/phase1_konkani_mt.md` | synthetic/MT justification against the TAs' three conditions |
 | `report/phase1_konkani_overlap_check.md` | manual vs downloaded source independence |
-| `report/phase1_decisions.md` | every design decision and correction (D-001…D-042) |
+| `report/phase1_decisions.md` | every design decision and correction (D-001…D-043) |
 | `report/phase1_work_log.md` | chronological record of the build |
 | `report/archive/` | superseded planning documents, kept for history |
 | `report/figures/` | all figures, each with title, axis labels and legend |

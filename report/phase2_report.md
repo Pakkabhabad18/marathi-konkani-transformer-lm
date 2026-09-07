@@ -16,9 +16,9 @@ regenerated with the commands in section 10.
 | optimizer steps | 3,814 | 3,814 |
 | wall-clock (T4) | 3.57 h | 3.41 h |
 | test cross-entropy | 2.1544 nats/token | 3.2794 nats/token |
-| test perplexity | **8.62** | **26.56** |
-| **test bits per byte** | **0.4728** | **0.7086** |
-| BLEU-4 (best setting) | 8.03 | **0.00** |
+| test perplexity | 8.62 | 26.56 |
+| test bits per byte | 0.4728 | 0.7086 |
+| BLEU-4 (best setting) | 8.03 | 0.00 |
 | chrF (best setting) | 27.82 | 21.02 |
 | ROUGE-L (best setting) | 13.93 | 5.53 |
 
@@ -124,7 +124,7 @@ source-stratified and the first N tokens would be a single source.
 | tokens scored | 131,072 | 131,072 |
 | bytes scored | 861,607 | 875,138 |
 
-### Why bits-per-byte, and why the headline number changes
+### Bits per byte
 
 Perplexity is per *token*, and a model whose tokenizer splits text into more,
 shorter pieces faces an easier per-token problem without being a better model of
@@ -138,10 +138,9 @@ The two framings give different-sounding answers to the same question:
 - **Bits-per-byte ratio: 1.50×** (0.7086 / 0.4728)
 
 Both are correct. Perplexity is exponential in the loss, so a 1.125-nat gap
-becomes a factor of e^1.125 = 3.08; bits per byte is linear in it. The honest
-statement of the resource gap is that **Model L needs about 50% more bits to
-encode a byte of its language than Model H does** — not that it is "three times
-worse".
+becomes a factor of e^1.125 = 3.08; bits per byte is linear in it. Stated as a
+resource gap: Model L needs about 50% more bits to encode a byte of its language
+than Model H does, not three times as many.
 
 The tokenizers turn out to compress almost identically, 6.574 against 6.677 bytes
 per token, a 1.6% difference. So perplexity happens to be more comparable here
@@ -172,9 +171,9 @@ are used for every setting and for both models.
 | T = 1.0 | 0.00 | 20.47 | 4.47 | 0.326 | 0.865 | 0.037 |
 | T = 1.5 | 0.00 | **21.02** | 2.30 | 0.416 | 0.976 | 0.001 |
 
-### Konkani's BLEU is exactly zero, and the reason is precise
+### Why Konkani BLEU is 0.00
 
-Not a bug, and not rounding. Corpus BLEU is the geometric mean of modified
+This is not a bug or a rounding artefact. Corpus BLEU is the geometric mean of modified
 n-gram precisions for n = 1..4, and the per-order precisions are:
 
 | | 1-gram | 2-gram | 3-gram | 4-gram |
@@ -182,7 +181,7 @@ n-gram precisions for n = 1..4, and the per-order precisions are:
 | Marathi, T = 0.5 | 15.451 | 8.852 | 6.267 | 4.849 |
 | Konkani, T = 0.5 | 6.894 | 0.624 | **0.000** | **0.000** |
 
-Across 24 generations of 128 tokens, Model L produced **not one trigram** that
+Across 24 generations of 128 tokens, Model L produced not one trigram that
 appears in its reference continuation. A single zero at any order makes the
 geometric mean zero, and BLEU with it. Marathi manages 4.8% precision even at
 4-gram order.
@@ -191,22 +190,22 @@ This is reported rather than smoothed away. Smoothed sentence-BLEU would return
 a small positive number and hide the fact that the model reproduces no
 three-word sequence of the reference at all.
 
-### What the metrics are and are not telling us
+### Reading the three metrics
 
-**BLEU is the wrong instrument here and the zero proves it**, in the sense that
-it has no resolution left: it cannot distinguish a Konkani model that is nearly
-right from one that is nonsense, because both score 0. It is precision-oriented,
+BLEU has no resolution left at this quality level: it cannot distinguish a
+Konkani model that is nearly right from one that is nonsense, because both score
+0. It is precision-oriented,
 word-level, and requires contiguous matches — brittle in a morphologically rich
 Devanagari language where a fluent continuation that inflects a stem differently
 from the reference scores nothing.
 
-**chrF is the most informative of the three.** It works on character n-grams, so
+chrF is the most informative of the three. It works on character n-grams, so
 a correct stem with a different suffix still earns partial credit, and it keeps
 discriminating where BLEU has bottomed out: Konkani moves 9.80 → 21.02 across
 settings, which is real signal about output quality that BLEU reports as four
 zeros.
 
-**ROUGE-L is recall-oriented and subsequence-based**, so it rewards getting
+ROUGE-L is recall-oriented and subsequence-based, so it rewards getting
 content order right even with insertions between. It is the metric that most
 disagrees with chrF on the best temperature, which is itself informative — see
 below.
@@ -215,16 +214,15 @@ All three compare against a *single* reference continuation. For open-ended
 generation there are many acceptable continuations, so absolute values are low
 for every model and only the comparison carries information.
 
-### The temperature trade-off, and that the two models disagree about it
+### Temperature
 
 Marathi peaks at T = 0.5 on all three metrics simultaneously. Konkani does not:
 ROUGE-L peaks at 0.5 (5.53) while chrF keeps climbing to 1.5 (21.02). There is no
 setting at which Model L is simultaneously best by both measures.
 
-That disagreement is the finding. Higher temperature makes Konkani's output more
-*character-plausible* — better n-gram statistics, more varied — while making it
-less *content-faithful*. Model H has a genuine operating point; Model L trades
-one failure mode for another.
+Higher temperature makes Konkani's output more character-plausible — better
+n-gram statistics, more varied — while making it less content-faithful. Model H
+has a single best operating point; Model L does not.
 
 ## 6. Degeneration
 
@@ -232,7 +230,7 @@ The characteristic failure of a small language model is not incoherence but
 looping, and perplexity cannot see it: a repeated high-probability phrase scores
 *well*. This is why the diversity diagnostics are here.
 
-Under greedy decoding, **Konkani's 4-gram repetition rate is 0.875** — seven of
+Under greedy decoding, Konkani's 4-gram repetition rate is 0.875 — seven of
 every eight 4-gram occurrences are repeats — with Distinct-1 at 0.076, meaning
 only 7.6% of generated tokens are distinct. Marathi degenerates too, at 0.629 and
 0.145, but less severely.
@@ -266,9 +264,9 @@ reproduces the dateline convention of Marathi news ("रत्नागिरी
 the same temperature starts correctly — `ंडल आनी मूर हांगा आशिल्लें. ह्या
 स्टेशनाचेर ऑस्ट्रेलियन युनियनाच्या` — and then locks onto `एअर फोर्साच्या`.
 
-**Both models are locally fluent and globally incoherent**, which is the expected
-result for 25M parameters on 500M tokens. Reporting it with samples is more
-useful than presenting perplexity alone and implying more than the models can do.
+Both models are locally fluent and globally incoherent, which is the expected
+result at 25M parameters and 500M tokens. The samples are included because
+perplexity alone does not show it.
 
 ## 7. Attention analysis
 
@@ -287,20 +285,21 @@ one at position 200. Position 0 is excluded, since it can only attend to itself.
 | 5 | 0.591 | 51.07 | 0.612 | 45.88 |
 | 6 | 0.761 | 43.84 | 0.772 | 54.57 |
 
-### The expected pattern did not appear
+### Layer-wise pattern
 
 The standard account is early layers doing local positional work with low entropy
 and short attention distance, later layers doing content-based work with higher
-entropy and longer range. **Neither model does this.** Both show a U-shape:
+entropy and longer range. Neither model does this. Both show a U-shape:
 diffuse and moderately long-range at layers 0–1, sharply focused and local at
 layers 3–4, diffuse and long-range again at 5–6.
 
 The selective work happens in the *middle* of the stack. Layers 0–1 sit at 0.77
 and 0.87 normalised entropy, close to uniform — they appear to be broadcasting
-context rather than selecting from it. This is recorded as a measured result that
-disagrees with the prediction, not adjusted after the fact.
+context rather than selecting from it. The prediction above was written in the
+docstring of `tools/attention_analysis.py` before the analysis was run, and has
+been left as it was rather than revised to match the result.
 
-### Head specialisation is strong
+### Head specialisation
 
 Within a single layer, heads learn very different jobs. Konkani layer 2 holds
 head 3 at mean distance 4.13 and head 2 at 105.61 — a 25× spread. Marathi layer 2
@@ -331,50 +330,48 @@ per layer, each panel with title, axis labels and colourbar.
 The controlled setup — same architecture, same 499,908,608 tokens, same
 hyperparameters — means the following differences are attributable to the data.
 
-**The gap is real but smaller than perplexity suggests.** 1.50× in bits per byte,
+The gap is real but smaller than perplexity suggests: 1.50× in bits per byte,
 not 3.08×.
 
-**The gap is much larger in generation than in likelihood.** Model L is 1.5× worse
+The gap is much larger in generation than in likelihood. Model L is 1.5× worse
 at predicting the next token and *infinitely* worse at BLEU, because it produces
 no matching trigram at all. Likelihood is a per-position average that a model can
 do respectably at while still being unable to sustain a coherent sequence;
 generation compounds errors over 128 steps. Any claim about model quality resting
 on perplexity alone would miss this entirely.
 
-**Model L degenerates harder.** 0.875 against 0.629 greedy 4-gram repetition. It
+Model L degenerates harder: 0.875 against 0.629 greedy 4-gram repetition. It
 falls into loops sooner and more completely, which is what a model with a weaker
 grasp of long-range structure does when forced to commit to its argmax.
 
-**Where the difference comes from.** Both corpora carried the same token count,
+Both corpora carried the same token count,
 but Marathi's 500M tokens were drawn from 872M available words with no synthetic
-text, while Konkani's came from a 506M-token corpus of which **32.2% is
-machine-translated or LLM-generated** (Phase 1, D-036 to D-039). Konkani spent
+text, while Konkani's came from a 506M-token corpus of which 32.2% is
+machine-translated or LLM-generated (Phase 1, D-036 to D-039). Konkani spent
 98.7% of its documents to reach the budget; Marathi spent 57%. The comparison is
 therefore not "more data versus less data" — the budgets were equal — but
 *shallower and partly synthetic* versus *deeper and entirely human-written*.
 
-**A test this project has not run.** Every synthetic Konkani document is labelled
+One test this project has not run: every synthetic Konkani document is labelled
 in the manifests, so perplexity could be measured separately on real and
 synthetic held-out text. If the model scored markedly better on the synthetic
 portion, that would indicate it had learned the translation system's output
-distribution rather than Konkani itself. That is the single most valuable
-follow-up available here and it is left for Phase 3.
+distribution rather than Konkani itself. It is left for Phase 3.
 
 ## 9. Limitations
 
-**24 prompts is a small generation sample.** Enough to establish the qualitative
+24 prompts is a small generation sample — enough to establish the qualitative
 result and the zero-trigram finding, not enough for tight confidence intervals on
 BLEU. Chosen because generation has no KV cache — every new token re-runs the
 full forward pass — and evaluation ran on a laptop CPU.
 
-**Single-reference metrics.** BLEU, chrF and ROUGE-L all compare against one
+BLEU, chrF and ROUGE-L all compare against one
 continuation out of many acceptable ones, so absolute values understate quality
 for both models.
 
-**Attention statistics are from 32 sequences of 256 tokens**, not the full test
+Attention statistics are from 32 sequences of 256 tokens, not the full test
 split, and cover four of eight heads in the heatmaps.
 
-**The models are under-trained relative to their capacity in the usual sense.**
 500M tokens for 25M parameters is close to compute-optimal, but "optimal" here
 means best use of a fixed budget, not converged. Both would improve with more
 tokens; Marathi has 372M more available and unused.

@@ -2,10 +2,8 @@
 
 Model H: Marathi. Model L: Konkani (Devanagari). Branch `phase-2`, 7 September 2026.
 
-Two decoder-only Transformers built from primitive PyTorch layers, pretrained
-independently on equal token budgets, and evaluated on their own held-out test
-splits. Every figure below is produced by a script in `tools/` and can be
-regenerated with the commands in section 10.
+We trained two decoder-only Transformers from scratch, one per language, on equal
+token budgets, and evaluated each on its own held-out test split.
 
 ## 1. Results
 
@@ -22,11 +20,9 @@ regenerated with the commands in section 10.
 | chrF (best setting) | 27.82 | 21.02 |
 | ROUGE-L (best setting) | 13.93 | 5.53 |
 
-The two models are identical in architecture, vocabulary size, hyperparameters
-and token budget — equal to the token, because both used the same
-131,072-token optimizer step and the same 3,814 steps. The only variable is the
-data. Every difference below is therefore attributable to the corpus rather than
-to one model having been given more of anything.
+Both models have the same architecture, vocabulary size and hyperparameters. The
+token budgets are equal exactly, not approximately: 3,814 optimizer steps of
+131,072 tokens each. The differences below come from the data.
 
 ## 2. Architecture
 
@@ -50,70 +46,64 @@ to one model having been given more of anything.
 | positional embedding | 262,144 |
 | final LayerNorm | 1,024 |
 | output projection | 1,282,500 |
-| **total** | **24,892,356** |
+| total | 24,892,356 |
 
-Configs in `marathi/configs/model_config.json` and
-`konkani/configs/model_config.json`, written by the training run itself rather
-than by hand, so they cannot drift from the weights they describe.
+The training run writes its own config to `marathi/configs/model_config.json` and
+`konkani/configs/model_config.json`.
 
-Depth over width: `d_model` costs quadratically inside a block (`12 × d²` per
-layer) while depth costs linearly, so seven layers at 512 gives more sequential
-composition than four at 768 for the same budget. Six layers would leave ~3M
-parameters unused; eight overshoots to 28M.
+We took depth over width. Inside a block `d_model` costs `12 × d²` while depth
+costs linearly, so seven layers at 512 buys more sequential composition than four
+at 768 for the same parameters. Six layers leaves about 3M of the budget unused;
+eight overshoots to 28M.
 
-The output head is untied. Tying saves `vocab × d_model` = 1.28M parameters,
-which at vocabulary 2,500 is 5% of the budget — the saving that justifies tying
-at vocabulary 50,000 is mostly unavailable here, so the parameters were spent on
-letting the input and output representations of a token differ. This resolves
-the question D-043 left open at the end of Phase 1.
+The output head is untied. Tying would save 1.28M parameters, 5% of the budget at
+vocabulary 2,500. At vocabulary 50,000 that saving is worth having; here it is
+not, so we spent it on letting a token's input and output representations differ.
+D-043 left this open at the end of Phase 1.
 
-Correctness was established before any GPU time was spent
-(`tools/verify_model.py`, 18 checks, run again on the training machine):
+`tools/verify_model.py` runs 18 checks. We ran it before spending any GPU time,
+and again on the training machine. The ones that matter:
 
-- **Changing the token at position t+1 never changes the logits at position t** —
-  tested at every position, largest difference exactly 0.000e+00. This is the
-  check that matters most: a leaking causal mask still produces a falling loss
-  curve and a plausible perplexity, just one that is far too good because the
-  model has been reading the answer.
-- Changing token 0 *does* change the last position — without this, a model that
-  ignored its input entirely would pass the first test.
-- Attention weights above the diagonal are exactly zero and rows sum to 1, which
-  follows from masking with `-inf` *before* the softmax rather than zeroing
-  after. Zeroing after leaves rows summing to less than 1 and silently scales the
-  output by an amount that varies with position.
-- Untrained loss 7.85 against ln(2500) = 7.82, the near-uniform prediction.
+- Changing the token at position t+1 does not change the logits at position t.
+  Tested at every position; largest difference 0.000e+00. A leaking mask still
+  produces a falling loss curve and a plausible perplexity, so this cannot be
+  caught from training alone.
+- Changing token 0 *does* change the last position. Without this check, a model
+  that ignored its input entirely would pass the one above.
+- Attention weights above the diagonal are exactly zero and every row sums to 1.
+  That follows from adding `-inf` before the softmax. Zeroing after the softmax
+  leaves rows summing to less than 1.
+- Untrained loss 7.85, against ln(2500) = 7.82.
 
 ## 3. Pretraining
 
-AdamW, β = (0.9, 0.95), weight decay 0.1 applied to matrices but not to biases,
+AdamW, β = (0.9, 0.95). Weight decay 0.1 on matrices only, not on biases,
 LayerNorm gains or embeddings. Peak learning rate 3e-4, linear warmup over 2% of
-steps then cosine decay to 10% of peak. Effective batch 131,072 tokens
+steps, cosine decay to 10% of peak. Effective batch 131,072 tokens
 (32 × 512 × 8 gradient accumulation steps). Gradient clipping at global norm 1.0.
 Mixed precision with fp32 master weights.
 
-Both models trained simultaneously, one per T4, on Kaggle.
+Both runs went on Kaggle, one model per T4, in parallel.
 
-Four signals the runs are healthy, from `report/training_logs/`:
+From `report/training_logs/`:
 
-- The learning-rate schedule completed: final `lr` 3.00e-05, exactly the 10%
-  cosine floor. A truncated run would have stopped mid-decay.
-- Gradient norms ended at 0.5–0.6 on both. Stable — not exploding, not vanishing.
-- No loss spikes. A spike is the signature of a resume that lost optimizer state;
-  every checkpoint carries optimizer, scheduler and scaler state precisely so
-  that cannot happen, and the curves are the evidence it did not.
-- No overfitting. Validation loss sits slightly *below* training loss throughout,
-  which is correct rather than odd: training loss is measured per batch with
-  dropout active, validation with dropout off.
+- Final `lr` 3.00e-05, the 10% cosine floor, so the schedule ran to completion.
+- Gradient norms over the last five logged steps: 0.567–0.620 for Marathi,
+  0.509–0.562 for Konkani.
+- No loss spikes, which is what a resume that lost its optimizer state would look
+  like.
+- Validation loss sits slightly below training loss throughout. Training loss is
+  per batch with dropout active; validation is measured with dropout off.
 
-Figures: `report/figures/phase2_loss_marathi.png`,
-`phase2_loss_konkani.png`, `phase2_loss_comparison.png`.
+Figures: `report/figures/phase2_loss_marathi.png`, `phase2_loss_konkani.png`,
+`phase2_loss_comparison.png`.
 
 ## 4. Intrinsic evaluation
 
-Measured on the **test** split — validation was used to select the best
-checkpoint during training, so reporting on it would be optimistic. 256 windows
-of 512 tokens each, evenly spaced across the split because the splits are
-source-stratified and the first N tokens would be a single source.
+Test split, 256 windows of 512 tokens, evenly spaced across the split. We report
+on test rather than validation because validation chose the checkpoint. The
+windows are spaced rather than taken from the front because the splits are
+source-stratified.
 
 | | Marathi | Konkani |
 |---|---:|---:|
@@ -126,123 +116,104 @@ source-stratified and the first N tokens would be a single source.
 
 ### Bits per byte
 
-Perplexity is per *token*, and a model whose tokenizer splits text into more,
-shorter pieces faces an easier per-token problem without being a better model of
-the language. Bits per byte divides the same likelihood by UTF-8 bytes instead,
-removing the tokenizer from the denominator: bytes are a property of the text,
-not of how it was segmented.
+Perplexity is per token, so it is not comparable across two tokenizers. Bits per
+byte divides the same likelihood by UTF-8 bytes instead.
 
-The two framings give different-sounding answers to the same question:
+The two give very different-looking gaps: 3.08× on perplexity (26.56 / 8.62),
+1.50× on bits per byte (0.7086 / 0.4728). Perplexity is exponential in the loss
+and BPB is linear, so the 1.125-nat gap becomes e^1.125 = 3.08 in one and a factor
+of 1.5 in the other. We quote the second: Model L needs about 50% more bits to
+encode a byte of its language.
 
-- **Perplexity ratio: 3.08×** (26.56 / 8.62)
-- **Bits-per-byte ratio: 1.50×** (0.7086 / 0.4728)
-
-Both are correct. Perplexity is exponential in the loss, so a 1.125-nat gap
-becomes a factor of e^1.125 = 3.08; bits per byte is linear in it. Stated as a
-resource gap: Model L needs about 50% more bits to encode a byte of its language
-than Model H does, not three times as many.
-
-The tokenizers turn out to compress almost identically, 6.574 against 6.677 bytes
-per token, a 1.6% difference. So perplexity happens to be more comparable here
-than it usually would be. That is a property of these two tokenizers, discovered
-by measuring rather than assumed, and it would not hold for an arbitrary pair.
+The two tokenizers happen to compress almost identically here, 6.574 against
+6.677 bytes per token, a 1.6% difference, so perplexity is more comparable in
+this case than it usually would be.
 
 ## 5. Generation quality
 
-Continuations from 24 fixed held-out prefixes of 64 tokens, generating 128 tokens
-each, under greedy decoding and temperatures 0.5, 1.0 and 1.5. The same prompts
-are used for every setting and for both models.
+24 held-out prefixes of 64 tokens, 128 tokens generated from each, under greedy
+decoding and temperatures 0.5, 1.0 and 1.5. The same prompts for every setting
+and for both models.
 
 ### Marathi
 
 | setting | BLEU-4 | chrF | ROUGE-L | Distinct-1 | Distinct-2 | 4-gram repetition |
 |---|---:|---:|---:|---:|---:|---:|
 | greedy | 7.35 | 25.84 | 13.14 | 0.145 | 0.283 | 0.629 |
-| T = 0.5 | **8.03** | **27.82** | **13.93** | 0.216 | 0.529 | 0.278 |
+| T = 0.5 | 8.03 | 27.82 | 13.93 | 0.216 | 0.529 | 0.278 |
 | T = 1.0 | 3.57 | 27.34 | 9.80 | 0.328 | 0.830 | 0.047 |
-| T = 1.5 | 1.13 | 22.32 | 4.33 | 0.403 | 0.955 | 0.001 |
+| T = 1.5 | 1.13 | 22.32 | 4.33 | 0.403 | 0.955 | 0.003 |
 
 ### Konkani
 
 | setting | BLEU-4 | chrF | ROUGE-L | Distinct-1 | Distinct-2 | 4-gram repetition |
 |---|---:|---:|---:|---:|---:|---:|
-| greedy | 0.00 | 9.80 | 3.25 | 0.076 | 0.111 | **0.875** |
-| T = 0.5 | 0.00 | 16.36 | **5.53** | 0.170 | 0.388 | 0.463 |
+| greedy | 0.00 | 9.80 | 3.25 | 0.076 | 0.111 | 0.875 |
+| T = 0.5 | 0.00 | 16.36 | 5.53 | 0.170 | 0.388 | 0.463 |
 | T = 1.0 | 0.00 | 20.47 | 4.47 | 0.326 | 0.865 | 0.037 |
-| T = 1.5 | 0.00 | **21.02** | 2.30 | 0.416 | 0.976 | 0.001 |
+| T = 1.5 | 0.00 | 21.02 | 2.30 | 0.416 | 0.976 | 0.001 |
 
 ### Why Konkani BLEU is 0.00
 
-This is not a bug or a rounding artefact. Corpus BLEU is the geometric mean of modified
-n-gram precisions for n = 1..4, and the per-order precisions are:
+Corpus BLEU is the geometric mean of the modified n-gram precisions for
+n = 1..4. Ours:
 
 | | 1-gram | 2-gram | 3-gram | 4-gram |
 |---|---:|---:|---:|---:|
 | Marathi, T = 0.5 | 15.451 | 8.852 | 6.267 | 4.849 |
-| Konkani, T = 0.5 | 6.894 | 0.624 | **0.000** | **0.000** |
+| Konkani, T = 0.5 | 6.894 | 0.624 | 0.000 | 0.000 |
 
-Across 24 generations of 128 tokens, Model L produced not one trigram that
-appears in its reference continuation. A single zero at any order makes the
-geometric mean zero, and BLEU with it. Marathi manages 4.8% precision even at
-4-gram order.
+Across 24 generations of 128 tokens, Model L produced no trigram that appears in
+its reference continuation. One zero order zeroes the geometric mean. Marathi
+still reaches 4.849% at 4-gram order.
 
-This is reported rather than smoothed away. Smoothed sentence-BLEU would return
-a small positive number and hide the fact that the model reproduces no
-three-word sequence of the reference at all.
+We did not smooth. Smoothed sentence-BLEU returns a small positive number and
+hides the trigram result, which is the more useful thing to know.
 
 ### Reading the three metrics
 
-BLEU has no resolution left at this quality level: it cannot distinguish a
-Konkani model that is nearly right from one that is nonsense, because both score
-0. It is precision-oriented,
-word-level, and requires contiguous matches — brittle in a morphologically rich
-Devanagari language where a fluent continuation that inflects a stem differently
-from the reference scores nothing.
+BLEU has no resolution left at this quality level: a nearly-right Konkani model
+and a nonsense one both score 0. It is also brittle in a morphologically rich
+Devanagari language, where a fluent continuation that inflects a stem differently
+from the reference earns nothing.
 
-chrF is the most informative of the three. It works on character n-grams, so
-a correct stem with a different suffix still earns partial credit, and it keeps
-discriminating where BLEU has bottomed out: Konkani moves 9.80 → 21.02 across
-settings, which is real signal about output quality that BLEU reports as four
-zeros.
+chrF is the most useful of the three here. Character n-grams give partial credit
+for a correct stem with a different suffix, and chrF keeps moving where BLEU is
+flat: Konkani goes 9.80 → 21.02 across the four settings.
 
-ROUGE-L is recall-oriented and subsequence-based, so it rewards getting
-content order right even with insertions between. It is the metric that most
-disagrees with chrF on the best temperature, which is itself informative — see
-below.
+ROUGE-L is recall-oriented and based on longest common subsequence, so it
+tolerates insertions between matched content. It disagrees with chrF about the
+best temperature for Konkani.
 
-All three compare against a *single* reference continuation. For open-ended
-generation there are many acceptable continuations, so absolute values are low
-for every model and only the comparison carries information.
+All three compare against a single reference continuation. Open-ended generation
+has many acceptable continuations, so the absolute values are low for both models
+and only the comparison carries information.
 
 ### Temperature
 
-Marathi peaks at T = 0.5 on all three metrics simultaneously. Konkani does not:
-ROUGE-L peaks at 0.5 (5.53) while chrF keeps climbing to 1.5 (21.02). There is no
-setting at which Model L is simultaneously best by both measures.
+Marathi peaks at T = 0.5 on all three metrics at once. Konkani does not: ROUGE-L
+peaks at 0.5 (5.53) while chrF keeps climbing to 1.5 (21.02). There is no setting
+where Model L is best by both.
 
-Higher temperature makes Konkani's output more character-plausible — better
-n-gram statistics, more varied — while making it less content-faithful. Model H
-has a single best operating point; Model L does not.
+Raising the temperature makes Konkani's output more character-plausible and less
+content-faithful at the same time.
 
 ## 6. Degeneration
 
-The characteristic failure of a small language model is not incoherence but
-looping, and perplexity cannot see it: a repeated high-probability phrase scores
-*well*. This is why the diversity diagnostics are here.
+Perplexity cannot see looping — a repeated high-probability phrase scores well —
+so we measured Distinct-n and 4-gram repetition instead.
 
-Under greedy decoding, Konkani's 4-gram repetition rate is 0.875 — seven of
-every eight 4-gram occurrences are repeats — with Distinct-1 at 0.076, meaning
-only 7.6% of generated tokens are distinct. Marathi degenerates too, at 0.629 and
-0.145, but less severely.
+Under greedy decoding Konkani repeats 87.5% of its 4-grams, and only 7.6% of its
+generated tokens are distinct. Marathi is at 0.629 and 0.145.
 
-The samples show exactly this. Konkani, greedy:
+Konkani, greedy:
 
 ```
 prompt:  रॉयल एअर फोर्स फिलिंगडेल्स (राफ फिलिंगडेल्स) हें इंग्लंडांतल्या उत्तर यॉर्क मूर हांगा …
 output:  …ंड्सांतल्या बार्बरा हांगाच्या बार्बरा हांगाच्या बार्बरा हांगाच्या बार्बरा हांगाच्या …
 ```
 
-Marathi, greedy — the same failure, arriving later:
+Marathi, greedy — the same failure, later:
 
 ```
 prompt:  भाजपा हा राष्ट्रवादी काँग्रेसची नवी झेरॉक्स प्रत असल्याचा खळबळजनक आरोप त्यांनी केला …
@@ -250,131 +221,112 @@ output:  …नेही भाजपला पाठिंबा दिला. 
          पाठिंबा दिला. गोटे यांना पाठिंबा देण्यासाठी …
 ```
 
-The first clause is well-formed and topical before the loop closes.
+The first clause is well-formed and on topic before the loop closes.
 
-At T = 0.5 Marathi produces genuinely fluent news prose:
+Marathi at T = 0.5:
 
 ```
 …ने या मुद्द्यावरून हल्लाबोल केला. त्यानंतर त्यांनी त्यांच्यावर जोरदार टीका केली. या आरोपांना
 उत्तर देताना त्यांनी भाजपला पाठिंबा दिला. रत्नागिरी : रत्नागिरी जिल…
 ```
 
-Grammatical, idiomatic, topically coherent across several sentences, and it even
-reproduces the dateline convention of Marathi news ("रत्नागिरी :"). Konkani at
-the same temperature starts correctly — `ंडल आनी मूर हांगा आशिल्लें. ह्या
-स्टेशनाचेर ऑस्ट्रेलियन युनियनाच्या` — and then locks onto `एअर फोर्साच्या`.
+Grammatical, idiomatic, coherent across several sentences, and it reproduces the
+dateline convention of Marathi news (`रत्नागिरी :`). Konkani at the same
+temperature opens correctly — `ंडल आनी मूर हांगा आशिल्लें. ह्या स्टेशनाचेर
+ऑस्ट्रेलियन युनियनाच्या` — then locks onto `एअर फोर्साच्या`.
 
-Both models are locally fluent and globally incoherent, which is the expected
-result at 25M parameters and 500M tokens. The samples are included because
-perplexity alone does not show it.
+Both models are locally fluent and globally incoherent, which is what 25M
+parameters on 500M tokens gives.
 
 ## 7. Attention analysis
 
-Per-head statistics averaged over 32 held-out sequences of 256 tokens. Entropy is
-normalised by log2(t+1), the maximum achievable at query position t under causal
-masking — without that normalisation a head at position 5 cannot be compared with
-one at position 200. Position 0 is excluded, since it can only attend to itself.
+Per-head statistics over 32 held-out sequences of 256 tokens. Entropy is
+normalised by log2(t+1), the causal maximum at query position t, so that heads at
+different positions can be compared. Position 0 is excluded; it can only attend
+to itself.
 
 | layer | Marathi entropy | Marathi distance | Konkani entropy | Konkani distance |
 |---:|---:|---:|---:|---:|
 | 0 | 0.773 | 30.61 | 0.870 | 37.75 |
 | 1 | 0.778 | 31.55 | 0.857 | 45.48 |
 | 2 | 0.607 | 11.50 | 0.655 | 23.63 |
-| 3 | **0.462** | 7.95 | 0.524 | 5.94 |
-| 4 | 0.599 | 18.08 | **0.368** | 5.66 |
+| 3 | 0.462 | 7.95 | 0.524 | 5.94 |
+| 4 | 0.599 | 18.08 | 0.368 | 5.66 |
 | 5 | 0.591 | 51.07 | 0.612 | 45.88 |
 | 6 | 0.761 | 43.84 | 0.772 | 54.57 |
 
 ### Layer-wise pattern
 
-The standard account is early layers doing local positional work with low entropy
-and short attention distance, later layers doing content-based work with higher
-entropy and longer range. Neither model does this. Both show a U-shape:
-diffuse and moderately long-range at layers 0–1, sharply focused and local at
-layers 3–4, diffuse and long-range again at 5–6.
+We expected low-entropy local heads early and high-entropy long-range heads late.
+Neither model does that. Both are U-shaped: diffuse and moderately long-range at
+layers 0–1, focused and local at layers 3–4, diffuse and long-range again at 5–6.
+The selective work happens in the middle of the stack.
 
-The selective work happens in the *middle* of the stack. Layers 0–1 sit at 0.77
-and 0.87 normalised entropy, close to uniform — they appear to be broadcasting
-context rather than selecting from it. The prediction above was written in the
-docstring of `tools/attention_analysis.py` before the analysis was run, and has
-been left as it was rather than revised to match the result.
+Layers 0–1 sit at 0.77 and 0.87 normalised entropy, close to uniform, which looks
+more like broadcasting context than selecting from it.
 
 ### Head specialisation
 
-Within a single layer, heads learn very different jobs. Konkani layer 2 holds
-head 3 at mean distance 4.13 and head 2 at 105.61 — a 25× spread. Marathi layer 2
-spans 3.31 to 45.35, and layer 1 reaches 92.10 on head 7 against 10.71 on head 4.
+Heads inside a layer differ sharply. Konkani layer 2 holds head 3 at mean
+distance 4.13 and head 2 at 105.61, a 25× spread. Marathi layer 2 spans 3.31 to
+45.35; Marathi layer 1 spans 10.71 (head 4) to 92.10 (head 7).
 
-That spread is the strongest evidence that multi-head attention is doing what it
-is supposed to: if the heads had collapsed onto one behaviour, a single head with
-`d_head` = 512 would have served identically and the implementation would be
-suspect.
+Had the heads collapsed onto one behaviour, a single 512-dimensional head would
+have done the same job. The spread is what says the multi-head implementation is
+working.
 
 ### Model H against Model L
 
-Model L is more diffuse in the early layers — 0.870 against 0.773 at layer 0,
-where 1.0 is exactly uniform. Its first two layers are closer to attending to
-everything equally, which is to say less structured. Model L then goes *more*
-extreme in the middle (0.368 at layer 4, the lowest value in either model) and
-attends further at every depth.
+Model L is more diffuse early — 0.870 against 0.773 at layer 0, where 1.0 is
+uniform — and then goes further the other way in the middle, to 0.368 at layer 4,
+the lowest figure in either model. It attends further at every depth.
 
-A model trained on a noisier, partly synthetic corpus developing weaker early
-structure and more extreme swings is consistent with the intrinsic results, but
-it is one observation from one pair of models and is offered as such.
+This is one observation from one pair of models.
 
 Figures: `report/figures/phase2_attention_{language}_layer{0,3,6}.png`, four heads
-per layer, each panel with title, axis labels and colourbar.
+per layer.
 
 ## 8. Resource-level comparison
 
-The controlled setup — same architecture, same 499,908,608 tokens, same
-hyperparameters — means the following differences are attributable to the data.
+Same architecture, same 499,908,608 tokens, same hyperparameters, so the
+differences are attributable to the data.
 
-The gap is real but smaller than perplexity suggests: 1.50× in bits per byte,
-not 3.08×.
+The gap is 1.50× in bits per byte, not the 3.08× that perplexity suggests.
 
-The gap is much larger in generation than in likelihood. Model L is 1.5× worse
-at predicting the next token and *infinitely* worse at BLEU, because it produces
-no matching trigram at all. Likelihood is a per-position average that a model can
-do respectably at while still being unable to sustain a coherent sequence;
-generation compounds errors over 128 steps. Any claim about model quality resting
-on perplexity alone would miss this entirely.
+It is much wider in generation than in likelihood. Model L is 1.5× worse at
+predicting the next token but produces no matching trigram at all. Likelihood is
+a per-position average, and a model can do respectably on it while being unable
+to sustain a sequence; generation compounds errors over 128 steps. Perplexity
+alone would not show this.
 
-Model L degenerates harder: 0.875 against 0.629 greedy 4-gram repetition. It
-falls into loops sooner and more completely, which is what a model with a weaker
-grasp of long-range structure does when forced to commit to its argmax.
+Model L also degenerates harder: 0.875 against 0.629 on greedy 4-gram repetition.
 
-Both corpora carried the same token count,
-but Marathi's 500M tokens were drawn from 872M available words with no synthetic
-text, while Konkani's came from a 506M-token corpus of which 32.2% is
-machine-translated or LLM-generated (Phase 1, D-036 to D-039). Konkani spent
-98.7% of its documents to reach the budget; Marathi spent 57%. The comparison is
-therefore not "more data versus less data" — the budgets were equal — but
-*shallower and partly synthetic* versus *deeper and entirely human-written*.
+Both budgets were 500M tokens, but Marathi drew them from 872M available words
+with no synthetic text, and Konkani from a 506M-token corpus that is 32.2%
+machine-translated or LLM-generated (D-036 to D-039). Konkani used 98.7% of its
+documents to reach the budget; Marathi used 57%. So this is not more data against
+less. It is shallower and partly synthetic against deeper and human-written.
 
-One test this project has not run: every synthetic Konkani document is labelled
-in the manifests, so perplexity could be measured separately on real and
-synthetic held-out text. If the model scored markedly better on the synthetic
-portion, that would indicate it had learned the translation system's output
-distribution rather than Konkani itself. It is left for Phase 3.
+One test we did not run: the synthetic Konkani documents are labelled in the
+manifests, so perplexity could be measured separately on real and synthetic
+held-out text. If the model scored markedly better on the synthetic half, it has
+learned IndicTrans2's output distribution rather than Konkani. Left for Phase 3.
 
 ## 9. Limitations
 
-24 prompts is a small generation sample — enough to establish the qualitative
-result and the zero-trigram finding, not enough for tight confidence intervals on
-BLEU. Chosen because generation has no KV cache — every new token re-runs the
-full forward pass — and evaluation ran on a laptop CPU.
+24 prompts is a small sample — enough for the qualitative result and the
+zero-trigram finding, not for confidence intervals on BLEU. We kept it small
+because generation has no KV cache, so every new token re-runs the full forward
+pass, and evaluation ran on a laptop CPU.
 
-BLEU, chrF and ROUGE-L all compare against one
-continuation out of many acceptable ones, so absolute values understate quality
-for both models.
+Single-reference metrics understate quality for both models.
 
-Attention statistics are from 32 sequences of 256 tokens, not the full test
-split, and cover four of eight heads in the heatmaps.
+The attention statistics come from 32 sequences of 256 tokens rather than the
+full test split, and the heatmaps show four of the eight heads.
 
-500M tokens for 25M parameters is close to compute-optimal, but "optimal" here
-means best use of a fixed budget, not converged. Both would improve with more
-tokens; Marathi has 372M more available and unused.
+500M tokens for 25M parameters is close to compute-optimal, but that means best
+use of a fixed budget, not converged. Marathi has 372M more tokens available and
+unused.
 
 ## 10. Reproduction
 
@@ -420,9 +372,8 @@ Kaggle notebook setup, including the two datasets and the cell sequence, is in
 | Attention heatmaps, entropy, distance | section 7, `report/phase2_attention_*.json` |
 | Resource-level comparison | section 8 |
 
-Metric implementations are in `common/metrics.py` — BLEU-4, chrF and ROUGE-L
-written directly rather than imported, since the Kaggle notebook runs with
-internet disabled and a metric whose behaviour has to be explained is easier to
-explain when written. Each is verified against hand-computable values: identical
+BLEU-4, chrF and ROUGE-L are implemented in `common/metrics.py` rather than
+imported, because the Kaggle notebook ran with internet disabled. Running
+`python3 common/metrics.py` checks them against hand-computable cases: identical
 strings score 100, disjoint strings score 0 on BLEU and ROUGE-L, and
 `LCS("abcde","ace")` returns 3.

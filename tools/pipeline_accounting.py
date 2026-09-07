@@ -70,6 +70,18 @@ def load_json(path: Path):
         return None
 
 
+GRANULARITY_NOTE = """
+`documents fetched` and `documents accepted` are counted at different
+granularities and are not two stages of one funnel. Fetched is one row per work
+item a collector requested - an archive.org book, a news URL, a corpus shard -
+read from the collector checkpoints, and it includes items that were later
+rejected. Accepted is one row per document in the manifests, after cleaning has
+split multi-document items: a single OCR'd book becomes many documents, one
+corpus shard becomes many rows. The rows that do form a funnel are the word and
+token counts.
+"""
+
+
 def stage1_raw(language: str) -> dict:
     """What the collectors fetched, from the checkpoints."""
     total = {"documents_fetched": 0, "documents_rejected": 0, "by_job": {}}
@@ -346,6 +358,9 @@ def main() -> int:
                 v = getter(results[lang])
                 cells.append(f"{v:,}" if isinstance(v, int) else "pending")
             md.append(f"| {label.strip()} | {cells[0]} | {cells[1]} |")
+        # Document counts at stages 1 and 2 are not the same unit, and a reader
+        # who assumes they are will read the Marathi column as impossible.
+        md += ["", GRANULARITY_NOTE.strip(), ""]
         path = REPO_ROOT / "report" / "phase1_pipeline_accounting.md"
         path.write_text("\n".join(md) + "\n", encoding="utf-8")
         print(f"  {path.relative_to(REPO_ROOT)}")

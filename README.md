@@ -60,6 +60,13 @@ is in [`report/phase2_report.md`](report/phase2_report.md).
 
 Both languages meet both requirements.
 
+"Fetched" and "accepted" are different units and are not a funnel: fetched counts
+work items a collector requested (a book, a URL, a shard) and includes items later
+rejected, while accepted counts documents in the manifests after cleaning has split
+multi-document items — 2,576 OCR'd Konkani volumes become 53,843 documents. The
+word and token rows are the funnel. Full derivation in
+[`report/phase1_pipeline_accounting.md`](report/phase1_pipeline_accounting.md).
+
 ### Konkani corpus composition by provenance
 
 Konkani is the low-resource language, so where its text came from matters:

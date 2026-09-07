@@ -1,4 +1,4 @@
-# Language Models and Agents — Individual Project, Phase 1
+# Marathi and Konkani language models
 
 **Model H (higher-resource):** Marathi  ·  **Model L (lower-resource):** Konkani (Devanagari)
 
@@ -6,11 +6,41 @@ Two completely independent decoder-only Transformer language models built from
 scratch. Separate corpus, separate tokenizer, separate vocabulary, separate
 weights per language — no data, vocabulary or checkpoint is shared between them.
 
-**Branch:** `phase-1`
+**Branch:** `phase-2`
 
 ---
 
-## Final Phase 1 statistics
+## Phase 2 results
+
+Both models: 24,892,356 parameters, trained on 499,908,608 tokens each — equal to
+the token, so differences below come from the data rather than from training
+budget.
+
+| | Marathi (H) | Konkani (L) |
+|---|---:|---:|
+| test perplexity | **8.62** | **26.56** |
+| test bits per byte | **0.4728** | **0.7086** |
+| BLEU-4 (best setting) | 8.03 | 0.00 |
+| chrF (best setting) | 27.82 | 21.02 |
+| ROUGE-L (best setting) | 13.93 | 5.53 |
+| greedy 4-gram repetition | 0.629 | 0.875 |
+| training time (T4) | 3.57 h | 3.41 h |
+
+Perplexity says the gap is 3.08×; bits per byte says 1.50×. Both are correct —
+perplexity is exponential in the loss and BPB is linear — and BPB is the figure
+that survives the tokenizers differing. Konkani's BLEU is exactly zero because it
+produced no trigram matching any reference continuation, which is reported rather
+than smoothed away.
+
+Architecture: `d_model` 512, 7 layers, 8 heads, FFN 2048, context 512, pre-norm,
+untied output head, learned absolute positions.
+
+Full analysis, including the attention study and the resource-level comparison,
+is in [`report/phase2_report.md`](report/phase2_report.md).
+
+---
+
+## Phase 1 statistics
 
 | | Marathi (Model H) | Konkani (Model L) |
 |---|---:|---:|
@@ -93,6 +123,24 @@ Sharing is *Anyone with the link → Viewer*; no access request is needed.
 
 Both **raw and cleaned** data are provided, as required. Synthetic data is in
 its own archive so it can be inspected — or excluded — independently.
+
+### Phase 2 — pretrained checkpoints
+
+In the same folder, under `phase2_checkpoints/`:
+
+| file | contents |
+|---|---|
+| `marathi_pretrain_best.pt` | Model H weights, optimizer state, scheduler state, step, config |
+| `konkani_pretrain_best.pt` | Model L, same format |
+
+Each checkpoint is ~544 MB and carries everything needed to resume training or to
+reload the model for evaluation: `model`, `optimizer`, `scaler`, `step`,
+`best_val`, `model_config` and `train_config`. `tools/evaluate.py` rebuilds the
+architecture from the `model_config` stored inside the checkpoint rather than
+from a separate file, so a checkpoint cannot be loaded into a mismatched model.
+
+Checkpoints are not committed to git — the specification requires large binary
+artifacts to go to Drive.
 
 ---
 
@@ -292,7 +340,10 @@ python3 tools/make_plots.py
 
 | file | contents |
 |---|---|
-| `report/phase1_report.md` | **the Phase 1 report — start here** |
+| `report/phase2_report.md` | **the Phase 2 report — start here** |
+| `report/phase2_plan.md` | Phase 2 architecture, compute and schedule plan |
+| `report/phase2_kaggle_runbook.md` | how the pretraining runs were executed |
+| `report/phase1_report.md` | the Phase 1 report |
 | `report/phase1_corpus_stats_marathi.md` | Marathi dataset statistics |
 | `report/phase1_corpus_stats_konkani.md` | Konkani dataset statistics |
 | `report/phase1_pipeline_accounting.md` | stage-by-stage accounting, raw → cleaned → tokens |

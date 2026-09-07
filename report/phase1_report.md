@@ -1,8 +1,9 @@
 # Phase 1 — Data Collection and Tokenizer Construction
 
-Model H: Marathi. Model L: Konkani (Devanagari). Branch `phase-1`, 21 August 2026.
+Model H: Marathi. Model L: Konkani (Devanagari). Submitted on branch `phase-1`,
+21 August 2026.
 
-Every figure here is produced by a script in `tools/` from artifacts on disk and
+Every figure here comes from a script in `tools/` reading artifacts on disk, and
 can be regenerated with the commands in section 12.
 
 ## 1. Results
@@ -19,29 +20,29 @@ can be regenerated with the commands in section 12.
 | documents leaked between splits | 0 | 0 |
 | documents shared with the other corpus | 0 | 0 |
 
-Both corpora exceed the ~500M token target and both exceed the 20% manual floor.
-The corpora share no document, no near-duplicate and no vocabulary.
+Both corpora clear the ~500M token target and the 20% manual floor, and share no
+document, no near-duplicate and no vocabulary.
 
-Konkani required machine-translated and LLM-generated text to reach the target.
-That was authorised by the TAs on 18 August 2026, and it is 32.2% of the Konkani
-corpus. Section 9 covers what it is, how it is labelled, and how to exclude it.
+Konkani needed machine-translated and LLM-generated text to reach the target. The
+TAs authorised it on 18 August 2026. It is 32.2% of the Konkani corpus; section 9
+covers what it is, how it is labelled and how to exclude it.
 
 ## 2. Language selection
 
-Marathi was chosen for Model H. IndicCorp v2 alone ships approximately 27.8M
-Marathi documents under CC-0, and Marathi news publishers maintain deep,
-sitemap-indexed archives that can be crawled and cleaned, so both the downloaded
-and the manual side of the requirement were reachable without compromise.
+We took Marathi as Model H. IndicCorp v2 alone ships about 27.8M Marathi
+documents under CC-0, and Marathi news publishers keep deep sitemap-indexed
+archives that can be crawled and cleaned, so both the manual and the downloaded
+side of the requirement were reachable.
 
-Konkani (Devanagari) was chosen for Model L from the permitted list. It is
-genuinely low-resource: the largest systematic Indic corpus effort, Sangraha,
-holds 14,491 Konkani rows against millions for Marathi.
+Konkani (Devanagari) is Model L, from the permitted list. It is genuinely scarce:
+Sangraha, the largest systematic Indic corpus effort, holds 14,491 Konkani rows
+against millions for Marathi.
 
-The two are closely related, both written in Devanagari, and share substantial
-vocabulary. That is a problem rather than a convenience. Text is mislabelled
-between them in published corpora, and a script check cannot separate them, so
-the independence requirement needed a purpose-built discriminator (section 6)
-and the measured result is in section 11.
+The two languages are closely related, both written in Devanagari, and share a
+lot of vocabulary. That made the independence requirement harder, not easier.
+Published corpora mislabel one as the other, and a script check cannot tell them
+apart, so we had to build a discriminator (section 6). The measured independence
+result is in section 11.
 
 ## 3. Data collection
 
@@ -56,86 +57,84 @@ Per-source tables are in `phase1_source_inventory.md`. In words:
 
 ### 3.1 Manual collection
 
-Manual here means text gathered and cleaned by us, following TA guidance of
-14 August: anything involving getting, processing, cleaning and organizing data
-is manual; anything already organized on HuggingFace and then used is not. The
-category is assigned in the collector script at the point of collection, in
-`common/manifest.py::CollectionType`, rather than applied as a label afterwards.
+Manual means text we gathered and cleaned ourselves, following the TA guidance of
+14 August: anything involving getting, processing, cleaning and organizing data is
+manual; anything already organized on HuggingFace and then used is not. The
+collector assigns the category at the point of collection, in
+`common/manifest.py::CollectionType`, not as a label afterwards.
 
-Most of it is OCR text from archive.org. Items with an existing OCR text layer
-were fetched per item and cleaned; image-only scans were skipped rather than run
-through a local OCR engine, since the error rate of uncontrolled OCR on
-Devanagari would not have been measurable. This produced 152,312,784 Marathi
-words and 62,997,759 Konkani words.
+Most of it is OCR text from archive.org — 152,312,784 Marathi words and
+62,997,759 Konkani words. We fetched items that already had an OCR text layer and
+cleaned those. Image-only scans we skipped rather than running a local OCR engine
+over them, because we had no way to measure the error rate of uncontrolled OCR on
+Devanagari.
 
-The rest is sitemap-driven news crawling (`common/newscrawl.py`). `robots.txt`
-was fetched and parsed before any request, the declared crawl-delay was honoured,
-and a descriptive User-Agent was sent. Per-site selectors removed navigation,
-related-article blocks and comment sections before the text was counted.
+The rest is sitemap-driven news crawling (`common/newscrawl.py`). We fetched and
+parsed `robots.txt` before any request, honoured the declared crawl-delay, and
+sent a descriptive User-Agent. Per-site selectors strip navigation,
+related-article blocks and comments before the text is counted.
 
-Before committing to a full crawl, a pilot of approximately 1,000 pages per site
-was hashed against the downloaded corpus using `tools/source_overlap_check.py`.
-IndicCorp v2 is itself built from Marathi news crawls, so scraping the same pages
-and reporting the result as manual collection would have been inaccurate, and
-cross-source deduplication would have removed most of it regardless.
+Before committing to a full crawl we hashed a pilot of about 1,000 pages per site
+against the downloaded corpus with `tools/source_overlap_check.py`. IndicCorp v2
+is itself built from Marathi news crawls, so scraping the same pages and calling
+the result manual collection would have been wrong, and cross-source dedup would
+have removed most of it anyway.
 
 ### 3.2 Downloaded corpora
 
 Marathi uses one downloaded source, IndicCorp v2 (`mar_Deva`). It is CC-0, the
-least restrictive licence among the candidates, and using one source avoids the
-heavy overlap between IndicCorp v2 and Sangraha, which are produced by the same
-group from overlapping crawls.
+least restrictive licence among the candidates, and a single source avoids the
+heavy overlap between IndicCorp v2 and Sangraha, which come from the same group
+and overlapping crawls.
 
-Konkani uses ten, listed in `phase1_source_inventory.md` §3.3. Each was measured
-before use rather than accepted on its label, because three of them did not match
-their published labels. The worst case is in section 8.2.
+Konkani uses ten, listed in `phase1_source_inventory.md` §3.3. We measured each
+one before using it rather than accepting its label, and three did not match what
+they claimed. The worst case is section 8.2.
 
 ## 4. Cleaning pipeline
 
 Applied per document, in this order, by the collector that produced it:
 
-1. Unicode NFC normalization (`common/textnorm.py`). ZWJ (U+200D) and ZWNJ
-   (U+200C) are preserved deliberately: they are meaningful in Devanagari, and
-   stripping them alters words silently.
+1. Unicode NFC normalization (`common/textnorm.py`). We preserve ZWJ (U+200D) and
+   ZWNJ (U+200C) deliberately — they are meaningful in Devanagari and stripping
+   them alters words silently.
 2. Whitespace normalization: collapse runs of spaces, normalize line endings,
-   repair the line-fragmentation characteristic of OCR output.
+   repair the line fragmentation typical of OCR output.
 3. Script gate: at least 70% Devanagari by non-whitespace character. This is what
-   excludes Roman-script (Romi) Konkani, which is genuinely Konkani but out of
-   scope for this corpus (section 5).
-4. Length gate: minimum 25 words. Below that a document carries too little signal
-   for the language discriminator to reach a verdict.
+   excludes Roman-script (Romi) Konkani — genuinely Konkani, but out of scope
+   here (section 5).
+4. Length gate: minimum 25 words. Below that there is too little signal for the
+   language discriminator to reach a verdict.
 5. Language gate: Marathi/Konkani discrimination (section 6).
 6. Deduplication, exact then near-duplicate (section 7).
 
-Rejection counts by reason and by source are recorded in the manifests and
-summarised by `tools/pipeline_accounting.py`.
+Rejection counts by reason and by source are in the manifests and summarised by
+`tools/pipeline_accounting.py`.
 
-Each accepted document carries a manifest row recording source name, source URL,
+Every accepted document carries a manifest row: source name, source URL,
 collection method and type, access date, raw and clean character counts, word
-count, preprocessing steps applied, script profile, language-ID score and a
-content hash. The manual fraction is therefore auditable per document rather
-than asserted in aggregate.
+count, preprocessing steps applied, script profile, language-ID score, content
+hash. So the manual fraction can be audited per document.
 
 ## 5. Script decision for Konkani
 
 The corpus is Devanagari only. Konkani is also written in Roman script (Romi) and
-in Kannada script, and both are excluded.
+in Kannada script; we excluded both.
 
 Devanagari is the official script of Konkani in Goa and is what the largest
-available Konkani corpora use, so restricting to it costs little volume. A model
-of approximately 25M parameters also has limited capacity to spend learning two
-orthographies of one language, which would compete for the same embedding budget
-without adding linguistic coverage.
+available Konkani corpora use, so restricting to it costs little volume. A 25M
+parameter model also has limited capacity to spend on two orthographies of one
+language competing for the same embedding budget.
 
-The consequence is visible in the source table: 4,651 rows, 32% of Sangraha's
-`gom` split, were rejected. They are correctly labelled Konkani in a script this
-corpus does not cover.
+The cost shows up in the source table: 4,651 rows, 32% of Sangraha's `gom` split,
+were rejected. They are correctly labelled Konkani in a script this corpus does
+not cover.
 
 ## 6. Language identification
 
-Marathi and Konkani cannot be separated by script, and general-purpose language
-identifiers treat Konkani inconsistently. The discriminator in
-`common/scriptid.py::identify_marathi_konkani` uses closed-class function words,
+Script cannot separate Marathi from Konkani, and general-purpose language
+identifiers treat Konkani inconsistently. Our discriminator,
+`common/scriptid.py::identify_marathi_konkani`, uses closed-class function words,
 which a text can neither avoid nor borrow:
 
 | function | Marathi | Konkani |
@@ -144,58 +143,57 @@ which a text can neither avoid nor borrow:
 | "is" | आहे | आसा |
 | "I" | मी | हांव |
 
-Below `min_markers = 5` total marker hits the document is returned as undecided
-rather than assigned a language. A 22-word fragment usually carries fewer than
-five markers, and forcing a verdict on that evidence produces confident errors.
-The score must also exceed `margin = 0.30` in one direction; between the two
-thresholds the discriminator abstains. Of 50,000 sampled Konkani documents, 2,505
-are undecided and none is misassigned, so abstention is doing its job.
+Below `min_markers = 5` total marker hits the document comes back undecided
+rather than assigned. A 22-word fragment usually carries fewer than five markers,
+and forcing a verdict on that evidence produces confident errors. The score must
+also clear `margin = 0.30` in one direction; between the two thresholds the
+discriminator abstains. Of 50,000 sampled Konkani documents, 2,505 are undecided
+and none is misassigned.
 
-The discriminator was calibrated against populations of known language rather
-than trusted on its raw output. The table is in section 8.2.
+We calibrated the discriminator against populations of known language rather than
+trusting its raw output. That table is in section 8.2.
 
 ## 7. Deduplication
 
-Exact duplicates are removed by SHA-256 over the NFC-normalized,
-whitespace-collapsed text, applied within each source and again across sources.
+Exact duplicates go by SHA-256 over the NFC-normalized, whitespace-collapsed
+text, applied within each source and again across sources.
 
 Near-duplicates use MinHash over character 5-gram shingles with 128 permutations,
-with LSH banding tuned so that the probability curve `P = 1 − (1 − s^r)^b` has
-its half-way point near the 0.85 decision threshold.
+with LSH banding tuned so the probability curve `P = 1 − (1 − s^r)^b` has its
+half-way point near the 0.85 decision threshold.
 
-Character 5-grams were chosen over word n-grams because both corpora are
-OCR-heavy. A single OCR error damages five character shingles out of thousands,
-but destroys an entire word token and every word n-gram containing it. Word
-n-grams would have under-detected duplicates in exactly the material that
-duplicates most.
+We chose character 5-grams over word n-grams because both corpora are OCR-heavy.
+One OCR error damages five character shingles out of thousands, but destroys a
+whole word token and every word n-gram containing it. Word n-grams would have
+under-detected duplicates in exactly the material that duplicates most.
 
-The order of operations was wrong initially. IndicCorp v2 repeats individual
+We got the order of operations wrong at first. IndicCorp v2 repeats individual
 sentences across crawled pages, and deduplicating after packing sentences into
 documents catches nothing, because no two packed documents are byte-identical.
-Moving deduplication to the unit level, before packing, removed 197,656 repeats
-that document-level deduplication could not see (D-034).
+Moving dedup to the unit level, before packing, removed 197,656 repeats that
+document-level dedup could not see (D-034).
 
 ## 8. Two measurements that changed the corpus
 
 ### 8.1 A search wrong by a factor of 115
 
-The initial archive.org query for Konkani books returned 44 items, which
-supported an argument that manual Konkani collection was not viable. The query
-was matching against a locally held spelling list rather than querying the
-archive index. The corrected query, `language:kok AND mediatype:texts`, returns
-5,093 items. Manual Konkani rose from 1.46M words to 64.4M, and the 20% floor
-became reachable (D-018).
+Our first archive.org query for Konkani books returned 44 items, which supported
+an argument that manual Konkani collection was not viable. The query was matching
+against a locally held spelling list instead of querying the archive index. The
+corrected query, `language:kok AND mediatype:texts`, returns 5,093 items. Manual
+Konkani went from 1.46M words to 64.4M, and the 20% floor became reachable
+(D-018).
 
 ### 8.2 A 533 MB file labelled Konkani that is 84% Marathi
 
 `ai4bharat/IndicCorpV2` ships `data/gom.txt` at 533,108,246 bytes, labelled Goan
 Konkani. By file size it is larger than every other Konkani source combined.
 
-The discriminator rejected 70% of it as Marathi, far out of line with every other
-source measured that week. Rather than trust the label or the gate, three
-populations were packed to the same approximately 300-word document length, so
-that length could not be confounded with language, and scored with the same
-discriminator on the same day:
+Our discriminator rejected 70% of it as Marathi, far out of line with every other
+source we measured that week. Rather than trust either the label or the gate, we
+packed three populations to the same ~300-word document length, so length could
+not be confounded with language, and scored them with the same discriminator on
+the same day:
 
 | population | labelled `mr` | labelled `kok` | undecided | median score |
 |---|---:|---:|---:|---:|
@@ -205,49 +203,47 @@ discriminator on the same day:
 
 `gom.txt` sits on the Marathi reference rather than between the two. A sampled
 rejected document contains आहे×8, पण×5, मी×3 and no Konkani markers. The gate was
-correct: 4,319,751 words were kept out of approximately 30M.
+right: 4,319,751 words kept out of roughly 30M.
 
-Accepting the file unfiltered would have added roughly 25M words to the Konkani
-total and put Marathi, the language Model H trains on, into Model L's corpus.
-Tool: `tools/verify_gom_langid.py --sample 1500`. Detail in D-035.
+Taking the file unfiltered would have added about 25M words to the Konkani total
+and put Marathi — the language Model H trains on — into Model L's corpus. Tool:
+`tools/verify_gom_langid.py --sample 1500`. Detail in D-035.
 
 ## 9. Synthetic data in the Konkani corpus
 
-After the repositories listed in `phase1_source_inventory.md` §4 were searched
-and found empty, real Konkani text reached approximately 180.5M words, short of
-the target. The TAs authorised synthetic and machine-translated data on 18 August
-2026 under three conditions, and compliance with each is documented in
-`phase1_konkani_mt.md`.
+After searching the repositories listed in `phase1_source_inventory.md` §4 and
+finding them empty, real Konkani text reached about 180.5M words, short of the
+target. The TAs authorised synthetic and machine-translated data on 18 August 2026
+under three conditions; compliance with each is in `phase1_konkani_mt.md`.
 
 Synthetic text is 85,704,461 words, 32.2% of the corpus. Real text — manual plus
 downloaded, human-written or human-translated — is 180,506,902 words, 67.8%.
 
-It stays separable at three levels. `CollectionType.MACHINE_TRANSLATED` is a
-distinct enum member rather than a flag on `DOWNLOADED_DATASET`, so `is_manual`
-is `False` and it can never count toward the 20% floor, and being distinct it
-cannot be folded into the downloaded figure either (D-036). It is stored under
+It stays separable at three levels. `CollectionType.MACHINE_TRANSLATED` is its own
+enum member rather than a flag on `DOWNLOADED_DATASET`, so `is_manual` is `False`
+and it can never count toward the 20% floor, and being distinct it cannot be
+folded into the downloaded figure either (D-036). It lives under
 `konkani/data/synthetic/` and ships in its own Drive archive. And
 `tools/corpus_stats.py` and `tools/pipeline_accounting.py` report it as a third
 bucket in every table.
 
-The last 1.46M tokens to the target came from BPCC `gom_Deva`, which is real
+The last 1.46M tokens to the target came from BPCC `gom_Deva`, real
 human-translated Konkani, rather than from more synthetic text. That is why the
 corpus crosses the target on 67.8% real data.
 
-Our own generation run with IndicTrans2 contributed 14,016 sentences, 394
-documents, 124,664 words, or 0.05% of the corpus. Two failures explain why it
-stayed small: transformers ≥ 4.49 passes a `Cache` object that IndicTrans2's
-vendored decoder cannot index (D-041), and Apple MPS ran the model at 0.006
-sentences per second against 0.9–1.2 on CPU, a 45× slowdown (D-042). It is
-reported because it was attempted and measured, not because it was material.
+Our own IndicTrans2 generation run contributed 14,016 sentences, 394 documents,
+124,664 words — 0.05% of the corpus. Two failures kept it small: transformers
+≥ 4.49 passes a `Cache` object that IndicTrans2's vendored decoder cannot index
+(D-041), and Apple MPS ran the model at 0.006 sentences per second against
+0.9–1.2 on CPU, a 45× slowdown (D-042).
 
 ## 10. Splits and tokenizers
 
 ### 10.1 Splits
 
 Document-level, source-stratified, fixed seed `20260819`. Splitting at document
-level rather than line level is what stops two halves of one article landing in
-train and test.
+level rather than line level is what keeps two halves of one article out of train
+and test.
 
 | language | split | documents | words |
 |---|---|---:|---:|
@@ -258,16 +254,16 @@ train and test.
 | Konkani | val | 2,655 | 2,042,816 |
 | Konkani | test | 2,655 | 2,031,644 |
 
-Leakage was verified by content hash across all three splits in both languages:
-0 documents leaked. The 20% manual floor is enforced in `tools/make_splits.py` at
-split-construction time, not checked afterwards.
+We verified leakage by content hash across all three splits in both languages:
+0 documents leaked. `tools/make_splits.py` enforces the 20% manual floor at
+split-construction time rather than checking it afterwards.
 
 ### 10.2 Tokenizers
 
 SentencePiece BPE, trained separately per language on that language's train split
-only. No pretrained tokenizer, no shared vocabulary. `byte_fallback` is enabled,
-adding 256 `<0xNN>` byte pieces, which makes any Unicode string representable and
-is why the unknown-token rate is 0.000000% by construction rather than by luck.
+only. No pretrained tokenizer, no shared vocabulary. `byte_fallback` is on, which
+adds 256 `<0xNN>` byte pieces and makes any Unicode string representable — hence
+the 0.000000% unknown-token rate.
 
 Measured on 5,000 held-out documents per language, unseen during training:
 
@@ -292,10 +288,10 @@ Token frequency on the same held-out text:
 | tokens covered by the top 1,000 pieces | 87.5% | 87.0% |
 | pieces seen exactly once | 10 | 2 |
 
-High utilisation with almost no hapax pieces indicates a vocabulary sized to the
+High utilisation with almost no hapax pieces means the vocabulary is sized to the
 data rather than padded with pieces the corpus never uses.
 
-Tokenization examples, with full lists in `phase1_tokenizer_{language}.json`:
+Tokenization examples, full lists in `phase1_tokenizer_{language}.json`:
 
 ```
 Marathi  महाराष्ट्रातील शेतकऱ्यांनी सरकारकडे तातडीने मदतीची मागणी केली
@@ -305,21 +301,20 @@ Konkani  गोंयची राजभास कोंकणी आसा आ�
          ▁गोंय ची ▁राज भ ास ▁कोंकणी ▁आसा ▁आनी ▁ति चो ▁इतिहास ▁खूब ▁पोर न ...
 ```
 
-The segmentation is morphologically plausible. `▁महाराष्ट्र + ातील` splits stem
-from locative suffix and `▁गोंय + ची` splits stem from genitive. Frequent Konkani
-function words such as `▁आसा` and `▁आनी` are single pieces, which is what a
-vocabulary fitted to Konkani rather than Marathi should produce.
+The segmentation is morphologically plausible: `▁महाराष्ट्र + ातील` splits stem
+from locative suffix, `▁गोंय + ची` splits stem from genitive. Frequent Konkani
+function words like `▁आसा` and `▁आनी` come out as single pieces.
 
 ### 10.3 Vocabulary size
 
-2,500 is an order of magnitude below the recommended range, so it is argued in
-full in D-043, including the strongest arguments against it. In outline:
+2,500 is an order of magnitude below the recommended range, so D-043 argues it in
+full, including the strongest arguments against. In outline:
 
 Unknown-token rate is uninformative under byte fallback — 0.000000% at every
-candidate size — so fertility and parameter cost had to decide. At `d_model =
-512`, embedding plus unembedding cost `2 × V × d_model`, so a 10,000 vocabulary
-consumes 41% of a 25M-parameter budget on two lookup tables against 10% at 2,500,
-a difference of roughly two transformer layers.
+candidate size — so fertility and parameter cost had to decide. At
+`d_model = 512`, embedding plus unembedding cost `2 × V × d_model`, so a 10,000
+vocabulary spends 41% of a 25M-parameter budget on two lookup tables against 10%
+at 2,500. That difference is roughly two transformer layers.
 
 Against that: weight tying halves the cost and makes 10,000 affordable at 20% of
 the budget, so the parameter argument rules out an untied large vocabulary rather
@@ -327,12 +322,12 @@ than a large vocabulary as such. Whether to tie is a Phase 2 decision. And since
 token count is fertility × words, a smaller vocabulary raises the reported total
 without changing the data — on an identical corpus the Konkani train split
 measures 506M tokens at 2,500 and projects to 435M at 5,000 and 387M at 10,000.
-Word counts are reported alongside token counts throughout for that reason.
+That is why word counts are reported alongside token counts throughout.
 
-Measured cost of the choice: fertility rises from 2.1703 at 5,000 to 2.5148 at
-2,500, whole-word coverage falls from 40.6% to 30.6%, and characters per token
-fall from 2.9814 to 2.5730. Every training sequence carries about 16% more tokens
-for the same text. The six-candidate sweep is in
+The measured cost: fertility rises from 2.1703 at 5,000 to 2.5148 at 2,500,
+whole-word coverage falls from 40.6% to 30.6%, characters per token fall from
+2.9814 to 2.5730, and every training sequence carries about 16% more tokens for
+the same text. The six-candidate sweep is in
 `phase1_tokenizer_sweep_konkani.json`.
 
 Two fertility figures appear for Marathi and neither is an error. Held-out
@@ -364,8 +359,8 @@ words):
 | near-duplicate overlap | MinHash, 128 permutations, reported at Jaccard ≥ 0.8 | 0 pairs |
 | language purity | function-word discriminator | 0.000% contamination each way |
 
-Of the Konkani sample, 47,495 were labelled Konkani, 2,505 undecided and none
-Marathi. The undecided documents are short ones below the five-marker gate.
+Of the Konkani sample, 47,495 came back Konkani, 2,505 undecided, none Marathi.
+The undecided ones are short documents below the five-marker gate.
 
 ## 12. Reproduction
 
@@ -400,46 +395,45 @@ python3 tools/make_plots.py
 ```
 
 The sweep and the final build are separate commands because they answer separate
-questions. The sweep measures fertility across candidate vocabularies. The final
-build installs the vocabulary chosen on the parameter-budget argument, which is
-not the one the script's fertility-tolerance rule selects. A single command would
-misdescribe how the decision was made.
+questions. The sweep measures fertility across candidate vocabularies; the final
+build installs the vocabulary we chose on the parameter-budget argument, which is
+not the one the script's fertility-tolerance rule selects.
 
 ## 13. Limitations
 
-Synthetic text is 32.2% of the Konkani corpus. It is labelled and separable, but
-a model trained on it partly learns the output distribution of a translation
-system rather than of Konkani writers. Excluding it leaves 180,506,902 real
-words, approximately 36% of the token target.
+Synthetic text is 32.2% of the Konkani corpus. It is labelled and separable, but a
+model trained on it partly learns the output distribution of a translation system
+rather than of Konkani writers. Excluding it leaves 180,506,902 real words, about
+36% of the token target.
 
 Token counts depend on the tokenizer. The Konkani train split measures 506M
 tokens at vocabulary 2,500 and projects to 435M at 5,000. Word counts, which do
-not depend on it, are reported alongside throughout.
+not, are reported alongside throughout.
 
-The deliverable tokenizer was trained on 97% of the final corpus. It was built on
-20 August from 312,293 lines, and approximately 10,800 further documents, chiefly
-BPCC, were ingested afterwards. A tokenizer's training set is a sample by design
-and byte fallback guarantees the remainder is representable, which the measured
-0.000000% unknown rate over the full corpus confirms. It is also why the sweep
-reports 2.5148 at vocabulary 2,500 while the deliverable reports 2.5279: two
-held-out samples drawn from slightly different corpora.
+The deliverable tokenizer was trained on 97% of the final corpus. We built it on
+20 August from 312,293 lines, and about 10,800 further documents — chiefly BPCC —
+were ingested afterwards. A tokenizer's training set is a sample by design, and
+byte fallback guarantees the remainder is representable, which the 0.000000%
+unknown rate over the full corpus confirms. It is also why the sweep reports
+2.5148 at vocabulary 2,500 while the deliverable reports 2.5279: two held-out
+samples drawn from slightly different corpora.
 
 OCR quality is unmeasured. Both manual corpora rest on archive.org OCR text
-layers, and no character error rate was computed because no ground-truth
-transcription was available. Whitespace and line-fragmentation artifacts were
-repaired; character-level substitution errors were not detected.
+layers, and we computed no character error rate because no ground-truth
+transcription was available. We repaired whitespace and line-fragmentation
+artifacts; character-level substitution errors we did not detect.
 
-Konkani register is skewed toward books. Digitized books and literature dominate,
-while news and contemporary web text are a small fraction, so the corpus
+Konkani register is skewed toward books. Digitized books and literature dominate
+and news and contemporary web text are a small fraction, so the corpus
 under-represents contemporary written Konkani.
 
-Sangraha's Romi rows were discarded rather than converted. Transliteration to
-Devanagari was considered and rejected as a source of systematic error that would
-have been indistinguishable from real orthographic variation.
+Sangraha's Romi rows were discarded rather than converted. We considered
+transliteration to Devanagari and rejected it as a source of systematic error
+indistinguishable from real orthographic variation.
 
-The Marathi vocabulary sweep was not re-run. Marathi's vocabulary was set to
-2,500 to match Konkani, since the parameter budget is identical for both models
-and Marathi clears the token target at every vocabulary tested. Only the Konkani
+The Marathi vocabulary sweep was not re-run. We set Marathi's vocabulary to 2,500
+to match Konkani, since the parameter budget is identical for both models and
+Marathi clears the token target at every vocabulary tested. Only the Konkani
 sweep has a recorded artifact.
 
 ## 14. Deliverables

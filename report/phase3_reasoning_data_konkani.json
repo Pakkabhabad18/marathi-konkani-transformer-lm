@@ -1,0 +1,263 @@
+{
+  "language": "konkani",
+  "seed": 20260912,
+  "entity_pool": {
+    "train": [
+      "अनिल",
+      "प्रकाश",
+      "नारायण",
+      "शंकर",
+      "दत्ता",
+      "नीता",
+      "गोविंद",
+      "बाळू",
+      "राम",
+      "विजय",
+      "सुधा",
+      "अशोक",
+      "मंगल",
+      "विनोद",
+      "सुरेश",
+      "मोहन",
+      "रेखा",
+      "रमेश",
+      "अनिता",
+      "स्वाती",
+      "गणेश",
+      "प्रिया",
+      "राहुल",
+      "कविता"
+    ],
+    "test": [
+      "मीरा",
+      "महेश",
+      "सुनीता",
+      "सीता",
+      "किशोर",
+      "गीता",
+      "लता",
+      "कृष्ण"
+    ],
+    "train_size": 24,
+    "test_size": 8
+  },
+  "patterns": {
+    "train": [
+      "p_value",
+      "p_more"
+    ],
+    "test": [
+      "p_value",
+      "p_more",
+      "p_less"
+    ],
+    "held_out": [
+      "p_less"
+    ]
+  },
+  "leakage": {
+    "entity_overlap_train_test": [],
+    "prompt_overlap_train_test": 0
+  },
+  "composition": {
+    "train": {
+      "count": 8000,
+      "by_family": {
+        "compare_two": 1600,
+        "superlative_three": 1600,
+        "transitive_2hop": 1600,
+        "transitive_3hop": 1600,
+        "equality": 1600
+      },
+      "by_pattern": {
+        "p_value": 4800,
+        "p_more": 3200
+      },
+      "by_attribute": {
+        "height": 2656,
+        "age": 2669,
+        "weight": 2675
+      },
+      "by_extreme": {
+        "max": 4027,
+        "min": 3973
+      },
+      "distinct_answers": 26,
+      "answer_distribution": {
+        "प्रिया": 297,
+        "मोहन": 268,
+        "रेखा": 258,
+        "सुधा": 249,
+        "सारकी": 1065,
+        "विनोद": 274,
+        "नीता": 257,
+        "प्रकाश": 302,
+        "सारकें": 535,
+        "स्वाती": 274,
+        "गणेश": 277,
+        "गोविंद": 247,
+        "नारायण": 289,
+        "अशोक": 268,
+        "मंगल": 247,
+        "राहुल": 265,
+        "राम": 257,
+        "अनिल": 259,
+        "कविता": 267,
+        "विजय": 270,
+        "दत्ता": 258,
+        "शंकर": 274,
+        "बाळू": 268,
+        "सुरेश": 253,
+        "अनिता": 271,
+        "रमेश": 251
+      }
+    },
+    "val": {
+      "count": 491,
+      "by_family": {
+        "compare_two": 99,
+        "superlative_three": 100,
+        "transitive_2hop": 97,
+        "transitive_3hop": 100,
+        "equality": 95
+      },
+      "by_pattern": {
+        "p_value": 294,
+        "p_more": 197
+      },
+      "by_attribute": {
+        "height": 163,
+        "age": 163,
+        "weight": 165
+      },
+      "by_extreme": {
+        "max": 265,
+        "min": 226
+      },
+      "distinct_answers": 26,
+      "answer_distribution": {
+        "गोविंद": 18,
+        "सुधा": 13,
+        "प्रकाश": 17,
+        "शंकर": 14,
+        "सारकें": 29,
+        "स्वाती": 15,
+        "रेखा": 19,
+        "नारायण": 16,
+        "रमेश": 19,
+        "बाळू": 18,
+        "सारकी": 66,
+        "दत्ता": 17,
+        "अशोक": 18,
+        "अनिल": 11,
+        "नीता": 21,
+        "मोहन": 20,
+        "कविता": 13,
+        "सुरेश": 20,
+        "प्रिया": 14,
+        "राहुल": 13,
+        "मंगल": 15,
+        "विनोद": 15,
+        "अनिता": 18,
+        "राम": 14,
+        "विजय": 17,
+        "गणेश": 21
+      }
+    },
+    "test": {
+      "count": 1000,
+      "by_family": {
+        "compare_two": 143,
+        "superlative_three": 143,
+        "transitive_2hop": 286,
+        "transitive_3hop": 286,
+        "equality": 142
+      },
+      "by_pattern": {
+        "p_value": 428,
+        "p_more": 286,
+        "p_less": 286
+      },
+      "by_attribute": {
+        "age": 358,
+        "height": 321,
+        "weight": 321
+      },
+      "by_extreme": {
+        "min": 486,
+        "max": 514
+      },
+      "distinct_answers": 10,
+      "answer_distribution": {
+        "कृष्ण": 111,
+        "लता": 102,
+        "सुनीता": 97,
+        "सारकें": 44,
+        "महेश": 117,
+        "किशोर": 105,
+        "मीरा": 117,
+        "सीता": 101,
+        "गीता": 108,
+        "सारकी": 98
+      }
+    }
+  },
+  "language_check": {
+    "train": {
+      "expected_label": "kok",
+      "labels": {
+        "kok": 8000
+      },
+      "mean_score": -1.0,
+      "misassigned": 0,
+      "misassigned_examples": []
+    },
+    "val": {
+      "expected_label": "kok",
+      "labels": {
+        "kok": 491
+      },
+      "mean_score": -1.0,
+      "misassigned": 0,
+      "misassigned_examples": []
+    },
+    "test": {
+      "expected_label": "kok",
+      "labels": {
+        "kok": 1000
+      },
+      "mean_score": -1.0,
+      "misassigned": 0,
+      "misassigned_examples": []
+    }
+  },
+  "tokenization": {
+    "train": {
+      "vocab_size": 2500,
+      "tokens_min": 40,
+      "tokens_median": 63,
+      "tokens_max": 96,
+      "tokens_mean": 64.0,
+      "byte_fallback_tokens": 0,
+      "byte_fallback_rate": 0.0
+    },
+    "val": {
+      "vocab_size": 2500,
+      "tokens_min": 39,
+      "tokens_median": 63,
+      "tokens_max": 93,
+      "tokens_mean": 64.11,
+      "byte_fallback_tokens": 0,
+      "byte_fallback_rate": 0.0
+    },
+    "test": {
+      "vocab_size": 2500,
+      "tokens_min": 43,
+      "tokens_median": 66,
+      "tokens_max": 94,
+      "tokens_mean": 67.18,
+      "byte_fallback_tokens": 0,
+      "byte_fallback_rate": 0.0
+    }
+  }
+}

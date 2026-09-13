@@ -1,0 +1,232 @@
+{
+  "language": "marathi",
+  "seed": 20260912,
+  "entity_pool": {
+    "train": [
+      "विजय",
+      "राम",
+      "विनोद",
+      "नारायण",
+      "सचिन",
+      "दीपक",
+      "सीता",
+      "माधुरी",
+      "शंकर",
+      "कृष्ण",
+      "लता",
+      "अजय",
+      "गणेश",
+      "दत्ता",
+      "राहुल",
+      "कविता"
+    ],
+    "test": [
+      "संजय",
+      "प्रिया",
+      "प्रकाश",
+      "रेखा",
+      "गीता",
+      "गोविंद"
+    ],
+    "train_size": 16,
+    "test_size": 6
+  },
+  "patterns": {
+    "train": [
+      "p_value",
+      "p_more"
+    ],
+    "test": [
+      "p_value",
+      "p_more",
+      "p_less"
+    ],
+    "held_out": [
+      "p_less"
+    ]
+  },
+  "leakage": {
+    "entity_overlap_train_test": [],
+    "prompt_overlap_train_test": 0
+  },
+  "composition": {
+    "train": {
+      "count": 8000,
+      "by_family": {
+        "compare_two": 1600,
+        "superlative_three": 1600,
+        "transitive_2hop": 1600,
+        "transitive_3hop": 1600,
+        "equality": 1600
+      },
+      "by_pattern": {
+        "p_value": 4800,
+        "p_more": 3200
+      },
+      "by_attribute": {
+        "height": 2558,
+        "age": 2661,
+        "weight": 2781
+      },
+      "by_extreme": {
+        "max": 3925,
+        "min": 4075
+      },
+      "distinct_answers": 17,
+      "answer_distribution": {
+        "नारायण": 373,
+        "राम": 392,
+        "सचिन": 393,
+        "समान": 1600,
+        "दीपक": 412,
+        "राहुल": 388,
+        "सीता": 390,
+        "शंकर": 381,
+        "विनोद": 427,
+        "कृष्ण": 378,
+        "विजय": 424,
+        "अजय": 396,
+        "माधुरी": 418,
+        "लता": 419,
+        "गणेश": 430,
+        "दत्ता": 405,
+        "कविता": 374
+      }
+    },
+    "val": {
+      "count": 475,
+      "by_family": {
+        "compare_two": 95,
+        "superlative_three": 100,
+        "transitive_2hop": 95,
+        "transitive_3hop": 100,
+        "equality": 85
+      },
+      "by_pattern": {
+        "p_value": 280,
+        "p_more": 195
+      },
+      "by_attribute": {
+        "height": 149,
+        "age": 156,
+        "weight": 170
+      },
+      "by_extreme": {
+        "max": 236,
+        "min": 239
+      },
+      "distinct_answers": 17,
+      "answer_distribution": {
+        "राहुल": 23,
+        "लता": 20,
+        "विजय": 22,
+        "राम": 29,
+        "समान": 85,
+        "सचिन": 21,
+        "कृष्ण": 26,
+        "दत्ता": 28,
+        "शंकर": 25,
+        "माधुरी": 27,
+        "गणेश": 21,
+        "कविता": 35,
+        "अजय": 20,
+        "सीता": 24,
+        "दीपक": 17,
+        "नारायण": 25,
+        "विनोद": 27
+      }
+    },
+    "test": {
+      "count": 1000,
+      "by_family": {
+        "compare_two": 143,
+        "superlative_three": 143,
+        "transitive_2hop": 286,
+        "transitive_3hop": 286,
+        "equality": 142
+      },
+      "by_pattern": {
+        "p_value": 428,
+        "p_more": 286,
+        "p_less": 286
+      },
+      "by_attribute": {
+        "age": 327,
+        "weight": 348,
+        "height": 325
+      },
+      "by_extreme": {
+        "min": 491,
+        "max": 509
+      },
+      "distinct_answers": 7,
+      "answer_distribution": {
+        "गीता": 148,
+        "प्रकाश": 138,
+        "प्रिया": 160,
+        "गोविंद": 133,
+        "समान": 142,
+        "संजय": 150,
+        "रेखा": 129
+      }
+    }
+  },
+  "language_check": {
+    "train": {
+      "expected_label": "mr",
+      "labels": {
+        "mr": 8000
+      },
+      "mean_score": 1.0,
+      "misassigned": 0,
+      "misassigned_examples": []
+    },
+    "val": {
+      "expected_label": "mr",
+      "labels": {
+        "mr": 475
+      },
+      "mean_score": 1.0,
+      "misassigned": 0,
+      "misassigned_examples": []
+    },
+    "test": {
+      "expected_label": "mr",
+      "labels": {
+        "mr": 1000
+      },
+      "mean_score": 1.0,
+      "misassigned": 0,
+      "misassigned_examples": []
+    }
+  },
+  "tokenization": {
+    "train": {
+      "vocab_size": 2500,
+      "tokens_min": 45,
+      "tokens_median": 63,
+      "tokens_max": 92,
+      "tokens_mean": 64.37,
+      "byte_fallback_tokens": 0,
+      "byte_fallback_rate": 0.0
+    },
+    "val": {
+      "vocab_size": 2500,
+      "tokens_min": 46,
+      "tokens_median": 65,
+      "tokens_max": 86,
+      "tokens_mean": 65.08,
+      "byte_fallback_tokens": 0,
+      "byte_fallback_rate": 0.0
+    },
+    "test": {
+      "vocab_size": 2500,
+      "tokens_min": 48,
+      "tokens_median": 63,
+      "tokens_max": 81,
+      "tokens_mean": 63.69,
+      "byte_fallback_tokens": 0,
+      "byte_fallback_rate": 0.0
+    }
+  }
+}

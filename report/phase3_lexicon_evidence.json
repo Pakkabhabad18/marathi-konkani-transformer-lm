@@ -1,0 +1,460 @@
+{
+ "method": "Word and phrase frequencies counted over a 400 MB sample of each language's own Phase 1 training split, drawn as 200 evenly spaced 2 MB chunks so that every source region of the source-stratified split is represented. Counts are raw occurrences in that sample, used as evidence that a form exists and is ordinary, not as corpus frequency estimates.",
+ "sample_bytes_per_language": 419430400,
+ "lexicon": {
+  "marathi": {
+   "आणि": 173395,
+   "आहे": 391008,
+   "पेक्षा": 1974,
+   "कमी": 16079,
+   "मोठा": 6146,
+   "आहेत": 86853,
+   "त्यामुळे": 31166,
+   "म्हणून": 27292,
+   "रुपये": 18332,
+   "राम": 1754,
+   "अधिक": 12947,
+   "प्रश्न": 7943,
+   "महाग": 350,
+   "मोठी": 5905,
+   "जुना": 521,
+   "मोठे": 3663,
+   "जास्त": 11112,
+   "किलो": 1521,
+   "वजन": 1196,
+   "वर्षे": 5005,
+   "राहुल": 3708,
+   "सारखे": 491,
+   "किंमत": 3834,
+   "स्वस्त": 645,
+   "विजय": 4467,
+   "सगळ्यात": 629,
+   "संख्या": 8265,
+   "गणेश": 2171,
+   "अनिल": 2835,
+   "नितीन": 1687,
+   "अमोल": 964,
+   "वय": 2981,
+   "उत्तर": 6654,
+   "फूट": 920,
+   "लहान": 3982,
+   "सर्वात": 4826,
+   "कविता": 957,
+   "तरुण": 1902,
+   "उंच": 661,
+   "वर्षांचा": 748,
+   "कोणती": 602,
+   "नवा": 1159,
+   "बरोबर": 1439,
+   "कोणता": 445,
+   "संदीप": 1447,
+   "कोण": 2152,
+   "उंची": 476,
+   "समान": 1112,
+   "कोणते": 490,
+   "पुस्तके": 918,
+   "सेंटीमीटर": 47,
+   "सुनील": 1665,
+   "प्रिया": 313,
+   "स्वाती": 433,
+   "मीरा": 232,
+   "आंबे": 122,
+   "माधुरी": 338,
+   "शीतल": 198,
+   "रामाकडे": 1,
+   "सीता": 76
+  },
+  "konkani": {
+   "आनी": 584933,
+   "आसा": 140486,
+   "आसात": 38314,
+   "प्रस्न": 8657,
+   "व्हड": 21550,
+   "चड": 68282,
+   "ल्हान": 15400,
+   "परस": 22044,
+   "सारकें": 3301,
+   "उणे": 2341,
+   "म्हणून": 37822,
+   "पिराय": 1511,
+   "संख्या": 3288,
+   "समान": 2067,
+   "ऊंच": 1182,
+   "कोण": 14610,
+   "पुस्तकां": 4881,
+   "जाप": 7326,
+   "मोल": 4798,
+   "सगळ्यांत": 21217,
+   "देखून": 12094,
+   "बरोबर": 3910,
+   "पास": 2232,
+   "उणें": 6152,
+   "सवाल": 323,
+   "पोरनो": 462,
+   "वर्सां": 8030,
+   "नवो": 2953,
+   "खंयची": 963,
+   "सारके": 3268,
+   "खंयचें": 613,
+   "वजन": 1784,
+   "कविता": 10438,
+   "फूट": 1834,
+   "उंचाय": 1115,
+   "खंयचो": 1239,
+   "सवाय": 941,
+   "राम": 1925,
+   "रुपया": 2646,
+   "किलो": 672,
+   "सुनील": 232,
+   "शीतल": 90,
+   "विजय": 769,
+   "राहुल": 246,
+   "सर्वांत": 27,
+   "म्हारग": 513,
+   "संदीप": 286,
+   "गणेश": 592,
+   "आंबे": 457,
+   "सीता": 603,
+   "रुपये": 472,
+   "तरणो": 66,
+   "माधुरी": 62,
+   "प्रिया": 302,
+   "सेंटीमीटर": 90,
+   "मीरा": 257,
+   "अमोल": 113,
+   "स्वाती": 113,
+   "अनिल": 350,
+   "नितीन": 199
+  }
+ },
+ "entity_stems": {
+  "marathi": {
+   "राम": {
+    "stem": "रामा",
+    "genitive_hits": 150,
+    "stem_share": 0.62,
+    "particle_hits": 2
+   },
+   "सीता": {
+    "stem": "सीते",
+    "genitive_hits": 18,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "प्रिया": {
+    "stem": "प्रिया",
+    "genitive_hits": 15,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "राहुल": {
+    "stem": "राहुल",
+    "genitive_hits": 43,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "विजय": {
+    "stem": "विजया",
+    "genitive_hits": 333,
+    "stem_share": 0.96,
+    "particle_hits": 1
+   },
+   "गणेश": {
+    "stem": "गणेशा",
+    "genitive_hits": 124,
+    "stem_share": 0.89,
+    "particle_hits": 0
+   },
+   "माधुरी": {
+    "stem": "माधुरी",
+    "genitive_hits": 12,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "कविता": {
+    "stem": "कविते",
+    "genitive_hits": 85,
+    "stem_share": 0.98,
+    "particle_hits": 0
+   },
+   "संजय": {
+    "stem": "संजय",
+    "genitive_hits": 13,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "प्रकाश": {
+    "stem": "प्रकाशा",
+    "genitive_hits": 68,
+    "stem_share": 0.88,
+    "particle_hits": 1
+   },
+   "दीपक": {
+    "stem": "दीपक",
+    "genitive_hits": 12,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "विनोद": {
+    "stem": "विनोदा",
+    "genitive_hits": 44,
+    "stem_share": 0.96,
+    "particle_hits": 0
+   },
+   "अजय": {
+    "stem": "अजय",
+    "genitive_hits": 18,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "सचिन": {
+    "stem": "सचिन",
+    "genitive_hits": 71,
+    "stem_share": 1.0,
+    "particle_hits": 4
+   },
+   "रेखा": {
+    "stem": "रेखा",
+    "genitive_hits": 21,
+    "stem_share": 0.66,
+    "particle_hits": 1
+   },
+   "लता": {
+    "stem": "लते",
+    "genitive_hits": 98,
+    "stem_share": 0.91,
+    "particle_hits": 1
+   },
+   "गीता": {
+    "stem": "गीता",
+    "genitive_hits": 280,
+    "stem_share": 0.91,
+    "particle_hits": 0
+   },
+   "दत्ता": {
+    "stem": "दत्ता",
+    "genitive_hits": 17,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "नारायण": {
+    "stem": "नारायणा",
+    "genitive_hits": 18,
+    "stem_share": 0.86,
+    "particle_hits": 0
+   },
+   "शंकर": {
+    "stem": "शंकरा",
+    "genitive_hits": 122,
+    "stem_share": 0.92,
+    "particle_hits": 1
+   },
+   "कृष्ण": {
+    "stem": "कृष्णा",
+    "genitive_hits": 84,
+    "stem_share": 0.99,
+    "particle_hits": 2
+   },
+   "गोविंद": {
+    "stem": "गोविंदा",
+    "genitive_hits": 19,
+    "stem_share": 0.95,
+    "particle_hits": 0
+   }
+  },
+  "konkani": {
+   "राम": {
+    "stem": "रामा",
+    "genitive_hits": 895,
+    "stem_share": 0.97,
+    "particle_hits": 14
+   },
+   "सीता": {
+    "stem": "सीते",
+    "genitive_hits": 124,
+    "stem_share": 0.98,
+    "particle_hits": 0
+   },
+   "अनिल": {
+    "stem": "अनिला",
+    "genitive_hits": 14,
+    "stem_share": 0.93,
+    "particle_hits": 0
+   },
+   "प्रिया": {
+    "stem": "प्रिया",
+    "genitive_hits": 27,
+    "stem_share": 0.6,
+    "particle_hits": 0
+   },
+   "राहुल": {
+    "stem": "राहुला",
+    "genitive_hits": 18,
+    "stem_share": 0.95,
+    "particle_hits": 0
+   },
+   "मीरा": {
+    "stem": "मीरा",
+    "genitive_hits": 144,
+    "stem_share": 0.87,
+    "particle_hits": 2
+   },
+   "विजय": {
+    "stem": "विजया",
+    "genitive_hits": 77,
+    "stem_share": 0.99,
+    "particle_hits": 0
+   },
+   "स्वाती": {
+    "stem": "स्वाती",
+    "genitive_hits": 13,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "गणेश": {
+    "stem": "गणेशा",
+    "genitive_hits": 55,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "कविता": {
+    "stem": "कविते",
+    "genitive_hits": 1918,
+    "stem_share": 0.96,
+    "particle_hits": 16
+   },
+   "अशोक": {
+    "stem": "अशोका",
+    "genitive_hits": 91,
+    "stem_share": 0.98,
+    "particle_hits": 0
+   },
+   "महेश": {
+    "stem": "महेशा",
+    "genitive_hits": 41,
+    "stem_share": 1.0,
+    "particle_hits": 2
+   },
+   "सुरेश": {
+    "stem": "सुरेशा",
+    "genitive_hits": 12,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "रमेश": {
+    "stem": "रमेशा",
+    "genitive_hits": 89,
+    "stem_share": 1.0,
+    "particle_hits": 3
+   },
+   "प्रकाश": {
+    "stem": "प्रकाशा",
+    "genitive_hits": 191,
+    "stem_share": 0.99,
+    "particle_hits": 3
+   },
+   "विनोद": {
+    "stem": "विनोदा",
+    "genitive_hits": 199,
+    "stem_share": 1.0,
+    "particle_hits": 2
+   },
+   "नीता": {
+    "stem": "नीता",
+    "genitive_hits": 71,
+    "stem_share": 1.0,
+    "particle_hits": 1
+   },
+   "सुनीता": {
+    "stem": "सुनीता",
+    "genitive_hits": 12,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "अनिता": {
+    "stem": "अनिता",
+    "genitive_hits": 26,
+    "stem_share": 1.0,
+    "particle_hits": 1
+   },
+   "मंगल": {
+    "stem": "मंगला",
+    "genitive_hits": 24,
+    "stem_share": 0.92,
+    "particle_hits": 2
+   },
+   "रेखा": {
+    "stem": "रेखे",
+    "genitive_hits": 37,
+    "stem_share": 0.62,
+    "particle_hits": 0
+   },
+   "लता": {
+    "stem": "लते",
+    "genitive_hits": 253,
+    "stem_share": 0.86,
+    "particle_hits": 2
+   },
+   "सुधा": {
+    "stem": "सुधा",
+    "genitive_hits": 21,
+    "stem_share": 0.95,
+    "particle_hits": 0
+   },
+   "गीता": {
+    "stem": "गीता",
+    "genitive_hits": 1249,
+    "stem_share": 0.86,
+    "particle_hits": 10
+   },
+   "मोहन": {
+    "stem": "मोहना",
+    "genitive_hits": 43,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "किशोर": {
+    "stem": "किशोरा",
+    "genitive_hits": 26,
+    "stem_share": 1.0,
+    "particle_hits": 1
+   },
+   "बाळू": {
+    "stem": "बाळू",
+    "genitive_hits": 31,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "दत्ता": {
+    "stem": "दत्ता",
+    "genitive_hits": 71,
+    "stem_share": 0.96,
+    "particle_hits": 1
+   },
+   "नारायण": {
+    "stem": "नारायणा",
+    "genitive_hits": 174,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   },
+   "शंकर": {
+    "stem": "शंकरा",
+    "genitive_hits": 329,
+    "stem_share": 1.0,
+    "particle_hits": 1
+   },
+   "कृष्ण": {
+    "stem": "कृष्णा",
+    "genitive_hits": 574,
+    "stem_share": 0.99,
+    "particle_hits": 4
+   },
+   "गोविंद": {
+    "stem": "गोविंदा",
+    "genitive_hits": 21,
+    "stem_share": 1.0,
+    "particle_hits": 0
+   }
+  }
+ }
+}

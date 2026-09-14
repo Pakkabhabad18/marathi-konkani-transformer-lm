@@ -1,0 +1,418 @@
+{
+  "marathi/final": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 0.0,
+      "uniform_chance": 33.33,
+      "majority_baseline": 21.68,
+      "top_prediction": "समान",
+      "top_prediction_share": 100.0,
+      "distinct_predictions": 1,
+      "distinct_golds": 6
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 99.3,
+      "uniform_chance": 33.33,
+      "majority_baseline": 100.0,
+      "top_prediction": "समान",
+      "top_prediction_share": 100.0,
+      "distinct_predictions": 1,
+      "distinct_golds": 1
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 2.1,
+      "uniform_chance": 25.0,
+      "majority_baseline": 20.28,
+      "top_prediction": "राम",
+      "top_prediction_share": 47.55,
+      "distinct_predictions": 7,
+      "distinct_golds": 6
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 11.89,
+      "uniform_chance": 25.0,
+      "majority_baseline": 19.58,
+      "top_prediction": "राम",
+      "top_prediction_share": 25.87,
+      "distinct_predictions": 8,
+      "distinct_golds": 6
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 6.29,
+      "uniform_chance": 20.0,
+      "majority_baseline": 18.53,
+      "top_prediction": "राम",
+      "top_prediction_share": 45.8,
+      "distinct_predictions": 12,
+      "distinct_golds": 6
+    }
+  },
+  "marathi/grid_plain_5e6": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 0.0,
+      "uniform_chance": 33.33,
+      "majority_baseline": 21.68,
+      "top_prediction": "समान",
+      "top_prediction_share": 100.0,
+      "distinct_predictions": 1,
+      "distinct_golds": 6
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 99.3,
+      "uniform_chance": 33.33,
+      "majority_baseline": 100.0,
+      "top_prediction": "समान",
+      "top_prediction_share": 100.0,
+      "distinct_predictions": 1,
+      "distinct_golds": 1
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 10.49,
+      "uniform_chance": 25.0,
+      "majority_baseline": 20.28,
+      "top_prediction": "गीता",
+      "top_prediction_share": 32.17,
+      "distinct_predictions": 5,
+      "distinct_golds": 6
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 11.89,
+      "uniform_chance": 25.0,
+      "majority_baseline": 19.58,
+      "top_prediction": "गीता",
+      "top_prediction_share": 33.22,
+      "distinct_predictions": 6,
+      "distinct_golds": 6
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 4.2,
+      "uniform_chance": 20.0,
+      "majority_baseline": 18.53,
+      "top_prediction": "विजय",
+      "top_prediction_share": 57.34,
+      "distinct_predictions": 3,
+      "distinct_golds": 6
+    }
+  },
+  "marathi/grid_rationale_5e6": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 13.29,
+      "uniform_chance": 33.33,
+      "majority_baseline": 21.68,
+      "top_prediction": "गीता",
+      "top_prediction_share": 20.0,
+      "distinct_predictions": 11,
+      "distinct_golds": 6
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 7.75,
+      "uniform_chance": 33.33,
+      "majority_baseline": 100.0,
+      "top_prediction": "गोविंदा",
+      "top_prediction_share": 19.64,
+      "distinct_predictions": 11,
+      "distinct_golds": 1
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 12.59,
+      "uniform_chance": 25.0,
+      "majority_baseline": 20.28,
+      "top_prediction": "राहुल",
+      "top_prediction_share": 42.73,
+      "distinct_predictions": 9,
+      "distinct_golds": 6
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 11.89,
+      "uniform_chance": 25.0,
+      "majority_baseline": 19.58,
+      "top_prediction": "गीता",
+      "top_prediction_share": 38.36,
+      "distinct_predictions": 12,
+      "distinct_golds": 6
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 4.2,
+      "uniform_chance": 20.0,
+      "majority_baseline": 18.53,
+      "top_prediction": "राहुल",
+      "top_prediction_share": 52.12,
+      "distinct_predictions": 11,
+      "distinct_golds": 6
+    }
+  },
+  "marathi/grid_plain_1e4": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 0.0,
+      "uniform_chance": 33.33,
+      "majority_baseline": 21.68,
+      "top_prediction": "समान",
+      "top_prediction_share": 100.0,
+      "distinct_predictions": 1,
+      "distinct_golds": 6
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 99.3,
+      "uniform_chance": 33.33,
+      "majority_baseline": 100.0,
+      "top_prediction": "समान",
+      "top_prediction_share": 100.0,
+      "distinct_predictions": 1,
+      "distinct_golds": 1
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 0.0,
+      "uniform_chance": 25.0,
+      "majority_baseline": 20.28,
+      "top_prediction": "राहुल",
+      "top_prediction_share": 52.45,
+      "distinct_predictions": 6,
+      "distinct_golds": 6
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 0.0,
+      "uniform_chance": 25.0,
+      "majority_baseline": 19.58,
+      "top_prediction": "राहुल",
+      "top_prediction_share": 52.8,
+      "distinct_predictions": 6,
+      "distinct_golds": 6
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 0.0,
+      "uniform_chance": 20.0,
+      "majority_baseline": 18.53,
+      "top_prediction": "राहुल",
+      "top_prediction_share": 68.88,
+      "distinct_predictions": 4,
+      "distinct_golds": 6
+    }
+  },
+  "konkani/final": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 1.4,
+      "uniform_chance": 33.33,
+      "majority_baseline": 14.69,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 65.49,
+      "distinct_predictions": 3,
+      "distinct_golds": 8
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 96.48,
+      "uniform_chance": 33.33,
+      "majority_baseline": 69.01,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 65.49,
+      "distinct_predictions": 3,
+      "distinct_golds": 2
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 21.68,
+      "uniform_chance": 25.0,
+      "majority_baseline": 16.78,
+      "top_prediction": "सुनीता",
+      "top_prediction_share": 27.27,
+      "distinct_predictions": 8,
+      "distinct_golds": 8
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 20.63,
+      "uniform_chance": 25.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "मीर",
+      "top_prediction_share": 24.13,
+      "distinct_predictions": 15,
+      "distinct_golds": 8
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 18.53,
+      "uniform_chance": 20.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "मीर",
+      "top_prediction_share": 27.62,
+      "distinct_predictions": 11,
+      "distinct_golds": 8
+    }
+  },
+  "konkani/grid_plain_5e6": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 11.19,
+      "uniform_chance": 33.33,
+      "majority_baseline": 14.69,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 47.18,
+      "distinct_predictions": 4,
+      "distinct_golds": 8
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 83.8,
+      "uniform_chance": 33.33,
+      "majority_baseline": 69.01,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 52.82,
+      "distinct_predictions": 4,
+      "distinct_golds": 2
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 20.98,
+      "uniform_chance": 25.0,
+      "majority_baseline": 16.78,
+      "top_prediction": "कृष्ण",
+      "top_prediction_share": 29.37,
+      "distinct_predictions": 6,
+      "distinct_golds": 8
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 13.99,
+      "uniform_chance": 25.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "कृष्णा",
+      "top_prediction_share": 21.68,
+      "distinct_predictions": 9,
+      "distinct_golds": 8
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 12.94,
+      "uniform_chance": 20.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "कृष्ण",
+      "top_prediction_share": 23.08,
+      "distinct_predictions": 7,
+      "distinct_golds": 8
+    }
+  },
+  "konkani/grid_rationale_5e6": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 14.69,
+      "uniform_chance": 33.33,
+      "majority_baseline": 14.69,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 29.58,
+      "distinct_predictions": 9,
+      "distinct_golds": 8
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 66.9,
+      "uniform_chance": 33.33,
+      "majority_baseline": 69.01,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 38.73,
+      "distinct_predictions": 10,
+      "distinct_golds": 2
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 18.18,
+      "uniform_chance": 25.0,
+      "majority_baseline": 16.78,
+      "top_prediction": "कृष्ण",
+      "top_prediction_share": 28.67,
+      "distinct_predictions": 9,
+      "distinct_golds": 8
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 12.24,
+      "uniform_chance": 25.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "कृष्ण",
+      "top_prediction_share": 21.01,
+      "distinct_predictions": 12,
+      "distinct_golds": 8
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 13.99,
+      "uniform_chance": 20.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "कृष्ण",
+      "top_prediction_share": 27.65,
+      "distinct_predictions": 10,
+      "distinct_golds": 8
+    }
+  },
+  "konkani/grid_plain_1e4": {
+    "compare_two": {
+      "n": 143,
+      "accuracy": 0.0,
+      "uniform_chance": 33.33,
+      "majority_baseline": 14.69,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 66.9,
+      "distinct_predictions": 2,
+      "distinct_golds": 8
+    },
+    "equality": {
+      "n": 142,
+      "accuracy": 100.0,
+      "uniform_chance": 33.33,
+      "majority_baseline": 69.01,
+      "top_prediction": "सारकी",
+      "top_prediction_share": 69.01,
+      "distinct_predictions": 2,
+      "distinct_golds": 2
+    },
+    "superlative_three": {
+      "n": 143,
+      "accuracy": 0.0,
+      "uniform_chance": 25.0,
+      "majority_baseline": 16.78,
+      "top_prediction": "मंगल",
+      "top_prediction_share": 37.76,
+      "distinct_predictions": 7,
+      "distinct_golds": 8
+    },
+    "transitive_2hop": {
+      "n": 286,
+      "accuracy": 0.0,
+      "uniform_chance": 25.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "मंगल",
+      "top_prediction_share": 41.96,
+      "distinct_predictions": 9,
+      "distinct_golds": 8
+    },
+    "transitive_3hop": {
+      "n": 286,
+      "accuracy": 0.0,
+      "uniform_chance": 20.0,
+      "majority_baseline": 15.73,
+      "top_prediction": "मंगल",
+      "top_prediction_share": 45.45,
+      "distinct_predictions": 7,
+      "distinct_golds": 8
+    }
+  }
+}

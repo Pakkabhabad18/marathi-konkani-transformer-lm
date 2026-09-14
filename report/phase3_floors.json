@@ -1,0 +1,92 @@
+{
+  "marathi/final": {
+    "n": 1000,
+    "correct": 196,
+    "accuracy": 19.6,
+    "uniform": 25.95,
+    "majority": 31.1,
+    "z": -4.609,
+    "p_one_tailed": 1.0
+  },
+  "marathi/grid_plain_5e6": {
+    "n": 1000,
+    "correct": 202,
+    "accuracy": 20.2,
+    "uniform": 25.95,
+    "majority": 31.1,
+    "z": -4.173,
+    "p_one_tailed": 1.0
+  },
+  "marathi/grid_rationale_5e6": {
+    "n": 1000,
+    "correct": 94,
+    "accuracy": 9.4,
+    "uniform": 25.95,
+    "majority": 31.1,
+    "z": -12.018,
+    "p_one_tailed": 1.0
+  },
+  "marathi/grid_plain_1e4": {
+    "n": 1000,
+    "correct": 141,
+    "accuracy": 14.1,
+    "uniform": 25.95,
+    "majority": 31.1,
+    "z": -8.604,
+    "p_one_tailed": 1.0
+  },
+  "marathi/pretrained": {
+    "n": 1000,
+    "correct": 0,
+    "accuracy": 0.0,
+    "uniform": 25.95,
+    "majority": 31.1,
+    "z": -18.846,
+    "p_one_tailed": 1.0
+  },
+  "konkani/final": {
+    "n": 1000,
+    "correct": 282,
+    "accuracy": 28.2,
+    "uniform": 25.95,
+    "majority": 23.3,
+    "z": 1.638,
+    "p_one_tailed": 0.0507
+  },
+  "konkani/grid_plain_5e6": {
+    "n": 1000,
+    "correct": 242,
+    "accuracy": 24.2,
+    "uniform": 25.95,
+    "majority": 23.3,
+    "z": -1.268,
+    "p_one_tailed": 0.8975
+  },
+  "konkani/grid_rationale_5e6": {
+    "n": 1000,
+    "correct": 217,
+    "accuracy": 21.7,
+    "uniform": 25.95,
+    "majority": 23.3,
+    "z": -3.083,
+    "p_one_tailed": 0.999
+  },
+  "konkani/grid_plain_1e4": {
+    "n": 1000,
+    "correct": 142,
+    "accuracy": 14.2,
+    "uniform": 25.95,
+    "majority": 23.3,
+    "z": -8.531,
+    "p_one_tailed": 1.0
+  },
+  "konkani/pretrained": {
+    "n": 1000,
+    "correct": 0,
+    "accuracy": 0.0,
+    "uniform": 25.95,
+    "majority": 23.3,
+    "z": -18.846,
+    "p_one_tailed": 1.0
+  }
+}

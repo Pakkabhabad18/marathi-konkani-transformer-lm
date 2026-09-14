@@ -5,9 +5,11 @@ decision, why, and what would change our mind. Entries that record a mistake say
 so plainly and keep the superseded numbers, because a result that was withdrawn
 is only honest if it is still visible.
 
-All figures below come from the calibration runs of 14 September 2026 on Kaggle
-(2 × Tesla T4). The final notebook, `report/phase3_final.ipynb`, reproduces them
-in one pass; where its numbers differ they are the ones the report quotes.
+All figures below come from `report/phase3_final.ipynb`, run unattended on
+Kaggle (2 × Tesla T4, 43.2 minutes, 26 training runs and 30 evaluations) on
+14 September 2026. The calibration runs made earlier the same day, before the
+notebook was made batch-runnable (D-052), reproduced identically — seeds are
+fixed — so no figure here has two versions.
 
 ---
 
@@ -201,6 +203,23 @@ the model.
 to exactly 0.00% on all four non-trivial families and 100.00% on `equality`, in
 both languages.
 
+**How much it distorts the headline figure — measured, after the final run.**
+Model L's 28.20% clears both floors. Removing the 142 `equality` items removes
+the result entirely:
+
+| | all families | excluding `equality` |
+|---|---:|---:|
+| Marathi accuracy | 19.60% (uniform 25.95%) | **6.41%** (uniform 24.72%) |
+| Marathi z | −4.61 | **−12.50** |
+| Konkani accuracy | 28.20% (uniform 25.95%) | **16.90%** (uniform 24.72%) |
+| Konkani z | +1.64, p ≈ 0.051 | **−5.34** |
+
+The 142 equality items contribute 13.7 of Model L's 28.2 points against a uniform
+expectation of 4.7 — a nine-point surplus that offsets a seven-point deficit
+everywhere else. Neither model beats chance on any family that requires comparing
+the entities. The degenerate family did not merely inflate a number; it created
+the only positive result in the phase.
+
 **What would change it.** Vary the equality answer some other way — a
 grammatical hedge, an explicit "neither", or numeric equality stated as a value
 rather than an adjective — and regenerate. We did not, because the finding was
@@ -222,12 +241,16 @@ has stopped reading its input does not guess uniformly — it answers the
 commonest label per family, which scores *better* than uniform. That majority
 floor is 31.1% for Marathi and 23.3% for Konkani.
 
-**What it changes.** Marathi's best configuration, 20.20%, is below both floors.
-Konkani's best, 28.20% at six epochs, clears uniform chance by 2.25 points and
-the majority floor by 4.9 — but 2.25 points on 1,000 items is about 1.6 standard
-errors, one-tailed p ≈ 0.05. We report it as suggestive and not significant. The
-supporting observation is that it is monotone in epochs (24.20 → 25.10 → 28.20),
-which a single marginal point would not be.
+**What it changes.** Marathi's final model, 19.60%, is below both floors at
+z = −4.61. Konkani's, 28.20%, clears both — but by 2.25 points on 1,000 items,
+about 1.6 standard errors, one-tailed p = 0.051. We report it as marginal, and
+D-050 shows it is an artifact of the `equality` family rather than a small real
+effect. Without that family Konkani is at z = −5.34.
+
+**The epoch trend does not rescue it either.** Twelve epochs was added to see
+whether Konkani's rise (24.20 → 25.10 → 28.20) continued. It does not: 27.40% at
+twelve, with perplexity up to ×1.28. Both languages peak at six and turn over, so
+six is a plateau rather than a point on a climb.
 
 **What would change it.** A larger test set. At n = 1,000 a lift has to reach
 roughly 2.7 points to clear p < 0.05, and the lift we have is 2.25.
@@ -260,10 +283,22 @@ in Phase 2.
 ## D-053 — What the phase concludes
 
 **The claim.** Supervised finetuning on 8,000 templated reasoning items taught
-both models the answer format completely — format compliance 0% → 99.6% and
-99.9% — and taught them no measurable amount of the task. The Marathi model sits
-below both floors at every configuration tested. The Konkani model clears both
-at six epochs by a margin that is suggestive rather than significant.
+both models the answer format completely — format compliance 0% → 99.60% and
+99.90% — and taught them no measurable amount of the task. On the four families
+that require comparing the entities, accuracy is 6.41% (Marathi) and 16.90%
+(Konkani) against a 24.72% chance floor: both significantly *below* guessing,
+which is the signature of a systematic wrong policy rather than of noise.
+
+**The generalisation test confirms it independently.** `p_less`, the surface
+pattern held out of training since the data was designed (D-044), scores 0.00%
+and 4.55%, against 18.18% and 34.62% on the trained `p_more` pattern that
+expresses the same relation inverted. Whatever was acquired is tied to specific
+templates, not to the comparative relation underneath them.
+
+**And the attention analysis agrees.** Mean entropy over all 56 heads moved
++0.050 bits in Marathi and +0.001 in Konkani. Finetuning changed the output
+distribution and left the computation untouched — which is also why perplexity
+held at ×1.14 and ×1.18. Three independent measurements, one conclusion.
 
 **What supports it.** A pretrained baseline measured identically; a chance floor
 and a majority floor; a forgetting budget fixed in advance; a learning-rate grid

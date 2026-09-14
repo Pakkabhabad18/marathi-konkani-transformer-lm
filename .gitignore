@@ -18,3 +18,6 @@ marathi/data/
 .health/
 .run/
 logs/
+
+# scratch: files the sandbox could not delete
+_to_delete/

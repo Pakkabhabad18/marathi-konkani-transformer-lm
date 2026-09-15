@@ -8,7 +8,7 @@ chance floor, a majority-class floor and their own pretrained checkpoints.
 All numbers below come from one unattended run of `report/phase3_final.ipynb` on
 Kaggle (2 × Tesla T4, 43.2 minutes, 26 training runs and 30 evaluations). The
 decisions that fixed the recipe, and the mistakes that produced them, are in
-`report/phase3_decisions.md` (D-044 to D-053).
+`report/phase3_decisions.md` (D-050 to D-059).
 
 ---
 
@@ -91,7 +91,7 @@ pretraining test split, so forgetting is visible in the same table as the gain.
 
 The first attempt at this phase swept sample count while holding the learning
 rate at 1e-4 for three epochs, and the recipe destroyed the model at every point
-on the curve (D-047). The corrected order calibrates first. Learning rate ×
+on the curve (D-053). The corrected order calibrates first. Learning rate ×
 training target, one epoch, N = 8,000:
 
 | | lr | accuracy | format | perplexity | vs pretrained |
@@ -193,7 +193,7 @@ floor, z = −5.34: significantly *below* chance, like Model H.
 
 `equality` is the one family where a near-constant answer is nearly always
 correct. In Marathi it is exactly constant — समान does not inflect, so all 142
-items share one gold label (D-046, D-050). In Konkani the adjective agrees for
+items share one gold label (D-052, D-056). In Konkani the adjective agrees for
 gender, giving two labels of which one covers 69%. Both models found that
 constant, and in Model L's case it was enough to lift the overall figure above
 the floor without any reasoning behind it.
@@ -372,7 +372,7 @@ its first cell.
 | `tools/finetune.py` | SFT with prompt-masked loss |
 | `tools/evaluate_reasoning.py` | exact match, chance floor, forgetting check |
 | `report/phase3_final.ipynb` | the run that produced every number here |
-| `report/phase3_decisions.md` | D-044 to D-053, including what failed |
+| `report/phase3_decisions.md` | D-050 to D-059, including what failed |
 | `report/phase3_results.{json,csv}` | all 30 measurements |
 | `report/phase3_collapse.json` | per-family prediction distributions |
 | `report/phase3_floors.json` | both floors and the significance test |

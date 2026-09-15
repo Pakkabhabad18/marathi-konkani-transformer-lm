@@ -8,12 +8,12 @@ is only honest if it is still visible.
 All figures below come from `report/phase3_final.ipynb`, run unattended on
 Kaggle (2 × Tesla T4, 43.2 minutes, 26 training runs and 30 evaluations) on
 14 September 2026. The calibration runs made earlier the same day, before the
-notebook was made batch-runnable (D-052), reproduced identically — seeds are
+notebook was made batch-runnable (D-058), reproduced identically — seeds are
 fixed — so no figure here has two versions.
 
 ---
 
-## D-044 — Five reasoning families over entities the corpus actually contains
+## D-050 — Five reasoning families over entities the corpus actually contains
 
 **Decision.** The reasoning set has five families — `compare_two`,
 `superlative_three`, `transitive_2hop`, `transitive_3hop`, `equality` — built
@@ -40,7 +40,7 @@ possible form of the task.
 
 ---
 
-## D-045 — The rationale chain used `>`, which neither vocabulary contains
+## D-051 — The rationale chain used `>`, which neither vocabulary contains
 
 **What happened.** The first version of the chain-of-thought target wrote the
 ordering as `अ > ब > क`. Neither 2,500-piece vocabulary contains `>`, so byte
@@ -62,7 +62,7 @@ data — exists because of this. It runs on every generated set now.
 
 ---
 
-## D-046 — The Konkani equality adjective agrees for gender; the Marathi one does not
+## D-052 — The Konkani equality adjective agrees for gender; the Marathi one does not
 
 **Decision.** Konkani `EQUAL` is keyed by the attribute's grammatical gender —
 सारकी / सारकें — while Marathi uses the invariant समान.
@@ -72,14 +72,14 @@ data — exists because of this. It runs on every generated set now.
 `पिराय सारकें` would have been ungrammatical, and a model penalised for producing
 the grammatical form instead would be measuring our error, not its reasoning.
 
-**The side effect, which is a real limitation — see D-050.** Because Marathi's
+**The side effect, which is a real limitation — see D-056.** Because Marathi's
 adjective does not inflect, the Marathi `equality` family has exactly **one**
 gold label across all 142 test items. Konkani's has two. That asymmetry turned
 out to matter more than the grammar did.
 
 ---
 
-## D-047 — The first sweep varied sample count at a learning rate that was destroying the model
+## D-053 — The first sweep varied sample count at a learning rate that was destroying the model
 
 **What happened.** The first Phase 3 run swept finetuning sample count over
 500 / 1,000 / 2,000 / 4,000 / 8,000 while holding the learning rate at 1e-4 for
@@ -110,13 +110,13 @@ evaluation carries a separate language-model check: the training objective could
 not see the damage.
 
 **Correction.** Order reversed. `report/phase3_final.ipynb` calibrates learning
-rate and training target first (D-048, D-049), then varies epochs, then varies
+rate and training target first (D-054, D-055), then varies epochs, then varies
 sample count at a setting that leaves the model intact. The superseded notebook
 is kept at `report/phase3.ipynb`.
 
 ---
 
-## D-048 — Learning rate 5e-6, and the boundary past which the model is gone
+## D-054 — Learning rate 5e-6, and the boundary past which the model is gone
 
 **Decision.** 5e-6 for all reported runs.
 
@@ -143,7 +143,7 @@ prefers ×2.0 should know which rows move.
 
 ---
 
-## D-049 — Answer-only, not chain-of-thought, against our own expectation
+## D-055 — Answer-only, not chain-of-thought, against our own expectation
 
 **Decision.** The reported models are trained on the answer alone.
 
@@ -174,7 +174,7 @@ this model scale the extra tokens bought drift, not reasoning.
 
 ---
 
-## D-050 — The Marathi equality family admits a constant answer, and the model found it
+## D-056 — The Marathi equality family admits a constant answer, and the model found it
 
 **What the diagnostic shows.** Marathi, answer-only, 5e-6, one epoch:
 
@@ -191,7 +191,7 @@ One prediction, six possible golds, zero correct — and the same token scoring
 perfectly right in one family and perfectly wrong in another.
 
 **The limitation this exposes, which is ours.** Because Marathi समान does not
-inflect (D-046), every one of the 142 Marathi `equality` items has the same
+inflect (D-052), every one of the 142 Marathi `equality` items has the same
 answer. One fifth of the training set is therefore solvable by a constant, and
 that constant is the single most-rewarded token in the whole set. Konkani's
 equality family has two labels and Konkani collapsed less far. We cannot prove
@@ -228,7 +228,7 @@ every run above. It is recorded instead.
 
 ---
 
-## D-051 — Two floors, and a per-item significance test rather than one chance number
+## D-057 — Two floors, and a per-item significance test rather than one chance number
 
 **Decision.** Every accuracy is reported against both a uniform-chance floor and
 a majority-class floor, with a one-tailed test that treats each item as its own
@@ -244,7 +244,7 @@ floor is 31.1% for Marathi and 23.3% for Konkani.
 **What it changes.** Marathi's final model, 19.60%, is below both floors at
 z = −4.61. Konkani's, 28.20%, clears both — but by 2.25 points on 1,000 items,
 about 1.6 standard errors, one-tailed p = 0.051. We report it as marginal, and
-D-050 shows it is an artifact of the `equality` family rather than a small real
+D-056 shows it is an artifact of the `equality` family rather than a small real
 effect. Without that family Konkani is at z = −5.34.
 
 **The epoch trend does not rescue it either.** Twelve epochs was added to see
@@ -257,7 +257,7 @@ roughly 2.7 points to clear p < 0.05, and the lift we have is 2.25.
 
 ---
 
-## D-052 — The notebook was rewritten to require no decisions while it runs
+## D-058 — The notebook was rewritten to require no decisions while it runs
 
 **What happened.** The calibration notebook asked the operator to read a table
 and set three constants by hand between cells. That forced it to be run
@@ -280,7 +280,7 @@ in Phase 2.
 
 ---
 
-## D-053 — What the phase concludes
+## D-059 — What the phase concludes
 
 **The claim.** Supervised finetuning on 8,000 templated reasoning items taught
 both models the answer format completely — format compliance 0% → 99.60% and
@@ -290,7 +290,7 @@ that require comparing the entities, accuracy is 6.41% (Marathi) and 16.90%
 which is the signature of a systematic wrong policy rather than of noise.
 
 **The generalisation test confirms it independently.** `p_less`, the surface
-pattern held out of training since the data was designed (D-044), scores 0.00%
+pattern held out of training since the data was designed (D-050), scores 0.00%
 and 4.55%, against 18.18% and 34.62% on the trained `p_more` pattern that
 expresses the same relation inverted. Whatever was acquired is tied to specific
 templates, not to the comparative relation underneath them.
@@ -307,7 +307,7 @@ diagnostic showing the failure is a collapse onto one answer rather than noise;
 and a training-target comparison that falsified our own expectation.
 
 **What we would do with more time.** Fix the degenerate Marathi equality label
-(D-050); enlarge the test set so a 2-point lift is testable (D-051); and try a
+(D-056); enlarge the test set so a 2-point lift is testable (D-057); and try a
 family whose answer is not among the entities named in the prompt, since
 selecting from visible options is the easiest form of the task and the models
 could not do even that.

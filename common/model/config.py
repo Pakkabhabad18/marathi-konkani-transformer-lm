@@ -82,6 +82,17 @@ class ModelConfig:
     # of a token differ. Recorded in D-043 and D-044.
     tie_embeddings: bool = False
 
+    # Bonus ablation only (see report/bonus_decisions.md, B-001). When set, the
+    # model is built with NO positional embedding at all: the residual stream
+    # starts as the token embedding alone. Self-attention is permutation
+    # invariant, so the only positional information left is whatever the causal
+    # mask leaks - position t can attend to t+1 tokens and position 0 to one, so
+    # the number of visible positions is itself a position signal. Whether that
+    # is enough is precisely what the ablation measures. Default False: every
+    # Phase 1-3 deliverable was trained with positional embeddings and must stay
+    # reproducible from this file.
+    no_positional_embedding: bool = False
+
     # Standard deviation for weight initialisation. 0.02 is the GPT-2 value and
     # is small enough that the residual stream does not blow up before the first
     # LayerNorm has anything to normalise.
@@ -120,7 +131,8 @@ class ModelConfig:
         d, v = self.d_model, self.vocab_size
         blocks = self.n_layers * self.n_params_per_block()
         token_embedding = v * d
-        positional_embedding = self.context_length * d
+        positional_embedding = (0 if self.no_positional_embedding
+                                else self.context_length * d)
         final_norm = 2 * d
         # A tied head reuses the embedding matrix, so it adds only the bias.
         output_head = v if self.tie_embeddings else v * d + v

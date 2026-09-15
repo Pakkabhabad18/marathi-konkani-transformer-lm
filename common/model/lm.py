@@ -107,8 +107,15 @@ class DecoderLM(nn.Module):
         # hard ceiling - there is no row for position 512 - whereas sinusoidal
         # encodings can be evaluated at any position. That trade is acceptable
         # because nothing in this project needs to run past the trained context.
-        self.position_embedding = nn.Embedding(config.context_length,
-                                               config.d_model)
+        # The bonus ablation removes this entirely rather than zeroing it: a
+        # zeroed embedding is still a parameter that receives gradient and would
+        # simply relearn itself. None means the module does not exist, so the
+        # parameter count drops by context_length * d_model and
+        # verify_model.py's "every parameter receives a gradient" check stays
+        # meaningful. See report/bonus_decisions.md, B-002.
+        self.position_embedding = (
+            None if config.no_positional_embedding
+            else nn.Embedding(config.context_length, config.d_model))
         self.embed_dropout = nn.Dropout(config.dropout)
 
         self.blocks = nn.ModuleList(
@@ -202,7 +209,9 @@ class DecoderLM(nn.Module):
         # concatenated: concatenating would spend d_model on position and leave
         # less for content, whereas addition lets the model allocate the subspace
         # it needs for each.
-        x = self.token_embedding(idx) + self.position_embedding(pos)
+        x = self.token_embedding(idx)
+        if self.position_embedding is not None:
+            x = x + self.position_embedding(pos)
         x = self.embed_dropout(x)
 
         attentions = [] if return_attention else None

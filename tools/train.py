@@ -224,6 +224,11 @@ def main() -> int:
     ap.add_argument("--out-dir", default=None,
                     help="where checkpoints and logs go (default: "
                          "<language>/model). On Kaggle use /kaggle/working/...")
+    ap.add_argument("--no-positional-embeddings", action="store_true",
+                    help="bonus ablation: build the model with no positional "
+                         "embedding. Checkpoints and logs are written under a "
+                         "separate run name so they cannot overwrite the "
+                         "Phase 2 deliverables.")
     ap.add_argument("--no-amp", action="store_true")
     ap.add_argument("--no-resume", action="store_true")
     ap.add_argument("--smoke", action="store_true",
@@ -235,7 +240,9 @@ def main() -> int:
                       batch_size=args.batch_size, grad_accum_steps=args.grad_accum,
                       learning_rate=args.lr, amp=not args.no_amp)
 
-    model_cfg = ModelConfig(vocab_size=2500)
+    model_cfg = ModelConfig(
+        vocab_size=2500,
+        no_positional_embedding=args.no_positional_embeddings)
     if args.smoke:
         # Small enough to run through the whole loop, including a checkpoint and
         # an evaluation, in about a minute on a laptop CPU.
@@ -255,7 +262,13 @@ def main() -> int:
     device = resolve_device(args.device)
 
     out_dir = Path(args.out_dir) if args.out_dir else REPO_ROOT / args.language / "model"
-    run_name = "smoke" if args.smoke else "pretrain"
+    # A separate run name for the ablation: the two arms differ only in the
+    # positional embedding, so writing both to "pretrain_best.pt" would let one
+    # silently overwrite the other - and worse, let a resume pick up the wrong
+    # arm's optimizer state.
+    run_name = ("smoke" if args.smoke
+                else "pretrain_nope" if args.no_positional_embeddings
+                else "pretrain")
     ckpt_path = out_dir / f"{run_name}_latest.pt"
     best_path = out_dir / f"{run_name}_best.pt"
     log_path = out_dir / f"{run_name}_log.csv"

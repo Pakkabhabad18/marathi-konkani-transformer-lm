@@ -24,6 +24,7 @@ USAGE
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import sys
 import time
 from pathlib import Path
@@ -219,11 +220,50 @@ def check_gradients_reach_everything(config: ModelConfig) -> None:
            else f"{len(missing)} without gradient: {missing[:5]}")
 
 
+def check_no_positional_embedding(config: ModelConfig) -> None:
+    """The ablation must remove the embedding, not merely zero it.
+
+    A zeroed positional embedding is still a parameter that receives gradient
+    and would relearn itself within a few hundred steps, so the run would
+    silently measure nothing. These checks make the removal visible in the two
+    places it has to show up: the parameter count and the state dict.
+    """
+    with_pe = replace(config, no_positional_embedding=False)
+    model = DecoderLM(config)
+    expected_drop = config.context_length * config.d_model
+    actual_drop = with_pe.n_params()["total"] - config.n_params()["total"]
+    record("removing positional embeddings drops exactly "
+           "context_length x d_model parameters",
+           actual_drop == expected_drop,
+           f"dropped {actual_drop:,}, expected {expected_drop:,} "
+           f"({config.context_length} x {config.d_model})")
+    record("the positional embedding module is absent, not zeroed",
+           model.position_embedding is None,
+           "position_embedding is None"
+           if model.position_embedding is None
+           else "module still exists and would receive gradient")
+    keys = [k for k in model.state_dict() if "position" in k]
+    record("no positional parameters remain in the state dict",
+           not keys, "none" if not keys else f"found {keys}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--full", action="store_true",
                     help="also build the real ~25M model (slower, more memory)")
+    ap.add_argument("--no-positional-embeddings", action="store_true",
+                    help="verify the bonus ablation instead: every check below "
+                         "is run against a model built without positional "
+                         "embeddings, plus three checks that the removal "
+                         "actually happened")
     args = ap.parse_args()
+
+    # The ablation arm gets the same checks as the real one. Three and a half
+    # hours of compute is too much to spend on a model nobody verified.
+    nope = args.no_positional_embeddings
+    TINY_CFG = replace(TINY, no_positional_embedding=nope)
+    MARATHI_CFG = replace(MARATHI, no_positional_embedding=nope)
+    KONKANI_CFG = replace(KONKANI, no_positional_embedding=nope)
 
     torch.manual_seed(1234)
 
@@ -231,28 +271,32 @@ def main() -> int:
     print("MODEL VERIFICATION")
     print("=" * 70)
     print("\nTiny configuration used for the behavioural checks:")
-    print(TINY.summary())
+    print(TINY_CFG.summary())
     print()
 
     print("-" * 70)
-    check_parameter_count(TINY, "tiny")
+    if nope:
+        check_no_positional_embedding(TINY_CFG)
+    check_parameter_count(TINY_CFG, "tiny")
 
-    model = DecoderLM(TINY)
-    check_shapes(model, TINY)
-    check_attention_is_causal_by_construction(model, TINY)
-    check_future_tokens_cannot_change_the_past(model, TINY)
-    check_gradients_reach_everything(TINY)
-    check_can_overfit(TINY)
+    model = DecoderLM(TINY_CFG)
+    check_shapes(model, TINY_CFG)
+    check_attention_is_causal_by_construction(model, TINY_CFG)
+    check_future_tokens_cannot_change_the_past(model, TINY_CFG)
+    check_gradients_reach_everything(TINY_CFG)
+    check_can_overfit(TINY_CFG)
 
     if args.full:
         print("-" * 70)
         print("Real configuration:")
-        print(MARATHI.summary())
+        print(MARATHI_CFG.summary())
         print()
-        check_parameter_count(MARATHI, "marathi")
-        check_parameter_count(KONKANI, "konkani")
-        big = DecoderLM(MARATHI)
-        check_future_tokens_cannot_change_the_past(big, MARATHI)
+        check_parameter_count(MARATHI_CFG, "marathi")
+        check_parameter_count(KONKANI_CFG, "konkani")
+        if nope:
+            check_no_positional_embedding(MARATHI_CFG)
+        big = DecoderLM(MARATHI_CFG)
+        check_future_tokens_cannot_change_the_past(big, MARATHI_CFG)
 
     print("=" * 70)
     failed = [n for n, ok, _ in results if not ok]

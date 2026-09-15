@@ -142,3 +142,52 @@ is on `phase-3`, is documentation only, and changes no result.
 
 **What would change it.** Nothing before submission. Merging would be reasonable
 afterwards, when there is no longer a graded tree to protect.
+
+---
+
+## B-006 — The smoke test was not testing the ablation
+
+**What happened.** The notebook runs a two-minute smoke train of each arm before
+committing to the real one. Both arms printed **identical** numbers: training
+loss 7.2807 at step 25 and 7.1714 at step 40, validation perplexity 1344.47.
+Two models differing by 262,144 parameters cannot produce identical losses.
+
+**Why.** `tools/train.py` rebuilds the model config from scratch under
+`--smoke`, to get a model small enough to run the whole loop in a minute:
+
+```python
+model_cfg = ModelConfig(vocab_size=2500, d_model=128, n_layers=2,
+                        n_heads=4, d_ff=512, context_length=64, dropout=0.0)
+```
+
+That constructor call does not pass `no_positional_embedding`, so it takes the
+default of `False`. Both smoke runs therefore built the same
+with-positional-embedding tiny model, ran it with the same seed on the same
+data, and got the same answer — correctly. The flag was dropped on the floor one
+line after being read.
+
+**What it did and did not affect.** The real run is unaffected: the non-smoke
+path builds `ModelConfig(vocab_size=2500,
+no_positional_embedding=args.no_positional_embeddings)` and passes the flag
+through. The full architecture was also verified independently by
+`verify_model.py --full --no-positional-embeddings`, which passed 24/24
+including the checks on the real 25M config. So the ablation in the reported run
+is real; what was lost was the smoke test's ability to catch it if it had not
+been.
+
+**Why it is worth recording anyway.** A check that silently tests the wrong
+thing is worse than no check, because it produces confidence rather than doubt.
+This one would have passed identically whether the ablation worked or not. It
+was caught only because two numbers that should have differed were equal to four
+decimal places — which is the same reading that caught the Phase 3 sweep
+failure, where accuracy was 14.10% at every sample count (D-053). Identical
+numbers where different ones are expected is the most reliable bug signal in
+this project so far.
+
+**Fix.** The smoke config now carries the flag. A rerun of cell 4 would show the
+two arms diverging.
+
+**The live check that replaced it.** Because the fix landed after the run had
+started, the ablation was confirmed instead from the training logs: the two arms
+must report different losses from the first logged step onward, and different
+parameter counts in their headers — 24,630,212 against 24,892,356.

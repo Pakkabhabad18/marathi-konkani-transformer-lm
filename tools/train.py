@@ -246,9 +246,14 @@ def main() -> int:
     if args.smoke:
         # Small enough to run through the whole loop, including a checkpoint and
         # an evaluation, in about a minute on a laptop CPU.
+        # The ablation flag has to be carried across, not dropped. Rebuilding
+        # the config from scratch here silently gave both arms the same
+        # with-positional-embedding model, so two smoke runs that should have
+        # differed printed identical losses to four decimal places. See B-006.
         model_cfg = ModelConfig(vocab_size=2500, d_model=128, n_layers=2,
                                 n_heads=4, d_ff=512, context_length=64,
-                                dropout=0.0)
+                                dropout=0.0,
+                                no_positional_embedding=args.no_positional_embeddings)
         cfg.context_length = 64
         cfg.batch_size, cfg.grad_accum_steps = 8, 2
         cfg.max_tokens = 8 * 64 * 2 * 40          # 40 optimizer steps

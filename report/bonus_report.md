@@ -43,7 +43,11 @@ apart on different hardware allocations.
 **Removing positional embeddings costs 8.1% perplexity.** That is far less than
 we predicted, and §3 explains why.
 
-Figure: `report/figures/bonus_loss.png`.
+![Validation perplexity against step, control vs ablated](figures/bonus_loss.png)
+
+*Validation perplexity for both arms over the 500M-token budget, with the Phase 2
+Marathi result marked. The two curves separate by step 500 and never re-converge:
+the gap at the end is the whole effect of the ablation.*
 
 ---
 
@@ -189,8 +193,18 @@ The cost is visible in the budget: three layers partly spent recovering what
 262,144 parameters would have supplied for free, which is what an 8% perplexity
 gap in a seven-layer model looks like.
 
-Heatmaps for layers 0, 3 and 6 in both conditions:
-`report/figures/bonus_attn_{control,ablated}_layer{0,3,6}.png`.
+Heatmaps for layers 0, 3 and 6 in both conditions. Layer 0 is where the two
+architectures differ most visibly — the control has already formed a local
+diagonal band, the ablated model has not:
+
+| | control (positions on) | ablated (positions removed) |
+|---|---|---|
+| layer 0 | ![](figures/bonus_attn_control_layer0.png) | ![](figures/bonus_attn_ablated_layer0.png) |
+| layer 3 | ![](figures/bonus_attn_control_layer3.png) | ![](figures/bonus_attn_ablated_layer3.png) |
+| layer 6 | ![](figures/bonus_attn_control_layer6.png) | ![](figures/bonus_attn_ablated_layer6.png) |
+
+The uniformly black upper triangle in every panel is the causal mask, drawn
+directly — and it is also the residual positional signal §3 is about.
 
 ---
 

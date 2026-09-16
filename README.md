@@ -6,7 +6,43 @@ Two completely independent decoder-only Transformer language models built from
 scratch. Separate corpus, separate tokenizer, separate vocabulary, separate
 weights per language — no data, vocabulary or checkpoint is shared between them.
 
-**Branch:** `phase-2`
+**Branch:** `phase-3`
+
+---
+
+## Phase 3 results
+
+Each model was finetuned on its own synthetic comparative-reasoning set — 8,000
+training items, 1,000 test — starting from its own pretrained checkpoint, with
+the tokenizer and vocabulary held fixed.
+
+| | Marathi (H) | Konkani (L) |
+|---|---:|---:|
+| reasoning accuracy, pretrained | 0.00% | 0.00% |
+| reasoning accuracy, finetuned | 19.60% | 28.20% |
+| format compliance, pretrained → finetuned | 0% → **99.60%** | 0% → **99.90%** |
+| perplexity cost of finetuning | 8.55 → 9.72 (×1.14) | 26.14 → 30.85 (×1.18) |
+| accuracy excluding the degenerate `equality` family | 6.41% | 16.90% |
+| the same, scored without penalising misspelt names | 7.69% | **28.21%** |
+| uniform chance floor, that subset | 24.72% | 24.72% |
+
+**Finetuning taught both models the output format completely and the task
+partially at best.** Every test item uses entities held out of training, so these
+are generalisation numbers, not in-distribution ones.
+
+The two models fail differently, which is the main Phase 3 finding. Marathi
+answers with names that appear **only in training** — राम 273 times out of 996 —
+and those can never be correct on a test item. Konkani almost never does that;
+instead 30.1% of its answers are near-misses of an entity that really is in the
+prompt (मीर for मीरा, 185 times). Scored without punishing the spelling, Konkani
+clears the chance floor at p = 0.009 while Marathi stays far below it.
+
+Finetuning at 5e-6 also left attention essentially untouched — mean entropy over
+all 56 heads moved +0.050 bits for Marathi and +0.001 for Konkani — so the change
+is in the output distribution rather than in the computation.
+
+Full analysis, including the learning-rate calibration that this phase turned on,
+is in [`report/phase3_report.md`](report/phase3_report.md).
 
 ---
 
@@ -145,6 +181,29 @@ resume training or to reload the model for evaluation: `model`, `optimizer`,
 `scaler`, `step`, `best_val`, `model_config` and `train_config`. `tools/evaluate.py` rebuilds the
 architecture from the `model_config` stored inside the checkpoint rather than
 from a separate file, so a checkpoint cannot be loaded into a mismatched model.
+
+### Phase 3 — finetuned checkpoints and reasoning data
+
+In the same folder, under `phase3_checkpoints/`:
+
+**https://drive.google.com/drive/folders/1En76luPAHhj75O9OKBdsWCAWfkQd7erO?usp=drive_link**
+
+| file | contents |
+|---|---|
+| `marathi_finetune_final_best.pt` | Model H after reasoning finetuning — answer-only target, lr 5e-6, 6 epochs, 8,000 items |
+| `konkani_finetune_final_best.pt` | Model L, same recipe |
+| `reasoning_data.tar.gz` | the generated reasoning sets, `train`/`val`/`test` for both languages |
+
+The finetuned checkpoints use the same payload as the pretrained ones — `model`,
+`optimizer`, `scaler`, `step`, `best_val`, `model_config`, `train_config` — plus
+`pretrained_from` and `phase: "finetune"`, so which pretrained model produced
+them is recoverable from the file alone.
+
+The reasoning data is on Drive rather than in git because `*/data/` is
+gitignored. It is fully reproducible without it: `tools/make_reasoning_data.py`
+regenerates both sets from a fixed seed, and the entity pools, pattern splits and
+leakage counts are committed in
+`report/phase3_reasoning_data_{marathi,konkani}.json`.
 
 Checkpoints are not committed to git — the specification requires large binary
 artifacts to go to Drive.
@@ -359,11 +418,47 @@ python3 tools/make_plots.py
 
 ---
 
+### 6. Reasoning finetuning and evaluation (Phase 3)
+
+```bash
+# Generate the synthetic reasoning set. Fixed seed; entity pools and the
+# held-out relation pattern are disjoint by construction.
+python3 tools/make_reasoning_data.py --language marathi
+python3 tools/make_reasoning_data.py --language konkani
+
+# Finetune from that language's own pretrained checkpoint. The learning rate is
+# the one the Phase 3 grid selected; 1e-4 destroys the model (see D-054).
+python3 tools/finetune.py --language marathi \
+  --pretrained marathi/model/marathi_pretrain_best.pt \
+  --n-train 8000 --epochs 6 --lr 5e-6 --tag final
+
+# Evaluate against the pretrained checkpoint, with the forgetting check
+python3 tools/evaluate_reasoning.py --language marathi \
+  --checkpoint marathi/model/finetune_final_best.pt \
+  --compare-to marathi/model/marathi_pretrain_best.pt --lm-windows 256
+
+# Classify the errors and compute the lenient score (D-060)
+python3 tools/analyse_errors.py --language marathi
+
+# Attention, pretrained against finetuned
+python3 tools/attention_analysis.py --language marathi --split test \
+  --checkpoint marathi/model/finetune_final_best.pt \
+  --tokenizer marathi/tokenizer/marathi_bpe.model
+```
+
+Every Phase 3 experiment also runs unattended from
+[`report/phase3_final.ipynb`](report/phase3_final.ipynb) as a Kaggle batch
+commit. It takes no input while running.
+
 ## Reports
 
 | file | contents |
 |---|---|
-| `report/phase2_report.md` | **the Phase 2 report — start here** |
+| `report/phase3_report.md` | **the Phase 3 report — start here** |
+| `report/phase3_decisions.md` | Phase 3 decisions and corrections (D-050…D-060) |
+| `report/phase3_final.ipynb` | the run that produced every Phase 3 number |
+| `report/phase2_report.md` | the Phase 2 report |
+| `report/phase2_decisions.md` | Phase 2 architecture decisions (D-044…D-049) |
 | `report/phase2_plan.md` | Phase 2 architecture, compute and schedule plan |
 | `report/phase2_kaggle_runbook.md` | how the pretraining runs were executed |
 | `report/phase1_report.md` | the Phase 1 report |
@@ -375,7 +470,7 @@ python3 tools/make_plots.py
 | `report/phase1_konkani_coverage.md` | Konkani source exhaustion: what exists, what was empty |
 | `report/phase1_konkani_mt.md` | synthetic/MT justification against the TAs' three conditions |
 | `report/phase1_konkani_overlap_check.md` | manual vs downloaded source independence |
-| `report/phase1_decisions.md` | every design decision and correction (D-001…D-043) |
+| `report/phase1_decisions.md` | Phase 1 decisions and corrections (D-001…D-043) |
 | `report/phase1_work_log.md` | chronological record of the build |
 | `report/archive/` | superseded planning documents, kept for history |
 | `report/figures/` | all figures, each with title, axis labels and legend |

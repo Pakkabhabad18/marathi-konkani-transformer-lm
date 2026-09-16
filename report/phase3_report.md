@@ -253,6 +253,71 @@ The 2-entity row is above chance only because `equality` lives there.
 
 ---
 
+## 7a. Qualitative successes and failures
+
+Taken in order from the evaluation output rather than hand-picked;
+`report/phase3_reasoning_eval_{language}_final.json` holds the full set under
+`examples`.
+
+**Model H (Marathi) — correct**
+
+| family | pattern | gold | generated |
+|---|---|---|---|
+| `equality` | `p_value` | समान | `? उत्तर: समान` |
+| `transitive_3hop` | `p_more` | गीता | `? उत्तर: गीता` |
+
+**Model H — incorrect**
+
+| family | pattern | gold | predicted | generated |
+|---|---|---|---|---|
+| `compare_two` | `p_value` | गीता | **समान** | `? उत्तर: समान` |
+| `superlative_three` | `p_value` | प्रकाश | राम | `? उत्तर: राम` |
+| `transitive_2hop` | `p_more` | प्रिया | गीता | `? उत्तर: गीता` |
+
+**Model L (Konkani) — correct**
+
+| family | pattern | gold | generated |
+|---|---|---|---|
+| `transitive_2hop` | `p_more` | सुनीता | `? जाप: सुनीता` |
+| `transitive_3hop` | `p_more` | कृष्ण | `? जाप: कृष्ण` |
+| `equality` | `p_value` | सारकें | `? जाप: सारकें` |
+
+**Model L — incorrect**
+
+| family | pattern | gold | predicted | generated |
+|---|---|---|---|---|
+| `compare_two` | `p_value` | कृष्ण | **सारकी** | `? जाप: सारकी` |
+| `superlative_three` | `p_value` | लता | कृष्ण | `? जाप: कृष्ण` |
+| `transitive_2hop` | `p_less` | सुनीता | गीता | `? जाप: गीता` |
+
+Four things are visible in these rows that the aggregate tables cannot show.
+
+**The output form is perfect and the content is not.** Every generation is
+exactly `? <marker>: <one name>` — correct marker, correct spacing, a single
+plausible entity, no trailing text, EOS in the right place. Nothing about the
+surface form of these answers is wrong. That is the 99.60% / 99.90% format
+compliance made concrete, and it is why format and correctness had to be scored
+separately.
+
+**The signature failure is the equality word intruding.** Model H's first
+incorrect row answers समान to a `compare_two` question, where समान is never the
+gold; Model L's answers सारकी in the same position. This is the collapse of §7
+appearing in a single row: the model reaches for the family-independent constant
+even when the question is not an equality question.
+
+**The correct answers are concentrated where a constant wins.** Model H's correct
+examples are dominated by `equality`, the family with one gold label. Model L's
+are more varied — `transitive_2hop` and `transitive_3hop` appear — which matches
+its higher per-family scores in §7, though those still sit below the uniform
+floor.
+
+**A small number of items produce nothing at all.** Three for Model H, one for
+Model L out of 1,000: the model emits EOS immediately and the generation is the
+empty string. These are counted as format failures rather than wrong answers,
+which is why format compliance is 99.60% rather than 100%. All four are
+`compare_two` or `equality` at two entities — the shortest prompts in the set.
+---
+
 ## 8. Generalisation: the held-out pattern
 
 `p_less` never appears in training. It expresses the same relations as `p_more`
@@ -375,6 +440,7 @@ its first cell.
 | `report/phase3_decisions.md` | D-050 to D-059, including what failed |
 | `report/phase3_results.{json,csv}` | all 30 measurements |
 | `report/phase3_collapse.json` | per-family prediction distributions |
+| `report/phase3_reasoning_eval_*_final.json` | full per-item rows, and the qualitative examples of §7a |
 | `report/phase3_floors.json` | both floors and the significance test |
 | `report/phase3_samples.png` | accuracy and perplexity against sample count |
 | `report/phase3_epochs.png` | accuracy and perplexity against epochs |

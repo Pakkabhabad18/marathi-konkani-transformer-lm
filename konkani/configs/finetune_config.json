@@ -1,0 +1,26 @@
+{
+  "phase": "finetune",
+  "language": "konkani",
+  "pretrained_from": "konkani/model/konkani_pretrain_best.pt",
+  "task": "synthetic comparative reasoning (common/reasoning.py)",
+  "target": "answer only (prompt-masked loss)",
+  "with_rationale": false,
+  "n_train": 8000,
+  "epochs": 6,
+  "learning_rate": 5e-06,
+  "batch_size": 32,
+  "max_length": 160,
+  "warmup_ratio": 0.05,
+  "seed": 20260913,
+  "optimizer": "AdamW",
+  "loss": "cross-entropy over the answer span only; prompt targets set to -100",
+  "tokenizer": "konkani/tokenizer/konkani_bpe.model (frozen, from Phase 1)",
+  "vocab_size": 2500,
+  "model_config": "unchanged from pretraining; see configs/model_config.json",
+  "checkpoint_format": "same resume-capable payload as pretraining, plus pretrained_from and phase fields",
+  "result": {
+    "accuracy_percent": 28.2,
+    "format_compliance_percent": 99.9,
+    "pretraining_perplexity_after": 30.85277358398446
+  }
+}

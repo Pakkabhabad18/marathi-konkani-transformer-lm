@@ -125,7 +125,11 @@ the extra tokens bought drift rather than reasoning — under the chain the mode
 emits more *distinct* answers than there are gold labels, meaning it names
 entities that never appeared among the options.
 
-`report/phase3_forgetting.png` plots perplexity ratio against learning rate.
+![Perplexity ratio against learning rate, both languages](figures/phase3_forgetting.png)
+
+*Forgetting against learning rate. The dashed line is the ×1.5 budget, fixed
+before any accuracy number was looked at. 1e-4 is off the top of the scale for
+Marathi; 5e-6 is the only rate comfortably inside the budget for both languages.*
 
 ---
 
@@ -145,7 +149,11 @@ climbing. Six was therefore used for everything reported. The Konkani rise
 (24.20 → 25.10 → 28.20) does not continue past it, so it is a plateau rather than
 an unbounded trend.
 
-Sample count at six epochs (`report/phase3_samples.png`):
+![Accuracy and forgetting against epochs](figures/phase3_epochs.png)
+
+Sample count at six epochs:
+
+![Accuracy and forgetting against training-set size](figures/phase3_samples.png)
 
 | N | Marathi acc | ppl | Konkani acc | ppl |
 |---:|---:|---:|---:|---:|
@@ -451,8 +459,14 @@ It is also why perplexity held at ×1.14 and ×1.18: at 5e-6 the finetuning
 adjusted the model's output habits without disturbing the language model
 underneath. Both facts describe the same thing from different angles.
 
-Heatmaps for layers 0, 3 and 6 in both conditions are in
-`report/figures/` as `attn_pretrained_*` and `attn_finetuned_*`.
+Heatmaps for layers 0, 3 and 6 in both conditions, Marathi shown here; the
+Konkani panels are in `report/figures/` under the same names:
+
+| | pretrained | after finetuning |
+|---|---|---|
+| layer 0 | ![](figures/attn_pretrained_phase2_attention_marathi_layer0.png) | ![](figures/attn_finetuned_phase2_attention_marathi_layer0.png) |
+| layer 3 | ![](figures/attn_pretrained_phase2_attention_marathi_layer3.png) | ![](figures/attn_finetuned_phase2_attention_marathi_layer3.png) |
+| layer 6 | ![](figures/attn_pretrained_phase2_attention_marathi_layer6.png) | ![](figures/attn_finetuned_phase2_attention_marathi_layer6.png) |
 
 ---
 
@@ -537,7 +551,15 @@ digits in these prompts. They are kept in the table so the buckets sum to 100%
 and so the same script can be pointed at `compare_two`, where they do fire.
 
 Heatmaps for an early and a late layer of each checkpoint, with the Devanagari
-pieces on both axes, are in `report/figures/phase3_attn_reasoning_*`. The upper
+pieces on both axes. Marathi is shown; the Konkani panels are in
+`report/figures/` under the same names:
+
+| | pretrained | after finetuning |
+|---|---|---|
+| layer 0 | ![](figures/phase3_attn_reasoning_marathi_pretrained_layer0.png) | ![](figures/phase3_attn_reasoning_marathi_finetuned_layer0.png) |
+| layer 6 | ![](figures/phase3_attn_reasoning_marathi_pretrained_layer6.png) | ![](figures/phase3_attn_reasoning_marathi_finetuned_layer6.png) |
+
+The upper
 triangle is uniformly black in all of them — the causal mask, visible directly —
 and the first-column band in the pretrained late layers is the attention sink
 documented in Phase 2.
@@ -643,9 +665,9 @@ its first cell.
 | `report/phase3_error_analysis_*.json` | its output, per language |
 | `report/phase3_reasoning_eval_*_final.json` | full per-item rows, and the qualitative examples of §7a |
 | `report/phase3_floors.json` | both floors and the significance test |
-| `report/phase3_samples.png` | accuracy and perplexity against sample count |
-| `report/phase3_epochs.png` | accuracy and perplexity against epochs |
-| `report/phase3_forgetting.png` | perplexity ratio against learning rate |
+| `report/figures/phase3_samples.png` | accuracy and perplexity against sample count |
+| `report/figures/phase3_epochs.png` | accuracy and perplexity against epochs |
+| `report/figures/phase3_forgetting.png` | perplexity ratio against learning rate |
 | `report/figures/attn_{pretrained,finetuned}_*` | attention heatmaps, both conditions |
 | `report/phase3_reasoning_sample_*.jsonl` | sample items from each set |
 | `report/phase3_lexicon_evidence.json` | corpus attestation for every lexical item |

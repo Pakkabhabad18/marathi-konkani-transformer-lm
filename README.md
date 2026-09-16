@@ -6,7 +6,9 @@ Two completely independent decoder-only Transformer language models built from
 scratch. Separate corpus, separate tokenizer, separate vocabulary, separate
 weights per language — no data, vocabulary or checkpoint is shared between them.
 
-**Branch:** `phase-3`
+**Branch:** `bonus-no-positional` — the optional ablation, branched from
+`phase-3` and adding only bonus files. No Phase 1/2/3 result on `phase-3`
+is changed by anything on this branch.
 
 ---
 
@@ -43,6 +45,29 @@ is in the output distribution rather than in the computation.
 
 Full analysis, including the learning-rate calibration that this phase turned on,
 is in [`report/phase3_report.md`](report/phase3_report.md).
+
+---
+
+## Bonus — Marathi retrained without positional embeddings
+
+Marathi was pretrained twice from scratch on this branch, side by side on the
+same session, same seed, same data and the same 500M-token budget. The only
+difference between the arms is the learned absolute positional embedding table —
+262,144 parameters, exactly 512 × 512.
+
+| | control (positions on) | ablated (positions removed) |
+|---|---:|---:|
+| parameters | 24,892,356 | 24,630,212 |
+| final val perplexity | **8.4621** | **9.1439** |
+| cost of the ablation | — | **×1.081** |
+
+The control landed on the Phase 2 figure of 8.4621 to four decimal places, which
+is what makes the comparison readable: nothing but the ablation differs between
+the two numbers. The 8.1% cost is far smaller than we predicted before the run
+(B-004 predicted ×1.5–3), and why it is that small — causal masking leaks
+position on its own — is the subject of the bonus report.
+
+Full analysis is in [`report/bonus_report.md`](report/bonus_report.md).
 
 ---
 
@@ -207,6 +232,27 @@ leakage counts are committed in
 
 Checkpoints are not committed to git — the specification requires large binary
 artifacts to go to Drive.
+
+### Bonus — no-positional-embedding checkpoints
+
+**https://drive.google.com/drive/folders/1G2l3tNqtv5qWGMl-XTYPzpSVyYvCdBZS?usp=drive_link**
+
+| file | contents |
+|---|---|
+| `marathi_bonus_control_best.pt` | control arm — positional embeddings **on**, 24,892,356 parameters |
+| `marathi_bonus_ablated_best.pt` | ablated arm — positional embeddings **removed**, 24,630,212 parameters |
+
+No corpus, tokenizer or packed-data archive is uploaded for the bonus. Both arms
+were trained on the *same* Phase 2 Marathi data and the *same* Phase 2 Marathi
+tokenizer, which are already on Drive above (`marathi_cleaned_splits.tar.gz`,
+`tokenizers.tar.gz`); re-uploading them would only create a second copy that
+could drift from the first. The bonus run produced no new data of its own.
+
+Everything else the bonus produced is small enough to be committed, and is in
+git rather than on Drive: `report/bonus_{control,ablated}_log.csv` (the full
+training curves), `report/bonus_eval_{control,ablated}.json` (the complete Phase
+2 evaluation suite re-run on both arms), `report/bonus_attn_*_marathi.json`, the
+seven figures under `report/figures/bonus_*`, and `report/bonus_summary.json`.
 
 ---
 
@@ -455,6 +501,10 @@ commit. It takes no input while running.
 | file | contents |
 |---|---|
 | `report/phase3_report.md` | **the Phase 3 report — start here** |
+| `report/bonus_report.md` | **the bonus report — the no-positional-embedding ablation** |
+| `report/bonus_decisions.md` | bonus decisions and corrections (B-001…B-006) |
+| `report/bonus_nope.ipynb` | the run that produced every bonus number |
+| `report/bonus_runbook.md` | how the bonus run was executed |
 | `report/phase3_decisions.md` | Phase 3 decisions and corrections (D-050…D-060) |
 | `report/phase3_final.ipynb` | the run that produced every Phase 3 number |
 | `report/phase2_report.md` | the Phase 2 report |

@@ -456,6 +456,93 @@ Heatmaps for layers 0, 3 and 6 in both conditions are in
 
 ---
 
+## 9a. Attention on comparative-reasoning prompts
+
+§9 measured attention over the pretraining test split — news, government
+circulars, OCR'd books — and found almost nothing moved. That is the right input
+for the Phase 2 question but the wrong one for this phase: the specification asks
+whether finetuning changed attention *"especially on comparative-reasoning
+prompts"*, and reasoning prompts are a tiny, highly structured slice of input
+space that the corpus contains nothing shaped like. A change confined to them
+would be invisible in a corpus average.
+
+So the same two measurements were re-run on 64 held-out `transitive_3hop` test
+prompts — the deepest chain in the set — through both checkpoints.
+`tools/attention_reasoning.py`, validated by running it with the same checkpoint
+in both arms, which produces deltas of exactly +0.000.
+
+### The corpus average was hiding the effect
+
+| mean entropy over all 56 heads | on corpus text (§9) | on reasoning prompts |
+|---|---:|---:|
+| Model H (Marathi) | +0.050 bits | **−0.171 bits** |
+| Model L (Konkani) | +0.001 bits | **−0.219 bits** |
+
+On the inputs the models were finetuned for, attention **sharpened** — and it
+sharpened in every single layer of both models, which a corpus average reported
+as no change at all.
+
+| layer | Marathi entropy | Δ | Konkani entropy | Δ |
+|---:|---|---:|---|---:|
+| 0 | 3.648 → 3.616 | −0.032 | 3.974 → 3.963 | −0.012 |
+| 1 | 3.850 → 3.795 | −0.055 | 4.024 → 3.889 | −0.135 |
+| 2 | 3.311 → 3.076 | −0.235 | 3.563 → 3.116 | **−0.447** |
+| 3 | 2.492 → 2.170 | **−0.322** | 2.975 → 2.313 | **−0.662** |
+| 4 | 2.982 → 2.855 | −0.127 | 2.106 → 1.964 | −0.142 |
+| 5 | 2.605 → 2.480 | −0.126 | 2.697 → 2.628 | −0.069 |
+| 6 | 3.343 → 3.040 | −0.302 | 3.049 → 2.982 | −0.067 |
+
+The largest movement is in the middle of the stack — layer 3 in both models,
+layer 2 close behind — and mean attention distance falls there too (Marathi layer
+2, 5.82 → 5.06 positions; Konkani layer 3, 4.71 → 3.74). The top two layers move
+the other way on distance, reaching slightly further (Marathi layer 6, 12.03 →
+12.61). Finetuning tightened the middle of the network and left the ends to
+gather.
+
+### Where the answer position looks
+
+The last prompt token is the position whose output becomes the first answer
+token, so its attention row is the one that decides the answer. Bucketing that
+row by what each prompt token means, averaged over the 64 prompts and all eight
+heads of the final layer:
+
+| what the answer position attends to | Marathi | Konkani |
+|---|---:|---:|
+| **the entity names** | 44.87% → **32.21%** (−12.66) | 51.74% → **34.69%** (−17.05) |
+| the question clause | 19.49% → 25.53% (+6.04) | 18.81% → 29.48% (+10.67) |
+| the first token (attention sink) | 7.45% → 7.50% | 12.00% → 5.68% (−6.32) |
+| everything else | 28.20% → 34.76% | 17.46% → 30.15% |
+
+**Both models came out of finetuning attending less to the entity names than
+they went in** — 12.7 points less for Marathi, 17.1 for Konkani — with the mass
+moving to the question clause and to the connective text.
+
+That is a mechanistic corroboration of §7b, arrived at independently. §7b found
+from the *outputs* that Model H had stopped reading the prompt: half its answers
+are names that appear only in training. §9a finds from the *weights* that the
+position responsible for producing the answer attends 12.7 points less to the
+prompt's entities after finetuning. Two different instruments, pointing the same
+way.
+
+For Model L the reading is more careful. It also attends less to entities, but
+34.69% is still a third of the mass, and §7b shows 70.5% of its answers do refer
+to an entity that is present in the prompt. Both facts can hold: a third of the
+attention budget is enough to identify which entities are in play, and the model
+does. What it then fails at is emitting the exact token sequence for the one it
+picked.
+
+The `numeric_values` and `attribute_word` buckets are 0.00% for both models
+because `transitive_3hop` states relations rather than numbers — there are no
+digits in these prompts. They are kept in the table so the buckets sum to 100%
+and so the same script can be pointed at `compare_two`, where they do fire.
+
+Heatmaps for an early and a late layer of each checkpoint, with the Devanagari
+pieces on both axes, are in `report/figures/phase3_attn_reasoning_*`. The upper
+triangle is uniformly black in all of them — the causal mask, visible directly —
+and the first-column band in the pretrained late layers is the attention sink
+documented in Phase 2.
+---
+
 ## 10. Limitations
 
 **The `equality` family is degenerate, and that is our fault.** One gold label in
@@ -474,6 +561,12 @@ genuinely marginal positive result could not have been established.
 **The task selects among options visible in the prompt**, which is the easiest
 form of comparative reasoning. Neither model could do even that. Harder variants
 were not attempted.
+
+**The §9a measurement uses one family.** `transitive_3hop` was chosen as the
+deepest chain in the set; other families may reorganise differently, and the
+script takes `--family` so that can be checked. The direction of the effect is
+unlikely to be family-specific — it is large and identical in sign across both
+independently finetuned models — but its magnitude may be.
 
 **No fluent speaker reviewed the generated sentences.** The specification asks
 for natural phrasing in the target language. Every lexical item, genitive form,
@@ -544,6 +637,9 @@ its first cell.
 | `report/phase3_results.{json,csv}` | all 30 measurements |
 | `report/phase3_collapse.json` | per-family prediction distributions |
 | `tools/analyse_errors.py` | the error classification and lenient scoring of §7b |
+| `tools/attention_reasoning.py` | attention measured on reasoning prompts, §9a |
+| `report/phase3_attn_reasoning_*.json` | its per-head output, per language |
+| `report/figures/phase3_attn_reasoning_*` | heatmaps on a reasoning prompt, both checkpoints |
 | `report/phase3_error_analysis_*.json` | its output, per language |
 | `report/phase3_reasoning_eval_*_final.json` | full per-item rows, and the qualitative examples of §7a |
 | `report/phase3_floors.json` | both floors and the significance test |

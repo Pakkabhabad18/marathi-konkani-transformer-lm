@@ -1,0 +1,163 @@
+{
+  "language": "marathi",
+  "source": "phase3_reasoning_eval_marathi_final.json",
+  "entity_pool_sizes": {
+    "train": 16,
+    "test": 6
+  },
+  "equality_words": [
+    "समान"
+  ],
+  "prediction_classes": {
+    "answered": 996,
+    "unparseable": 4,
+    "buckets": {
+      "train_pool_name": {
+        "count": 501,
+        "percent": 50.3,
+        "most_common": [
+          [
+            "राम",
+            273
+          ],
+          [
+            "राहुल",
+            148
+          ],
+          [
+            "लता",
+            67
+          ],
+          [
+            "गणेश",
+            7
+          ],
+          [
+            "कविता",
+            2
+          ],
+          [
+            "दीपक",
+            2
+          ]
+        ]
+      },
+      "equality_word": {
+        "count": 281,
+        "percent": 28.21,
+        "most_common": [
+          [
+            "समान",
+            281
+          ]
+        ]
+      },
+      "test_pool_name": {
+        "count": 186,
+        "percent": 18.67,
+        "most_common": [
+          [
+            "गीता",
+            95
+          ],
+          [
+            "रेखा",
+            73
+          ],
+          [
+            "प्रिया",
+            18
+          ]
+        ]
+      },
+      "malformed_variant": {
+        "count": 28,
+        "percent": 2.81,
+        "most_common": [
+          [
+            "गोविंदा",
+            24
+          ],
+          [
+            "प्रकाशा",
+            4
+          ]
+        ]
+      }
+    }
+  },
+  "scores": {
+    "all_families": {
+      "n": 1000,
+      "exact_match_percent": 19.6,
+      "lenient_percent": 20.7,
+      "uniform_chance_percent": 25.94,
+      "exact_z": -4.609,
+      "exact_p_one_tailed": 1.0,
+      "lenient_z": -3.81,
+      "lenient_p_one_tailed": 0.9999
+    },
+    "excluding_equality": {
+      "n": 858,
+      "exact_match_percent": 6.41,
+      "lenient_percent": 7.69,
+      "uniform_chance_percent": 24.72,
+      "exact_z": -12.501,
+      "exact_p_one_tailed": 1.0,
+      "lenient_z": -11.625,
+      "lenient_p_one_tailed": 1.0
+    },
+    "by_family": {
+      "compare_two": {
+        "n": 143,
+        "exact_match_percent": 0.0,
+        "lenient_percent": 0.0,
+        "uniform_chance_percent": 33.33,
+        "exact_z": -8.456,
+        "exact_p_one_tailed": 1.0,
+        "lenient_z": -8.456,
+        "lenient_p_one_tailed": 1.0
+      },
+      "equality": {
+        "n": 142,
+        "exact_match_percent": 99.3,
+        "lenient_percent": 99.3,
+        "uniform_chance_percent": 33.33,
+        "exact_z": 16.674,
+        "exact_p_one_tailed": 0.0,
+        "lenient_z": 16.674,
+        "lenient_p_one_tailed": 0.0
+      },
+      "superlative_three": {
+        "n": 143,
+        "exact_match_percent": 2.1,
+        "lenient_percent": 2.1,
+        "uniform_chance_percent": 25.0,
+        "exact_z": -6.325,
+        "exact_p_one_tailed": 1.0,
+        "lenient_z": -6.325,
+        "lenient_p_one_tailed": 1.0
+      },
+      "transitive_2hop": {
+        "n": 286,
+        "exact_match_percent": 11.89,
+        "lenient_percent": 14.34,
+        "uniform_chance_percent": 25.0,
+        "exact_z": -5.121,
+        "exact_p_one_tailed": 1.0,
+        "lenient_z": -4.165,
+        "lenient_p_one_tailed": 1.0
+      },
+      "transitive_3hop": {
+        "n": 286,
+        "exact_match_percent": 6.29,
+        "lenient_percent": 7.69,
+        "uniform_chance_percent": 20.0,
+        "exact_z": -5.795,
+        "exact_p_one_tailed": 1.0,
+        "lenient_z": -5.204,
+        "lenient_p_one_tailed": 1.0
+      }
+    }
+  }
+}

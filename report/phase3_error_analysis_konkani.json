@@ -1,0 +1,194 @@
+{
+  "language": "konkani",
+  "source": "phase3_reasoning_eval_konkani_final.json",
+  "entity_pool_sizes": {
+    "train": 24,
+    "test": 8
+  },
+  "equality_words": [
+    "सारकी",
+    "सारकें"
+  ],
+  "prediction_classes": {
+    "answered": 999,
+    "unparseable": 1,
+    "buckets": {
+      "test_pool_name": {
+        "count": 404,
+        "percent": 40.44,
+        "most_common": [
+          [
+            "सुनीता",
+            130
+          ],
+          [
+            "गीता",
+            87
+          ],
+          [
+            "कृष्ण",
+            79
+          ],
+          [
+            "महेश",
+            71
+          ],
+          [
+            "किशोर",
+            26
+          ],
+          [
+            "लता",
+            11
+          ]
+        ]
+      },
+      "malformed_variant": {
+        "count": 301,
+        "percent": 30.13,
+        "most_common": [
+          [
+            "मीर",
+            185
+          ],
+          [
+            "कृष्णा",
+            84
+          ],
+          [
+            "सीत",
+            31
+          ],
+          [
+            "गीत",
+            1
+          ]
+        ]
+      },
+      "equality_word": {
+        "count": 277,
+        "percent": 27.73,
+        "most_common": [
+          [
+            "सारकी",
+            186
+          ],
+          [
+            "सारकें",
+            91
+          ]
+        ]
+      },
+      "train_pool_name": {
+        "count": 12,
+        "percent": 1.2,
+        "most_common": [
+          [
+            "कविता",
+            10
+          ],
+          [
+            "नीता",
+            1
+          ],
+          [
+            "मोहन",
+            1
+          ]
+        ]
+      },
+      "other_string": {
+        "count": 5,
+        "percent": 0.5,
+        "most_common": [
+          [
+            "सीते",
+            3
+          ],
+          [
+            "सायबर",
+            1
+          ],
+          [
+            "सें",
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "scores": {
+    "all_families": {
+      "n": 1000,
+      "exact_match_percent": 28.2,
+      "lenient_percent": 37.9,
+      "uniform_chance_percent": 25.94,
+      "exact_z": 1.638,
+      "exact_p_one_tailed": 0.0507,
+      "lenient_z": 8.684,
+      "lenient_p_one_tailed": 0.0
+    },
+    "excluding_equality": {
+      "n": 858,
+      "exact_match_percent": 16.9,
+      "lenient_percent": 28.21,
+      "uniform_chance_percent": 24.72,
+      "exact_z": -5.34,
+      "exact_p_one_tailed": 1.0,
+      "lenient_z": 2.378,
+      "lenient_p_one_tailed": 0.0087
+    },
+    "by_family": {
+      "compare_two": {
+        "n": 143,
+        "exact_match_percent": 1.4,
+        "lenient_percent": 1.4,
+        "uniform_chance_percent": 33.33,
+        "exact_z": -8.101,
+        "exact_p_one_tailed": 1.0,
+        "lenient_z": -8.101,
+        "lenient_p_one_tailed": 1.0
+      },
+      "equality": {
+        "n": 142,
+        "exact_match_percent": 96.48,
+        "lenient_percent": 96.48,
+        "uniform_chance_percent": 33.33,
+        "exact_z": 15.962,
+        "exact_p_one_tailed": 0.0,
+        "lenient_z": 15.962,
+        "lenient_p_one_tailed": 0.0
+      },
+      "superlative_three": {
+        "n": 143,
+        "exact_match_percent": 21.68,
+        "lenient_percent": 34.27,
+        "uniform_chance_percent": 25.0,
+        "exact_z": -0.917,
+        "exact_p_one_tailed": 0.8205,
+        "lenient_z": 2.559,
+        "lenient_p_one_tailed": 0.0053
+      },
+      "transitive_2hop": {
+        "n": 286,
+        "exact_match_percent": 20.63,
+        "lenient_percent": 36.36,
+        "uniform_chance_percent": 25.0,
+        "exact_z": -1.707,
+        "exact_p_one_tailed": 0.9561,
+        "lenient_z": 4.438,
+        "lenient_p_one_tailed": 0.0
+      },
+      "transitive_3hop": {
+        "n": 286,
+        "exact_match_percent": 18.53,
+        "lenient_percent": 30.42,
+        "uniform_chance_percent": 20.0,
+        "exact_z": -0.621,
+        "exact_p_one_tailed": 0.7327,
+        "lenient_z": 4.405,
+        "lenient_p_one_tailed": 0.0
+      }
+    }
+  }
+}

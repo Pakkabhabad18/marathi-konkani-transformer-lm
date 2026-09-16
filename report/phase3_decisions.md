@@ -311,3 +311,57 @@ and a training-target comparison that falsified our own expectation.
 family whose answer is not among the entities named in the prompt, since
 selecting from visible options is the easiest form of the task and the models
 could not do even that.
+
+---
+
+## D-060 — An error taxonomy, and a lenient score that is honest about being post-hoc
+
+**What prompted it.** Exact-match accuracy said Model H scored 19.60% and Model L
+28.20%, and §6 concluded that neither cleared the chance floor once the
+degenerate `equality` family was removed. That conclusion used one number per
+model and never asked what the wrong answers actually were.
+
+**What the classification found.** Training prompts and test prompts draw names
+from disjoint pools, so every prediction can be sorted by where its name could
+have come from, with no judgement involved:
+
+| | Model H | Model L |
+|---|---:|---:|
+| test-pool name (a legal answer) | 18.7% | 40.4% |
+| train-pool name — impossible on any test item | **50.3%** | 1.2% |
+| malformed variant of a test-pool name | 2.8% | **30.1%** |
+| equality word | 28.2% | 27.7% |
+
+The two models fail in opposite ways. Model H answers with names it saw only in
+training — राम 273 times — which cannot be correct on any test item. Model L
+almost never does that; instead 30.1% of its answers are near-misses of an entity
+that is genuinely in the prompt: मीर for मीरा 185 times, कृष्णा for कृष्ण 84.
+
+**The decision.** Report a second, clearly-labelled figure alongside exact match:
+a prediction counts if it is a prefix or extension of the gold **and of no other
+candidate**. The uniqueness clause is the part that matters — a truncation short
+enough to match two names is never credited, so the rule cannot produce accuracy
+out of ambiguity.
+
+**What it changes.** Excluding `equality`, Model H moves 6.41% → 7.69% and stays
+far below the 24.72% floor (z = −11.62). Model L moves 16.90% → **28.21%**, from
+z = −5.34 to **z = +2.38, p = 0.009** — above chance and significant, with
+`superlative_three`, `transitive_2hop` and `transitive_3hop` each clearing their
+own floor independently. The finding is that Model L learned something about the
+comparison and cannot reliably spell the entity it picked.
+
+**The honesty problem, stated rather than hidden.** This metric was defined
+*after* looking at the errors. A metric chosen once the data is visible can be
+chosen to flatter, and a reader has no way to rule that out from the number
+alone. Three things are done about it: exact match stays the headline figure in
+every table; the matching rule is stated in full so it can be checked; and the
+rule was fixed before it was applied per family, so the per-family results are
+not a search over rules. It remains weaker evidence than a pre-registered
+measurement would be, and §10 says so.
+
+**What would change it.** Regenerating with entity names that are not prefixes of
+one another would remove the ambiguity at the source and make exact match
+sufficient. That is the right fix and it was not available in the time left.
+
+**Artifacts.** `tools/analyse_errors.py`,
+`report/phase3_error_analysis_{marathi,konkani}.json`.

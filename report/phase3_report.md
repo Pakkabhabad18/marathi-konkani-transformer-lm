@@ -26,6 +26,7 @@ decisions that fixed the recipe, and the mistakes that produced them, are in
 | uniform chance floor | 25.95% | 25.95% |
 | majority-class floor | 31.10% | 23.30% |
 | accuracy **excluding** the `equality` family | **6.41%** | **16.90%** |
+| the same, scored leniently (§7b) | 7.69% | **28.21%** |
 | uniform chance, same subset | 24.72% | 24.72% |
 | held-out pattern `p_less` | **0.00%** | **4.55%** |
 
@@ -198,8 +199,11 @@ gender, giving two labels of which one covers 69%. Both models found that
 constant, and in Model L's case it was enough to lift the overall figure above
 the floor without any reasoning behind it.
 
-**So the honest statement is that neither model beats chance on any family that
-requires comparing the entities.**
+**So under exact match, neither model beats chance on any family that requires
+comparing the entities.** §7b shows that this statement survives for Model H and
+does not survive for Model L: once a truncated name is not scored as a wrong
+name, Model L clears the floor significantly, because most of its errors are
+misspellings of the right entity rather than the wrong entity.
 
 ---
 
@@ -318,6 +322,90 @@ which is why format compliance is 99.60% rather than 100%. All four are
 `compare_two` or `equality` at two entities — the shortest prompts in the set.
 ---
 
+## 7b. Error analysis: what the wrong answers are made of
+
+Exact match says how often the model is right. It does not say what kind of wrong
+it is when it is wrong, and the two models turn out to be wrong in completely
+different ways.
+
+The entity pools make this measurable. Training prompts draw names from one pool
+and test prompts from another, and the two are disjoint — 16 train against 6 test
+for Marathi, 24 against 8 for Konkani. So a prediction can be sorted by where its
+name could have come from, with no judgement involved:
+
+| what the model answered | Model H (Marathi) | Model L (Konkani) |
+|---|---:|---:|
+| a **test-pool** name — a legal answer | 186 (18.7%) | **404 (40.4%)** |
+| a **train-pool** name — impossible on any test item | **501 (50.3%)** | 12 (1.2%) |
+| a **malformed variant** of a test-pool name | 28 (2.8%) | **301 (30.1%)** |
+| the equality word | 281 (28.2%) | 277 (27.7%) |
+| anything else | 0 | 5 (0.5%) |
+
+**Model H is not reading the prompt.** Half its answers are names that appear
+only in training — राम 273 times, राहुल 148, लता 67. None of these can be correct
+on any test item, because no test prompt contains them. The model learned which
+names tend to be answers and recites them.
+
+**Model L is reading the prompt and failing to spell the answer.** Only 1.2% of
+its answers are train-pool names. Instead, 30.1% are near-misses of a test-pool
+entity: मीर for मीरा 185 times, कृष्णा for कृष्ण 84, सीत for सीता 31. Taken with
+the 40.4% that are exact test-pool names, **70.5% of Model L's answers refer to
+an entity that is actually in the prompt it was given.**
+
+That is a different failure from Model H's, and exact match scores them the same.
+
+### The lenient score
+
+To separate "does not know the answer" from "cannot spell it", each prediction
+was scored a second way: it counts if it is a prefix or extension of the gold
+**and of no other candidate**. The uniqueness requirement is what keeps this
+honest — a truncation short enough to match two names is never credited, so the
+rule cannot manufacture accuracy out of ambiguity. मीर matches only मीरा and
+counts; a bare म would match several and would not.
+
+Exact match remains the headline figure throughout this report. This is a
+diagnostic reported beside it, and it was defined after the error distribution
+above was seen, which is recorded in D-060.
+
+| | exact match | lenient | uniform chance | lenient z |
+|---|---:|---:|---:|---:|
+| Model H, all families | 19.60% | 20.70% | 25.94% | −3.81 |
+| Model L, all families | 28.20% | **37.90%** | 25.94% | **+8.68** |
+| Model H, excluding `equality` | 6.41% | 7.69% | 24.72% | −11.62 |
+| **Model L, excluding `equality`** | 16.90% | **28.21%** | 24.72% | **+2.38** (p = 0.009) |
+
+Per family, Model L:
+
+| family | exact | lenient | uniform chance | lenient z |
+|---|---:|---:|---:|---:|
+| `compare_two` | 1.40% | 1.40% | 33.33% | −8.10 |
+| `superlative_three` | 21.68% | **34.27%** | 25.00% | **+2.56** |
+| `transitive_2hop` | 20.63% | **36.36%** | 25.00% | **+4.44** |
+| `transitive_3hop` | 18.53% | **30.42%** | 20.00% | **+4.41** |
+
+**This changes the conclusion for Model L and not for Model H.** Under exact
+match, §6 showed both models below chance once the degenerate `equality` family
+is removed. That still holds for Model H: leniently it moves from 6.41% to 7.69%
+against a 24.72% floor, z = −11.62, because its errors are memorised names and
+no amount of spelling tolerance rescues a wrong name.
+
+Model L is different. Excluding `equality` it goes from 16.90% (z = −5.34, below
+chance) to **28.21%, z = +2.38, p = 0.009** — above chance and significant. And
+the lift is not concentrated in one family: `superlative_three`,
+`transitive_2hop` and `transitive_3hop` each clear their own chance floor
+independently. `compare_two` does not, because there the equality word crowds
+out the entity answers entirely (§7).
+
+So the fair summary is narrower and more interesting than "neither model
+learned anything". Model H learned to recite answer-shaped names. Model L
+learned something about the comparison and cannot reliably produce the exact
+token sequence for the entity it has picked — a generation failure sitting on
+top of a partial success, which exact match alone hides.
+
+Produced by `tools/analyse_errors.py`; artifacts
+`report/phase3_error_analysis_{marathi,konkani}.json`.
+---
+
 ## 8. Generalisation: the held-out pattern
 
 `p_less` never appears in training. It expresses the same relations as `p_more`
@@ -387,6 +475,21 @@ genuinely marginal positive result could not have been established.
 form of comparative reasoning. Neither model could do even that. Harder variants
 were not attempted.
 
+**No fluent speaker reviewed the generated sentences.** The specification asks
+for natural phrasing in the target language. Every lexical item, genitive form,
+oblique stem and numeral convention was verified against a 400 MB sample of that
+language's own training corpus before use, which is stronger evidence than
+hand-checking would give for whether the words are *attested* — but attestation
+is not the same as a native reader judging that the sentences read naturally.
+Neither author of this project is a fluent Konkani speaker. This is disclosed
+rather than implied to be complete.
+
+**The lenient metric of §7b is post-hoc.** It was defined after the error
+distribution was inspected, not before the run. That is why exact match remains
+the headline figure everywhere and the lenient score is reported only beside it,
+with the matching rule stated in full so a reader can judge whether it is fair.
+A pre-registered version of this measurement would be stronger; see D-060.
+
 **One seed per configuration.** Run-to-run variance is not measured, so
 differences of a point or two between adjacent configurations — Marathi's 19.50 /
 21.10 / 19.50 / 14.80 / 19.60 across sample counts, for instance — should be read
@@ -440,6 +543,8 @@ its first cell.
 | `report/phase3_decisions.md` | D-050 to D-059, including what failed |
 | `report/phase3_results.{json,csv}` | all 30 measurements |
 | `report/phase3_collapse.json` | per-family prediction distributions |
+| `tools/analyse_errors.py` | the error classification and lenient scoring of §7b |
+| `report/phase3_error_analysis_*.json` | its output, per language |
 | `report/phase3_reasoning_eval_*_final.json` | full per-item rows, and the qualitative examples of §7a |
 | `report/phase3_floors.json` | both floors and the significance test |
 | `report/phase3_samples.png` | accuracy and perplexity against sample count |

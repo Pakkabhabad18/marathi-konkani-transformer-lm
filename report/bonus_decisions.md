@@ -125,9 +125,15 @@ the leak is much weaker in practice than the initialisation probe suggests.
 
 ## B-005 — Separate branch, separate documents
 
-**Decision.** Branch `bonus-no-positional`, cut from `phase-3` at commit
-`2294de8`. The bonus writes only `report/bonus_*` files and its own decision
+**Decision.** Branch `bonus-no-positional`, built on top of `phase-3` at commit
+`69c2bf3`. The bonus writes only `report/bonus_*` files and its own decision
 numbering. Nothing on `phase-3` moves.
+
+The branch was rebased onto `phase-3` once Phase 3 was final, so it sits
+directly on the submitted state rather than on an earlier snapshot of it. One
+commit was dropped in that rebase: it carried the Phase 3 finetuning configs and
+qualitative examples, which had been committed here by accident and belong to
+Phase 3, and they now reach `phase-3` on their own.
 
 **Why.** The bonus changes `common/model/config.py`, `common/model/lm.py`,
 `tools/train.py` and `tools/verify_model.py` — four files at the centre of the

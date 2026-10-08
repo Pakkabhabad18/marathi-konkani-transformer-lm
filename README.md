@@ -6,7 +6,58 @@ Two completely independent decoder-only Transformer language models built from
 scratch. Separate corpus, separate tokenizer, separate vocabulary, separate
 weights per language — no data, vocabulary or checkpoint is shared between them.
 
-**Branch:** `phase-3`
+## Overview
+
+The corpus, the tokenizers, the Transformer and the training loop are all
+written in this repository, with no pretrained weights or borrowed vocabularies.
+Marathi has plenty of text online; Konkani has very little. Building both under
+the same parameter and token budget shows what a low-resource language costs at
+each stage.
+
+**Read first:** [`report/final_report.pdf`](report/final_report.pdf), the
+consolidated report covering all three phases and the ablation.
+
+### At a glance
+
+| | Marathi | Konkani |
+|---|---:|---:|
+| clean training tokens collected | 872M | 506M |
+| model size | 24.9M parameters | 24.9M parameters |
+| test perplexity after pretraining | 8.62 | 26.56 |
+| output-format compliance after reasoning finetuning | 99.6% | 99.9% |
+| reasoning accuracy on held-out entities | 19.6% | 28.2% |
+
+Removing the positional embeddings from the Marathi model (the bonus ablation,
+on branch `bonus-no-positional`) raises validation perplexity by 8.1%, from 8.46 to 9.14.
+
+### What is in here
+
+- **Data pipeline:** crawlers, OCR for scanned books, cleaning, per-source
+  provenance tagging, and train/validation/test splits checked for leakage.
+- **Tokenizers:** a 2,500-token vocabulary per language, sized for the ~25M
+  parameter budget, with a 0% unknown-token rate.
+- **Model:** decoder-only Transformer in PyTorch — 7 layers, 8 heads,
+  `d_model` 512, context 512, pre-norm.
+- **Training and evaluation:** pretraining on a T4 GPU (about 3.5 hours per
+  model); perplexity, bits per byte, BLEU, chrF, ROUGE-L and attention analysis.
+- **Reasoning finetuning:** a synthetic comparative-reasoning set, a
+  learning-rate grid, a forgetting check and error analysis.
+- **Decision log:** 60 numbered decisions (D-001 to D-060); corrections are
+  recorded next to what they replace rather than overwriting it.
+
+### How the branches are organised
+
+The work was done in order, and each stage has its own branch:
+
+| branch | stage |
+|---|---|
+| `phase-1` | corpus collection, cleaning, tokenizers, splits |
+| `phase-2` | model, pretraining, evaluation |
+| `phase-3` | reasoning finetuning, error analysis, final report (default branch) |
+| `bonus-no-positional` | ablation: the model without positional embeddings |
+
+Datasets and checkpoints are too large for Git and are linked in the
+[Google Drive section](#google-drive--datasets-and-artifacts) below.
 
 ---
 
@@ -454,7 +505,8 @@ commit. It takes no input while running.
 
 | file | contents |
 |---|---|
-| `report/phase3_report.md` | **the Phase 3 report — start here** |
+| `report/final_report.pdf` | **consolidated report, Phases 1–3 and the bonus ablation — start here** |
+| `report/phase3_report.md` | the Phase 3 report |
 | `report/phase3_decisions.md` | Phase 3 decisions and corrections (D-050…D-060) |
 | `report/phase3_final.ipynb` | the run that produced every Phase 3 number |
 | `report/phase2_report.md` | the Phase 2 report |

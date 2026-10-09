@@ -1,0 +1,40 @@
+# Continuous integration for the Marathi and Konkani language models.
+# Runs on every push and pull request. It does not train anything: it checks
+# that the code is sound and that the Transformer still behaves correctly.
+
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    name: Lint, compile and model checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install ruff
+
+      - name: Lint for errors
+        run: ruff check --select E9,F63,F7,F82 .
+
+      - name: Compile all Python files
+        run: python -m compileall -q common tools marathi konkani
+
+      - name: Run model correctness checks
+        run: python tools/verify_model.py --full

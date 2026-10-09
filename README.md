@@ -1,5 +1,7 @@
 # Marathi and Konkani language models
 
+[![CI](https://github.com/Pakkabhabad18/marathi-konkani-transformer-lm/actions/workflows/ci.yml/badge.svg?branch=phase-3)](https://github.com/Pakkabhabad18/marathi-konkani-transformer-lm/actions/workflows/ci.yml)
+
 **Model H (higher-resource):** Marathi  ·  **Model L (lower-resource):** Konkani (Devanagari)
 
 Two completely independent decoder-only Transformer language models built from
